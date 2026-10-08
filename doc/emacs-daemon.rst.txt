@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 16:04:48 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 16:21:50 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -58,7 +58,7 @@ The e_ command:
 
    Usage: e -s [SESSION-NAME] [--] [OPTION-or-FILENAME]...
           e --session=SESSION_NAME [OPTION-or-FILENAME]...
-          PEL_SESSION=SESSION-NAME e -s [OPTION-or-FILENAME]...
+          PEL_SESSION=SESSION-NAME e -s -- [OPTION-or-FILENAME]...
 
     • Execute emacs -nw, passing the OPTION-or-FILENAME options to Emacs but
       also forcing the automatic loading of an easysession.  The name of the
@@ -189,9 +189,9 @@ holding that Emacs executable file.
 
 **Usage**::
 
-  ge : Open an independent graphical-mode instance of Emacs.
-       Runs in background of the launching terminal shell and discard its
-       stdout and stderr streams to prevent disruption of the terminal shell.
+  ge : Launch an independent graphical-mode instance of Emacs.
+       Direct launches run in the background with stdout and stderr discarded.
+       macOS application launches use open and preserve open's diagnostics.
 
    Usage: ge -h | --help
 
@@ -206,7 +206,7 @@ holding that Emacs executable file.
 
    Usage: ge -s [SESSION-NAME] [--] [OPTION-or-FILENAME]...
           ge --session=SESSION_NAME [OPTION-or-FILENAME]...
-          PEL_SESSION=SESSION-NAME ge -s [OPTION-or-FILENAME]...
+          PEL_SESSION=SESSION-NAME ge -s -- [OPTION-or-FILENAME]...
 
     • Execute a graphical Emacs process, passing the OPTION-or-FILENAME options
       to Emacs but also forcing the automatic loading of an easysession.  The
@@ -333,7 +333,7 @@ holding that Emacs executable file.
         identified by the following logic:
         • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
           that executable. PEL_GE_DIR identifies its containing directory.
-          Otherwise, use the appropriate executable inside /Applications/Emacs.app
+          Otherwise, use the executable inside /Applications/Emacs.app
           appropriate for the CPU architecture.
 
    BUGS: On macOS Sonoma, the started Emacs application window is

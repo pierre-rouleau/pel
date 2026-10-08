@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 16:03:22 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 16:15:45 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -55,7 +55,7 @@ print_usage()
 
  Usage: %s -s [SESSION-NAME] [--] [OPTION-or-FILENAME]...
         %s --session=SESSION_NAME [OPTION-or-FILENAME]...
-        PEL_SESSION=SESSION-NAME %s -s [OPTION-or-FILENAME]...
+        PEL_SESSION=SESSION-NAME %s -s -- [OPTION-or-FILENAME]...
 
   • Execute emacs -nw, passing the OPTION-or-FILENAME options to Emacs but
     also forcing the automatic loading of an easysession.  The name of the

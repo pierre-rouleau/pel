@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 16:03:44 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 16:21:29 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -25,9 +25,9 @@ pgm_name="${0##*/}"
 print_usage()
 {
     printf -- "\
-%s : Open an independent graphical-mode instance of Emacs.
-     Runs in background of the launching terminal shell and discard its
-     stdout and stderr streams to prevent disruption of the terminal shell.
+%s : Launch an independent graphical-mode instance of Emacs.
+     Direct launches run in the background with stdout and stderr discarded.
+     macOS application launches use open and preserve open's diagnostics.
 
  Usage: %s -h | --help
 
@@ -42,7 +42,7 @@ print_usage()
 
  Usage: %s -s [SESSION-NAME] [--] [OPTION-or-FILENAME]...
         %s --session=SESSION_NAME [OPTION-or-FILENAME]...
-        PEL_SESSION=SESSION-NAME %s -s [OPTION-or-FILENAME]...
+        PEL_SESSION=SESSION-NAME %s -s -- [OPTION-or-FILENAME]...
 
   • Execute a graphical Emacs process, passing the OPTION-or-FILENAME options
     to Emacs but also forcing the automatic loading of an easysession.  The
@@ -175,7 +175,7 @@ OS NOTES
       identified by the following logic:
       • If PEL_GE_DIR is nonempty and \$PEL_GE_DIR/emacs is executable, use
         that executable. PEL_GE_DIR identifies its containing directory.
-        Otherwise, use the appropriate executable inside /Applications/Emacs.app
+        Otherwise, use the executable inside /Applications/Emacs.app
         appropriate for the CPU architecture.
 
  BUGS: On macOS Sonoma, the started Emacs application window is
@@ -222,7 +222,7 @@ case $(uname) in
                 arm64)
                     if [ -x /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 ]; then
                         ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11"
-                    else
+                    elif [ -x /Applications/Emacs.app/Contents/MacOS/Emacs ]; then
                         # since it's likely an older macOS system where open did not have the --env option, don't use it.
                         ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs"
                     fi
@@ -476,7 +476,7 @@ fi
 #     as what is specified on the command line. If we don't do that the GUI
 #     based Emacs might use a different directory (most often the home directory)
 #     and if you specify files that are not in that directory they
-#     will not be opened, another file file open which will most likely be
+#     will not be opened, another file open which will most likely be
 #     in an empty buffer (if the file does not exist in the home directory).
 #
 # Emacs 27+ support for PEL:
