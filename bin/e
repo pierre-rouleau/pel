@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-07 12:11:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-07 22:42:51 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -33,15 +33,12 @@
 #
 #
 
-pgm_name="$(basename "$0")"
-EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))")
-EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
-EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
+pgm_name="${0##*/}"
 
 print_usage()
 {
     printf -- "
-%s -- Terminal-based Emacs launcher.
+%s -- Terminal-based Emacs launcher. Uses 'emacs -nw'.
 
  Usage: %s -h | --help
 
@@ -72,8 +69,7 @@ print_usage()
       or is currently empty, then the script requires the use of the
       directory-specific session.
       • This is the session name associated with the current directory
-        identified inside the PEL easysession catalog file:
-        %s
+        identified inside the PEL easysession catalog file (see FILES).
       • If you need to specify '-s' without a session name and need to pass
         other arguments to Emacs use '-s --'.
     • If '-s' is specified with no session name but the PEL_SESSION
@@ -93,12 +89,19 @@ print_usage()
     • The PEL pel-easysession-autoload user-option is turned on.
     • The easysession.el package is installed (PEL installs it when
       Emacs starts and pel-use-easysession is on)
-    • The %s directory exists.
-    • The %s file exists.
+    • The session directory exists (see FILES).
+    • The PEL easysession catalog file exists (see FILES).
       • It has a line that identifies a session for the current directory.
-      • That file is present in the %s directory.
+      • That file is present in the session directory.
 
-NOTES
+ FILES
+   • Emacs user directory: most often: '~/.emacs.d' but also '~/.config/emacs/'
+                           on some XDG compliant systems.
+   • session directory: the 'easysession' sub-directory of the Emacs user
+                        directory.
+   • PEL easysession catalog file:  'pel-easysession-catalog.txt;' inside the
+                                     Emacs user directory.
+ NOTES
     • %s starts Emacs within the current shell; Emacs gets access to the
       complete environment of the current shell. This includes the PATH,
       LIBPATH, MANPATH, and several other useful environment variables.  This
@@ -107,24 +110,28 @@ NOTES
       environments, and potentially an associated session.
 
  DIAGNOSTICS
-  The script is silent by default.  To force it to display error messages to
-  describe unmet conditions for the -s option, set the PEL_DIAG environment
-  variable to 1.  If there is a problem, it will be displayed and the script
-  will exit before invoking Emacs.  Use that to troubleshoot environment
-  problems.
+  %s is silent by default.  To force it to display error messages that describe
+  unmet conditions for the -s option, set the PEL_DIAG environment variable to
+  1.  If there is a problem, it will be displayed and the script will exit
+  before invoking Emacs.  Use that to troubleshoot environment problems.
   • With USRHOME installed, type: setenv PEL_DIAG 1
+
+ EXIT CODE
+  • 2 : emacs not found in PATH
+  • 1 : command line error
+  • 0 : success
 
  SEE ALSO
   • ge : to start a Graphics-based Emacs process.
   • ec : to start a Emacs daemon server or client.
   • USRHOME : shell environment control with several commands.
               At https://github.com/pierre-rouleau/usrhome
+  • For the concept of session auto-loading, see:
+    • PEL session PDF : describes how PEL uses easysession.el
+    • easysession.el Emacs package documentation.
 
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-           "$pgm_name" \
-           "$EASYSESSION_SESSION_CATALOG" "$EASYSESSION_SESSION_DIR" \
-           "$EASYSESSION_SESSION_CATALOG" "$EASYSESSION_SESSION_DIR" \
-           "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
 # --
@@ -135,6 +142,22 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     # help requested explicitly: no error.
     exit 0
 fi
+
+# --
+# Check if Emacs is present: only look for 'emacs'; nothing else is used here.
+
+if ! command -v emacs > /dev/null 2>&1; then
+    printf -- "ERROR: emacs is not found in PATH!\n" >&2
+    exit 2
+fi
+
+# --
+# Identify location of important directory and files.
+# Uses emacs (now that we know that it is accessible).
+
+EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))")
+EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
+EASYSESSION_SESSION_CATALOG="$EMACS_DIR/pel-easysession-catalog.txt"
 
 # ----------------------------------------------------------------------------
 # Diagnostic printf
