@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-07 11:43:04 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 08:33:38 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -41,7 +41,7 @@ The e_ command:
 
 **Usage**::
 
-  e -- Terminal-based Emacs launcher.
+  e -- Terminal-based Emacs launcher. Uses 'emacs -nw'.
 
    Usage: e -h | --help
 
@@ -56,8 +56,8 @@ The e_ command:
     • Execute emacs -nw with the specified OPTION-or-FILENAME.
       This does not auto-load any session.
 
-   Usage: e [-s] [SESSION-NAME] [--] [OPTION-or-FILENAME]...
-          e --session-name=SESSION_NAME [OPTION-or-FILENAME]...
+   Usage: e -s [SESSION-NAME] [--] [OPTION-or-FILENAME]...
+          e --session=SESSION_NAME [OPTION-or-FILENAME]...
           PEL_SESSION=SESSION-NAME e -s [OPTION-or-FILENAME]...
 
     • Execute emacs -nw, passing the OPTION-or-FILENAME
@@ -72,8 +72,7 @@ The e_ command:
         or is currently empty, then the script requires the use of the
         directory-specific session.
         • This is the session name associated with the current directory
-          identified inside the PEL easysession catalog file:
-          ~/.emacs.d/pel-easysession-catalog.txt
+          identified inside the PEL easysession catalog file (see FILES).
         • If you need to specify '-s' without a session name and need to pass
           other arguments to Emacs use '-s --'.
       • If '-s' is specified with no session name but the PEL_SESSION
@@ -81,24 +80,43 @@ The e_ command:
         is auto-loaded.  The, special name '.' (without quotes) identifies a
         directory-specific session name extracted from the PEL easysession
         catalog.
-      • Any word (except '--') directly following '-s', '--session-name=' or the
+      • The name directly following '-s', '--session=' or the
         'PEL_SESSION=' identifies the session name and overrides the
         session name that could be identified by the current value of
-        the PEL_SESSION environment variable.
+        the PEL_SESSION environment variable.  This word cannot be '--'.
 
-    The -s and --session-name options force the automatic loading of a session
+
+    The -s and --session options force the automatic loading of a session
     using the Emacs easysession logic and are active when the following
     conditions are met:
       • The PEL pel-use-easysession      user-option is turned on.
       • The PEL pel-easysession-autoload user-option is turned on.
       • The easysession.el package is installed (PEL installs it when
         Emacs starts and pel-use-easysession is on)
-      • The ~/.emacs.d/easysession directory exists.
-      • The ~/.emacs.d/pel-easysession-catalog.txt file exists.
-        • It has a line that identifies a session for the current directory.
-        • That file is present in the ~/.emacs.d/easysession directory.
+      • The session directory exists (see FILES).
+    For unnamed, directory-specific session invoked with -s without a name,
+    the following extra condition are checked:
+      • The PEL easysession catalog file exists (see FILES).
+      • It has a line that identifies a session for the current directory.
+      • That file is present in the session directory.
 
-  NOTES
+   FILES
+     • Emacs user directory: most often: '~/.emacs.d' but also '~/.config/emacs/'
+                             on some XDG compliant systems.
+     • session directory: the 'easysession' sub-directory of the Emacs user
+                          directory.
+     • PEL easysession catalog file:  'pel-easysession-catalog.txt' inside the
+                                       Emacs user directory.
+
+   ENVIRONMENT
+      • PEL_SESSION_CATALOG : the file name of the PEL easysession catalog file.
+                              No path; the file is located inside the user's
+                              Emacs directory. Overrides the default shown
+                              above.  Required when the user changed the default
+                              value of PEL pel-easysession-catalog-filename
+                              user-option in Emacs.
+
+   NOTES
       • e starts Emacs within the current shell; Emacs gets access to the
         complete environment of the current shell. This includes the PATH,
         LIBPATH, MANPATH, and several other useful environment variables.  This
@@ -106,21 +124,40 @@ The e_ command:
         processes from different shells, each ones having different specialized
         environments, and potentially an associated session.
 
+   LIMITATIONS
+      • The -s option does not check if a session for the current working
+        directory exists in the PEL easysession catalog file.  That is done
+        by Emacs pel-session.el logic.  No harm is done: Emacs won't auto-load
+        a session.  Use it as a reminder to save the session with a name
+        associated with the current working directory.
+      • When auto-loading a session with easysession, e assumes that the
+        session information was stored inside files located inside the same
+        Emacs user directory Emacs will use now.  It does not support
+        restoration of sessions created by invoking Emacs with its
+        --init-directory option.
+
    DIAGNOSTICS
-    The script is silent by default.  To force it to display error messages to
-    describe unmet conditions for the -s option, set the PEL_DIAG environment
-    variable to 1.  If there is a problem, it will be displayed and the script
-    will exit before invoking Emacs.  Use that to troubleshoot environment
-    problems.
+    e print error information on failures. It prints extra details when the
+    PEL_DIAG environment variable is set to 1.  Specifically it displays more
+    information when conditions are not met for the loading of a session.
+    Use that to troubleshoot environment problems.
     • With USRHOME installed, type: setenv PEL_DIAG 1
+
+   EXIT CODE
+    • 0 : success,
+    • 1 : command line error,
+    • 2 : emacs not found in PATH,
+    • 3 : emacs invoked inside emacs, prompt read failed,
+    • 4 : fail to identify emacs users' directory for session load operation.
 
    SEE ALSO
     • ge : to start a Graphics-based Emacs process.
     • ec : to start a Emacs daemon server or client.
     • USRHOME : shell environment control with several commands.
                 At https://github.com/pierre-rouleau/usrhome
-
-
+    • For the concept of session auto-loading, see:
+      • PEL session PDF : describes how PEL uses easysession.el
+      • easysession.el Emacs package documentation.
 
 Start a stand-alone graphics-mode Emacs with: ge
 ------------------------------------------------
