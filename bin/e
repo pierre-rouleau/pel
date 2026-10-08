@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 13:44:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 16:03:22 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -107,6 +107,8 @@ print_usage()
                             user-option in Emacs.
 
  NOTES
+    • With the -s option with no named session, place a -- before a following
+      file name otherwise it is interpreted as a session name.
     • %s starts Emacs within the current shell; Emacs gets access to the
       complete environment of the current shell. This includes the PATH,
       LIBPATH, MANPATH, and several other useful environment variables.  This

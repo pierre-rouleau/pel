@@ -1,17 +1,17 @@
 #!/bin/sh
 # SH FILE: ge
 #
-# Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
+# Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 15:18:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 16:03:44 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
 #
-# Launch an independent GUI Emacs that is detached from the terminal shell
-# executing the command.  The current directory of the GUI Emacs process is
-# set to the current directory of the terminal shell from which the 'ge'
+# Launch an independent GUI Emacs in the background of the launching terminal
+# shell executing the command.  The current directory of the GUI Emacs process
+# is set to the current directory of the terminal shell from which the 'ge'
 # command was issued.
 
 #
@@ -25,7 +25,9 @@ pgm_name="${0##*/}"
 print_usage()
 {
     printf -- "\
-:%s : Open an independent, detached, graphical-mode instance of Emacs.
+%s : Open an independent graphical-mode instance of Emacs.
+     Runs in background of the launching terminal shell and discard its
+     stdout and stderr streams to prevent disruption of the terminal shell.
 
  Usage: %s -h | --help
 
@@ -95,6 +97,8 @@ print_usage()
          file exists.
 
  NOTES
+    • With the -s option with no named session, place a -- before a following
+      file name otherwise it is interpreted as a session name.
     • %s launches Emacs inside an independent OS window, but that process
       inherits the current directory and the complete environment of the
       current shell.  This includes the PATH, LIBPATH, MANPATH, and several
@@ -139,9 +143,14 @@ print_usage()
   • With USRHOME installed, type: setenv PEL_DIAG 1
 
  EXIT CODE
-    • 0 : %s processing success; does not represent Emacs startup
-          but on macOS it may represent open status,
-    • 1 : appropriate emacs not found in PATH, or OS is not supported,
+  Before launch, %s returns the listed wrapper status codes.
+   • For direct background launches, status 0 does not confirm that Emacs
+     started successfully. %s does not return Emacs's eventual exit status.
+   • For macOS application launches through open, the caller receives open's
+     exit status. That status is not Emacs's eventual exit status.
+  The exit codes are:
+    • 0 : %s processing success.
+    • 1 : selected executable or application is missing, or OS is not supported,
     • 2 : fail to identify emacs users' directory for session load operation,
     • 3 : failed session conditions check; print more info with PEL_DIAG=1,
     • 6 : internal logic error that should never happen; please report.
@@ -156,23 +165,23 @@ print_usage()
     • easysession.el Emacs package documentation.
 
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
+  "$pgm_name" "$pgm_name"
 
     if [ "$(uname)" = "Darwin" ]; then
         printf -- "\
 OS NOTES
-    • On macOS the graphics version of Emacs is taken a location identified
-      by the following logic:
+    • On macOS the graphics version of Emacs is taken from a location
+      identified by the following logic:
       • If PEL_GE_DIR is nonempty and \$PEL_GE_DIR/emacs is executable, use
         that executable. PEL_GE_DIR identifies its containing directory.
-        Otherwise, use the appropriate executable inside Applications/Emacs.app
+        Otherwise, use the appropriate executable inside /Applications/Emacs.app
         appropriate for the CPU architecture.
-        • Currently PEL_GE_DIR is: %s
 
  BUGS: On macOS Sonoma, the started Emacs application window is
        buried under the window of the current terminal shell.
        This problem does not occur on macOS Mojave.
-" "$PEL_GE_DIR"
+"
     fi
 }
 
@@ -222,7 +231,9 @@ case $(uname) in
                     # Use the general dispatcher for all others
                     # It will check what version of macOS and use the appropriate one.
                     # since it's likely an older macOS system where open did not have the --env option, don't use it.
-                    ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs"
+                    if [ -x /Applications/Emacs.app/Contents/MacOS/Emacs ]; then
+                        ge_process="/Applications/Emacs.app/Contents/MacOS/Emacs"
+                    fi
                     ;;
             esac
         else
@@ -240,7 +251,7 @@ case $(uname) in
         #   If someone sees one please let me know.
         if command -v emacs-lucid > /dev/null ; then
             ge_process="emacs-lucid"
-        else
+        elif command -v emacs > /dev/null ; then
             ge_process="emacs"
         fi
         ;;
@@ -520,7 +531,7 @@ case "$ge_process" in
     emacs-lucid)
         # Under Linux, invoke emacs passing the current working directory
         # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
-        # PEL about the graphics mode and ensure it runs detached.
+        # PEL about the graphics mode and ensure it runs in the background.
         export PEL_EMACS_IN_GRAPHICS=1
         # Run Emacs in the background.
         # exec replaces the background subshell, not the main ge script.

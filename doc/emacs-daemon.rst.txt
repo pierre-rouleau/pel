@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 15:19:49 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 16:04:48 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -110,6 +110,8 @@ The e_ command:
                               user-option in Emacs.
 
    NOTES
+      • With the -s option with no named session, place a -- before a following
+        file name otherwise it is interpreted as a session name.
       • e starts Emacs within the current shell; Emacs gets access to the
         complete environment of the current shell. This includes the PATH,
         LIBPATH, MANPATH, and several other useful environment variables.  This
@@ -187,7 +189,9 @@ holding that Emacs executable file.
 
 **Usage**::
 
-  ge : Open an independent, detached, graphical-mode instance of Emacs.
+  ge : Open an independent graphical-mode instance of Emacs.
+       Runs in background of the launching terminal shell and discard its
+       stdout and stderr streams to prevent disruption of the terminal shell.
 
    Usage: ge -h | --help
 
@@ -257,6 +261,8 @@ holding that Emacs executable file.
            file exists.
 
    NOTES
+      • With the -s option with no named session, place a -- before a following
+        file name otherwise it is interpreted as a session name.
       • ge launches Emacs inside an independent OS window, but that process
         inherits the current directory and the complete environment of the
         current shell.  This includes the PATH, LIBPATH, MANPATH, and several
@@ -301,9 +307,14 @@ holding that Emacs executable file.
     • With USRHOME installed, type: setenv PEL_DIAG 1
 
    EXIT CODE
-      • 0 : ge processing success; does not represent Emacs startup
-            but on macOS it may represent open status,
-      • 1 : appropriate emacs not found in PATH, or OS is not supported,
+    Before launch, ge returns the listed wrapper status codes.
+     • For direct background launches, status 0 does not confirm that Emacs
+       started successfully. ge does not return Emacs's eventual exit status.
+     • For macOS application launches through open, the caller receives open's
+       exit status. That status is not Emacs's eventual exit status.
+    The exit codes are:
+      • 0 : ge processing success.
+      • 1 : selected executable or application is missing, or OS is not supported,
       • 2 : fail to identify emacs users' directory for session load operation,
       • 3 : failed session conditions check; print more info with PEL_DIAG=1,
       • 6 : internal logic error that should never happen; please report.
@@ -318,13 +329,12 @@ holding that Emacs executable file.
       • easysession.el Emacs package documentation.
 
   OS NOTES
-      • On macOS the graphics version of Emacs is taken a location identified
-        by the following logic:
+      • On macOS the graphics version of Emacs is taken from a location
+        identified by the following logic:
         • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
           that executable. PEL_GE_DIR identifies its containing directory.
-          Otherwise, use the appropriate executable inside Applications/Emacs.app
+          Otherwise, use the appropriate executable inside /Applications/Emacs.app
           appropriate for the CPU architecture.
-          • Currently PEL_GE_DIR is: /Users/roup/my/bin
 
    BUGS: On macOS Sonoma, the started Emacs application window is
          buried under the window of the current terminal shell.
