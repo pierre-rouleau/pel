@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 11:46:33 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 15:19:49 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -246,12 +246,15 @@ holding that Emacs executable file.
                                        Emacs user directory.
 
    ENVIRONMENT
-      • PEL_SESSION_CATALOG : the file name of the PEL easysession catalog file.
-                              No path; the file is located inside the user's
-                              Emacs directory. Overrides the default shown
-                              above.  Required when the user changed the default
-                              value of PEL pel-easysession-catalog-filename
-                              user-option in Emacs.
+      • PEL_SESSION_CATALOG :
+           The file name of the PEL easysession catalog file.  No path; the file
+           is located inside the user's Emacs directory. Overrides the default
+           shown above.  Required when the user changed the default value of PEL
+           pel-easysession-catalog-filename user-option in Emacs.
+      • PEL_GE_DIR:
+           On macOS only.  Identifies the directory where the emacs graphics-capable
+           executable may be stored.  Used if non empty and if executable emacs
+           file exists.
 
    NOTES
       • ge launches Emacs inside an independent OS window, but that process
@@ -259,12 +262,15 @@ holding that Emacs executable file.
         current shell.  This includes the PATH, LIBPATH, MANPATH, and several
         other useful environment variables.  This can be useful in many
         situations.  You can even launch different Emacs processes from
-        different shells, each ones having different specialized environments,
+        different shells, each one having different specialized environments,
         and potentially an associated session.
       • Control is returned right away to the terminal shell.
       • Remember that PEL supports the dual-customization mode where
-        customization of Emacs in terminal mode is independent that the
+        customization of Emacs in terminal mode is independent of the
         customization of Emacs in graphics mode.
+      • For direct graphical Emacs launches, stdout and stderr are discarded.
+        Startup errors and external-debugging-output are therefore not visible.
+        A successful ge exit status does not confirm successful Emacs startup.
 
    LIMITATIONS
       • The -s option does not check if a session for the current working
@@ -295,15 +301,16 @@ holding that Emacs executable file.
     • With USRHOME installed, type: setenv PEL_DIAG 1
 
    EXIT CODE
-      • 0 : success,
-      • 1 : appropriate emacs not found in PATH,
+      • 0 : ge processing success; does not represent Emacs startup
+            but on macOS it may represent open status,
+      • 1 : appropriate emacs not found in PATH, or OS is not supported,
       • 2 : fail to identify emacs users' directory for session load operation,
       • 3 : failed session conditions check; print more info with PEL_DIAG=1,
       • 6 : internal logic error that should never happen; please report.
 
    SEE ALSO
     • e  : to start a terminal-based Emacs process.
-    • ec : to start a Emacs daemon server or client.
+    • ec : to start an Emacs daemon server or client.
     • USRHOME : shell environment control with several commands.
                 At https://github.com/pierre-rouleau/usrhome
     • For the concept of session auto-loading, see:
@@ -311,18 +318,13 @@ holding that Emacs executable file.
       • easysession.el Emacs package documentation.
 
   OS NOTES
-      • On macOS the graphics version of Emacs is taken from one of the
-        following locations, checked in the following order:
-        • If PEL_GE_DIR environment variable is defined, it must identify
-          the path of an emacs executable file that launches in graphics
-          mode by default.  If the environment variable is set and
-          $PEL_GE_DIR/emacs is valid then that is used.
-          Currently this is: /Users/roup/my/bin/emacs
-          Use this, for example, if you have built Emacs yourself
-          and want to use this version of Emacs without activating it
-          by default in your shells or in the system.
-        • If PEL_GE_DIR /Applications/Emacs.app/Contents/MacOS exists and holds
-          an appropriate Emacs executable file, that is used.
+      • On macOS the graphics version of Emacs is taken a location identified
+        by the following logic:
+        • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
+          that executable. PEL_GE_DIR identifies its containing directory.
+          Otherwise, use the appropriate executable inside Applications/Emacs.app
+          appropriate for the CPU architecture.
+          • Currently PEL_GE_DIR is: /Users/roup/my/bin
 
    BUGS: On macOS Sonoma, the started Emacs application window is
          buried under the window of the current terminal shell.
@@ -478,7 +480,7 @@ Installing Emacs on macOS
 First install the graphics-capable version of Emacs for macOS. This can be
 done in two different ways:
 
-- Download and install the Emacs the `Emacs for Mac OS X`_, or
+- Download and install Emacs from `Emacs for Mac OS X`_, or
 - Use the `Homebrew package manager`_ and issue the following command from your
   terminal::
 

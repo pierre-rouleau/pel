@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent, detached, GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 11:45:20 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 15:18:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -25,7 +25,7 @@ pgm_name="${0##*/}"
 print_usage()
 {
     printf -- "\
-%s : Open an independent, detached, graphical-mode instance of Emacs.
+:%s : Open an independent, detached, graphical-mode instance of Emacs.
 
  Usage: %s -h | --help
 
@@ -84,12 +84,15 @@ print_usage()
                                      Emacs user directory.
 
  ENVIRONMENT
-    • PEL_SESSION_CATALOG : the file name of the PEL easysession catalog file.
-                            No path; the file is located inside the user's
-                            Emacs directory. Overrides the default shown
-                            above.  Required when the user changed the default
-                            value of PEL pel-easysession-catalog-filename
-                            user-option in Emacs.
+    • PEL_SESSION_CATALOG :
+         The file name of the PEL easysession catalog file.  No path; the file
+         is located inside the user's Emacs directory. Overrides the default
+         shown above.  Required when the user changed the default value of PEL
+         pel-easysession-catalog-filename user-option in Emacs.
+    • PEL_GE_DIR:
+         On macOS only.  Identifies the directory where the emacs graphics-capable
+         executable may be stored.  Used if non empty and if executable emacs
+         file exists.
 
  NOTES
     • %s launches Emacs inside an independent OS window, but that process
@@ -97,12 +100,15 @@ print_usage()
       current shell.  This includes the PATH, LIBPATH, MANPATH, and several
       other useful environment variables.  This can be useful in many
       situations.  You can even launch different Emacs processes from
-      different shells, each ones having different specialized environments,
+      different shells, each one having different specialized environments,
       and potentially an associated session.
     • Control is returned right away to the terminal shell.
     • Remember that PEL supports the dual-customization mode where
-      customization of Emacs in terminal mode is independent that the
+      customization of Emacs in terminal mode is independent of the
       customization of Emacs in graphics mode.
+    • For direct graphical Emacs launches, stdout and stderr are discarded.
+      Startup errors and external-debugging-output are therefore not visible.
+      A successful ge exit status does not confirm successful Emacs startup.
 
  LIMITATIONS
     • The -s option does not check if a session for the current working
@@ -133,15 +139,16 @@ print_usage()
   • With USRHOME installed, type: setenv PEL_DIAG 1
 
  EXIT CODE
-    • 0 : success,
-    • 1 : appropriate emacs not found in PATH,
+    • 0 : %s processing success; does not represent Emacs startup
+          but on macOS it may represent open status,
+    • 1 : appropriate emacs not found in PATH, or OS is not supported,
     • 2 : fail to identify emacs users' directory for session load operation,
     • 3 : failed session conditions check; print more info with PEL_DIAG=1,
     • 6 : internal logic error that should never happen; please report.
 
  SEE ALSO
   • e  : to start a terminal-based Emacs process.
-  • ec : to start a Emacs daemon server or client.
+  • ec : to start an Emacs daemon server or client.
   • USRHOME : shell environment control with several commands.
               At https://github.com/pierre-rouleau/usrhome
   • For the concept of session auto-loading, see:
@@ -149,23 +156,18 @@ print_usage()
     • easysession.el Emacs package documentation.
 
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
 
     if [ "$(uname)" = "Darwin" ]; then
         printf -- "\
 OS NOTES
-    • On macOS the graphics version of Emacs is taken from one of the
-      following locations, checked in the following order:
-      • If PEL_GE_DIR environment variable is defined, it must identify
-        the path of an emacs executable file that launches in graphics
-        mode by default.  If the environment variable is set and
-        \$PEL_GE_DIR/emacs is valid then that is used.
-        Currently this is: %s/emacs
-        Use this, for example, if you have built Emacs yourself
-        and want to use this version of Emacs without activating it
-        by default in your shells or in the system.
-      • If PEL_GE_DIR /Applications/Emacs.app/Contents/MacOS exists and holds
-        an appropriate Emacs executable file, that is used.
+    • On macOS the graphics version of Emacs is taken a location identified
+      by the following logic:
+      • If PEL_GE_DIR is nonempty and \$PEL_GE_DIR/emacs is executable, use
+        that executable. PEL_GE_DIR identifies its containing directory.
+        Otherwise, use the appropriate executable inside Applications/Emacs.app
+        appropriate for the CPU architecture.
+        • Currently PEL_GE_DIR is: %s
 
  BUGS: On macOS Sonoma, the started Emacs application window is
        buried under the window of the current terminal shell.
@@ -250,9 +252,8 @@ case $(uname) in
         ;;
 esac
 
-# --
-if ! command -v emacs > /dev/null 2>&1; then
-    printf -- "ERROR: emacs is not found in PATH!\n" >&2
+if [ -z "$ge_process" ]; then
+    printf -- "ERROR: no appropriate Emacs executable found!\n" >&2
     exit 1
 fi
 
@@ -286,9 +287,9 @@ session_name=
 
 # Loop through arguments to look for -s at the very beginning.
 # Extract the session name; support the following possibilities:
-#  -s              -> session_name = "."
-#  -s ABC          -> session_name = "ABC"
-#  --session=ABC   -> session_name = "ABC"
+#  -s            -> session_name = $PEL_SESSION value, "." if unset or empty.
+#  -s ABC        -> session_name = "ABC"
+#  --session=ABC -> session_name = "ABC"
 while [ $# -gt 0 ]; do
     case "$1" in
         -s)
@@ -344,7 +345,7 @@ if [ "$with_s_flag" -eq 1 ]; then
     # Uses the Emacs process we would use.
     case "$ge_process" in
         PEL_GE_DIR/emacs)
-            if EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))") 2>/dev/null; then
+            if EMACS_DIR=$("$PEL_GE_DIR/emacs" -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))") 2>/dev/null; then
                 EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
             else
                 printf -- "ERROR: cannot identify Emacs user directory. Exiting.\n" >&2
@@ -428,13 +429,13 @@ if [ "$with_s_flag" -eq 1 ]; then
     # If there were any error detected, always print error info and exit.
     if [ "$any_diag" = "yes" ]; then
         if [ "$session_name" = "." ]; then
-            printf "ERROR: Can't proceed with auto loading of dir-specific session!\n"
+            printf "ERROR: Can't proceed with auto loading of dir-specific session!\n" >&2
         else
-            printf "ERROR: Can't proceed with auto loading of session '%s'!\n" "$session_name"
+            printf "ERROR: Can't proceed with auto loading of session '%s'!\n" "$session_name" >&2
         fi
-        printf "       Fix the issue or use %s without the -s option.\n" "$pgm_name"
+        printf "       Fix the issue or use %s without the -s option.\n" "$pgm_name" >&2
         if [ -z "$PEL_DIAG" ]; then
-            printf "       Set PEL_DIAG environment variable to 1 to get more information on the error.\n"
+            printf "       Set PEL_DIAG environment variable to 1 to get more information on the error.\n" >&2
         fi
         exit 3
     else
@@ -447,7 +448,7 @@ if [ "$with_s_flag" -eq 1 ]; then
         fi
     fi
 else
-    # When e is invoked without the -s or --session option, ensure that
+    # When ge is invoked without the -s or --session option, ensure that
     # PEL_SESSION is empty to prevent Emacs from auto-loading an easysession.
     if [ -n "$PEL_SESSION" ]; then
         unset -v PEL_SESSION
@@ -480,7 +481,11 @@ fi
 case "$ge_process" in
     PEL_GE_DIR/emacs)
         export PEL_EMACS_IN_GRAPHICS=1
-        "$PEL_GE_DIR/emacs" --chdir="$(pwd)" "$@" &
+        # Run Emacs in the background.
+        # exec replaces the background subshell, not the main ge script.
+        # ge does not wait for Emacs or return its eventual exit status.
+        # Prevent stream outputs from leaking into the parent shell terminal.
+        exec "$PEL_GE_DIR/emacs" --chdir="$(pwd)" "$@" >/dev/null 2>&1 &
         ;;
 
     /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11)
@@ -495,13 +500,21 @@ case "$ge_process" in
         # Invoke them if they can be identified.  The value of the arch variable is not set,
         # so the `arch' command must be used.
         # Running on Apple Silicon: use the arm64 specific binary if present
-        open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 --env PEL_EMACS_IN_GRAPHICS=1 --args --chdir="$(pwd)" "$@"
+        #  Replace ge with open.
+        #  open returns without waiting for Emacs to exit.
+        #  The caller receives open's status, not Emacs's eventual exit status.
+        exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs-arm64-11 \
+             --env PEL_EMACS_IN_GRAPHICS=1 \
+             --args --chdir="$(pwd)" "$@"
         ;;
 
     /Applications/Emacs.app/Contents/MacOS/Emacs)
         # since it's likely an older macOS system where open did not have the --env option, don't use it.
         export PEL_EMACS_IN_GRAPHICS=1
-        open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --args --chdir="$(pwd)" "$@"
+        #  Replace ge with open.
+        #  open returns without waiting for Emacs to exit.
+        #  The caller receives open's status, not Emacs's eventual exit status.
+        exec open -n -a /Applications/Emacs.app/Contents/MacOS/Emacs --args --chdir="$(pwd)" "$@"
         ;;
 
     emacs-lucid)
@@ -509,16 +522,20 @@ case "$ge_process" in
         # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
         # PEL about the graphics mode and ensure it runs detached.
         export PEL_EMACS_IN_GRAPHICS=1
-        # Invoke the process via exec for efficiency and allowing proper signal dispatching.
-        # Note that exec replaces the running script, so we can't check Emacs exit code.
-        exec emacs-lucid --chdir="$(pwd)" "$@" &
+        # Run Emacs in the background.
+        # exec replaces the background subshell, not the main ge script.
+        # ge does not wait for Emacs or return its eventual exit status.
+        # Prevent stream outputs from leaking into the parent shell terminal.
+        exec emacs-lucid --chdir="$(pwd)" "$@" >/dev/null 2>&1 &
         ;;
 
     emacs)
         export PEL_EMACS_IN_GRAPHICS=1
-        # Invoke the process via exec for efficiency and allowing proper signal dispatching.
-        # Note that exec replaces the running script, so we can't check Emacs exit code.
-        exec emacs --chdir="$(pwd)" "$@" &
+        # Run Emacs in the background.
+        # exec replaces the background subshell, not the main ge script.
+        # ge does not wait for Emacs or return its eventual exit status.
+        # Prevent stream outputs from leaking into the parent shell terminal.
+        exec emacs --chdir="$(pwd)" "$@" >/dev/null 2>&1 &
         ;;
 
     *)

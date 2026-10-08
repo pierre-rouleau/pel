@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 10:20:37 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 13:44:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -314,7 +314,7 @@ if [ "$with_s_flag" -eq 1 ]; then
         else
             printf "ERROR: Can't proceed with auto loading of session '%s'!\n" "$session_name" >&2
         fi
-        printf "       Fix the issue or use %s without the -s option.\n" "$pgm_name"
+        printf "       Fix the issue or use %s without the -s option.\n" "$pgm_name" >&2
         if [ -z "$PEL_DIAG" ]; then
             printf "       Set PEL_DIAG environment variable to 1 to get more information on the error.\n" >&2
         fi
