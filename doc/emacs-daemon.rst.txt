@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 22:15:50 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-09 08:23:25 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -88,14 +88,19 @@ The e_ command:
         Emacs starts and pel-use-easysession is on)
       • The session directory exists (see FILES).
 
-    For a named session, the corresponding file must exist in the session
+    For a named session, the session file must exist in the easysession
     directory.  When the resolved session name is "." (as is the case for -s
-    or with --session=. )  the following extra condition must be met for the
-    loading of the session.  e checks the first, Emacs pel-session code checks
-    the other two:
-      • The PEL easysession catalog file exists (see FILES).
-      • It has a line that identifies a session for the current directory.
-      • That file is present in the session directory.
+    or with --session=. ) the PEL easysession catalog file (see FILES) must also
+    exist and the directory-specific session for it must exist in the easysession
+    directory.  The extraction is done by the following steps:
+      • e checks that the PEL easysession catalog file exists.  If it exists
+        it forces PEL_SESSION value to "." when Emacs starts.
+      • When the pel-use-easysession and pel-easysession-autoload user-options
+        are turned it proceeds with the following:
+        • Emacs pel-session.el checks the value of PEL_SESSION.  If it is "."
+          it extracts the session name from the catalog file, otherwise it uses
+          that session name.
+        • Emacs easysession.el loads the identified named session if it exists.
 
    FILES
      • Emacs user directory: most often: '~/.emacs.d' but also '~/.config/emacs/'
@@ -170,6 +175,7 @@ The e_ command:
       • PEL session PDF : describes how PEL uses easysession.el
       • easysession.el Emacs package documentation.
 
+
 Start a stand-alone graphics-mode Emacs with: ge
 ------------------------------------------------
 
@@ -240,14 +246,19 @@ holding that Emacs executable file.
         Emacs starts and pel-use-easysession is on)
       • The session directory exists (see FILES).
 
-    For a named session, the corresponding file must exist in the session
+    For a named session, the session file must exist in the easysession
     directory.  When the resolved session name is "." (as is the case for -s
-    or with --session=. )  the following extra condition must be met for the
-    loading of the session.  ge checks the first, Emacs pel-session code checks
-    the other two:
-      • The PEL easysession catalog file exists (see FILES).
-      • It has a line that identifies a session for the current directory.
-      • That file is present in the session directory.
+    or with --session=. ) the PEL easysession catalog file (see FILES) must also
+    exist and the directory-specific session for it must exist in the easysession
+    directory.  The extraction is done by the following steps:
+      • ge checks that the PEL easysession catalog file exists.  If it exists
+        it forces the PEL_SESSION value to "." when Emacs starts.
+      • When the pel-use-easysession and pel-easysession-autoload user-options
+        are turned it proceeds with the following:
+        • Emacs pel-session.el checks the value of PEL_SESSION.  If it is "."
+          it extracts the session name from the catalog file, otherwise it uses
+          that session name.
+        • Emacs easysession.el loads the identified named session if it exists.
 
    FILES
      • Emacs user directory: most often: '~/.emacs.d' but also '~/.config/emacs/'

@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 22:12:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-09 08:22:17 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -72,14 +72,19 @@ print_usage()
       Emacs starts and pel-use-easysession is on)
     • The session directory exists (see FILES).
 
-  For a named session, the corresponding file must exist in the session
+  For a named session, the session file must exist in the easysession
   directory.  When the resolved session name is \".\" (as is the case for -s
-  or with --session=. )  the following extra condition must be met for the
-  loading of the session.  %s checks the first, Emacs pel-session code checks
-  the other two:
-    • The PEL easysession catalog file exists (see FILES).
-    • It has a line that identifies a session for the current directory.
-    • That file is present in the session directory.
+  or with --session=. ) the PEL easysession catalog file (see FILES) must also
+  exist and the directory-specific session for it must exist in the easysession
+  directory.  The extraction is done by the following steps:
+    • %s checks that the PEL easysession catalog file exists.  If it exists
+      it forces the PEL_SESSION value to \".\" when Emacs starts.
+    • When the pel-use-easysession and pel-easysession-autoload user-options
+      are turned it proceeds with the following:
+      • Emacs pel-session.el checks the value of PEL_SESSION.  If it is \".\"
+        it extracts the session name from the catalog file, otherwise it uses
+        that session name.
+      • Emacs easysession.el loads the identified named session if it exists.
 
  FILES
    • Emacs user directory: most often: '~/.emacs.d' but also '~/.config/emacs/'
