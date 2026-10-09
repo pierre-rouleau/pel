@@ -6,13 +6,13 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2025-03-01 21:25:27 EST, updated by Pierre Rouleau.
+:Modified: 2026-10-08 21:44:22 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
 .. ---------------------------------------------------------------------------
 
-Use this method to quickly install the e_, ge_ and ce_ scripts described in
+Use this method to quickly install the e_, ge_ and ec_ scripts described in
 `Using the Emacs daemon and clients`_
 into your Unix compliant system.
 
@@ -22,77 +22,13 @@ into your Unix compliant system.
   or absolute path.
 
   - This will create symbolic links inside your ``~/bin`` directory
-    that points to the e, ge and ce scripts located in the ``pel/bin``
+    that points to the e_, ge_,  ec_ and `lses`_ scripts located in the ``pel/bin``
     directory.
   - It will check if the ``~/bin`` directory exists, if everything is OK to
     proceed and will report an error otherwise.
   - If all is OK, it will install the symbolic links inside ``~/bin`` and will
     check if the directory is in your PATH.  If it's not it will remind you to
     add it.
-
-Here's a sample of a successful execution, where pel is installed in ``~/my/dv/elisp``:
-
-.. code:: sh
-
-        > 0,et:14ms,L2,roup@newcray@07:59:07[~]
-        bash$ ~/my/dv/elisp/pel/bin/setup/install-emacs-launcher-scripts.sh
-        SUCCESS!!
-        Installation of e, ge and ec scripts completed!
-        They are:
-
-        lrwxr-xr-x  1 roup  staff  33 29 May 07:59 /Users/roup/bin/e -> /Users/roup/my/dv/elisp/pel/bin/e
-        lrwxr-xr-x  1 roup  staff  34 29 May 07:59 /Users/roup/bin/ge -> /Users/roup/my/dv/elisp/pel/bin/ge
-        lrwxr-xr-x  1 roup  staff  34 29 May 07:59 /Users/roup/bin/ec -> /Users/roup/my/dv/elisp/pel/bin/ec
-
-        For help on these commands use their --help command line option.
-           e --help is emacs --help.
-           e opens an independent emacs process in terminal mode.
-           eg and ec have their own help, which are:
-
-        ge : Open an independent, detached, graphical-mode instance of Emacs.
-
-         Usage: ge [-h|--help]
-                ge [FILE..]
-
-         Note: All command line arguments are passed to the Emacs application
-               unchanged.  See Emacs man page for more options.
-
-               Emacs is launched inside an independent OS window, but
-               that process inherit the current directory.
-               Control is returned right away to the terminal shell.
-
-
-        ec : Open specified files in emacsclient. Start Emacs daemon if necessary.
-
-         Usage:  ec [-h|--help]
-                 ec [-g|--gui] [--name=FILENAME]
-                 ec --check-daemon [--name=FILENAME]
-                 ec --start-daemon [--name=FILENAME]
-
-         -h, --help: print this help.
-         -g, --gui:  start a graphical emacsclient, otherwise
-                     start a terminal-based emacsclient (the default).
-
-         If the Emacs daemon is not already running, start it.
-
-         If the --name option is specified, FILENAME identifies the
-         socket name the daemon and the client must use.
-         It's possible to create several daemons and client(s)
-         attaching to that daemon by using that option.
-
-         Use ec --start-daemon to only start the daemon without starting any client.
-         If the daemon is already running the command prints a message and exit with
-         an exit code of 1.  It can be used to check if the daemon is running.
-
-         See emacsclient man page for more command line options.
-
-         Note: under macOS, to be able to launch an Emacs client that is a GUI Emacs
-               the GUI supporting Emacs from https://emacsformacosx.com/
-               must be installed.
-
-
-        > 0,et:50ms,L2,roup@newcray@07:59:13[~]
-        bash$
 
 .. ---------------------------------------------------------------------------
 .. links
@@ -101,6 +37,7 @@ Here's a sample of a successful execution, where pel is installed in ``~/my/dv/e
 .. _e:  ../bin/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
+.. _lses: ../bin/lses
 .. _Using the Emacs daemon and clients:  ./emacs-daemon.rst.txt
 .. _pel/bin/setup/install-emacs-launcher-scripts.sh:    ../bin/setup/install-emacs-launcher-scripts.sh
 

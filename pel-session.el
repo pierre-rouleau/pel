@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-06 22:45:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-09 08:03:38 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -85,17 +85,6 @@
   "Only save the main session."
   (when (equal "main" (easysession-get-session-name))
     t))
-
-
-
-(defun pel--easysession-auto-load-if-env ()
-  "Predicate: return t if PEL_SESSION_AUTO envvar is 1.
-
-When activated by \\='auto-load-when-PEL_SESSION_AUTO-is-1, this
-controls whether session is automatically loaded on start when the
-PEL_SESSION_AUTO environment variable exists and its value is 1."
-  (let* ((value (getenv "PEL_SESSION_AUTO")))
-    (and value (string= value "1"))))
 
 (defun pel--easysession-kill-all-buffers ()
   "Kill all buffers before switching sessions."
@@ -431,7 +420,9 @@ loop and retry up to 5 times using exponential backoff."
   "Load session identified by PEL_SESSION environment variable.
 
 If the environment variable does not exist, no loading is done.
-To auto-load the main session, set PEL_SESSION to \"main\"."
+To auto-load the main session, set PEL_SESSION to \"main\".
+To auto-load the session associated with the directory that was the current
+working directory when Emacs was started, set PEL_SESSION to \".\"."
   (require 'easysession)
   (let* ((env-session-name (getenv "PEL_SESSION")))
     (unless (string-empty-p env-session-name)

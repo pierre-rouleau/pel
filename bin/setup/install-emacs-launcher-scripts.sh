@@ -4,12 +4,12 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-05-21 15:28:08 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 21:44:27 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Creates symbolic links from ~/bin to important PEL scripts: e, ge, ec,
+# Creates symbolic links from ~/bin to important PEL scripts: e, ge, ec, lses,
 # is-emacs-daemon-running and is-pel-in-fast-startup.
 #
 # Tell user to put ~/bin inside PATH if it's not already there.
@@ -57,6 +57,7 @@ check_file()
 check_file "$HOME/bin/e"
 check_file "$HOME/bin/ge"
 check_file "$HOME/bin/ec"
+check_file "$HOME/bin/lses"
 check_file "$HOME/bin/is-emacs-daemon-running"
 check_file "$HOME/bin/is-pel-in-fast-startup"
 
@@ -70,6 +71,7 @@ install_symlink_for()
 install_symlink_for e
 install_symlink_for ge
 install_symlink_for ec
+install_symlink_for lses
 install_symlink_for is-emacs-daemon-running
 install_symlink_for is-pel-in-fast-startup
 
@@ -80,6 +82,7 @@ printf -- "SUCCESS!!\nInstallation of all following scripts completed!\nThey are
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
+ls -l "$HOME/bin/lses"
 ls -l "$HOME/bin/is-emacs-daemon-running"
 ls -l "$HOME/bin/is-pel-in-fast-startup"
 
@@ -89,11 +92,11 @@ if [ "$(command -v e)" != "$HOME/bin/e" ]; then
     exit 1
 fi
 
-printf -- "\nFor help on these commands use their --help command line option.\n"
+printf -- "\nFor help on these commands use their -h or --help command line option.\n"
 printf -- "\
-   e --help is emacs --help.
+   e -- --help is emacs --help.
    e opens an independent emacs process in terminal mode.
-   All other commands print their own help with -h or --help.\n\n"
+\n\n"
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
