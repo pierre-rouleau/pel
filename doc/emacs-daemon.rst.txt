@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 17:04:15 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-08 22:15:50 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -20,9 +20,10 @@ Short Commands to start Emacs from the terminal shell
 Start single Emacs processes or Emacs daemon and its clients with the
 following simple commands:
 
-- e_  : `start Emacs in terminal mode`_
-- ge_ : `start Emacs in graphics mode`_
-- ec_ : `start Emacs daemons and their clients`_
+- e_    : `start Emacs in terminal mode`_,
+- ge_   : `start Emacs in graphics mode`_,
+- ec_   : `start Emacs daemons and their clients`_,
+- lses_ : `list name and sockets of all running Emacs daemons`_.
 
 The commands are POSIX shell scripts and explicitly support Linux and macOS.
 
@@ -86,9 +87,12 @@ The e_ command:
       • The easysession.el package is installed (PEL installs it when
         Emacs starts and pel-use-easysession is on)
       • The session directory exists (see FILES).
-    For unnamed, directory-specific session invoked with -s without a name,
-    the following extra condition must be met for the loading of the
-    session.  e checks the first, Emacs pel-session code checks the other two:
+
+    For a named session, the corresponding file must exist in the session
+    directory.  When the resolved session name is "." (as is the case for -s
+    or with --session=. )  the following extra condition must be met for the
+    loading of the session.  e checks the first, Emacs pel-session code checks
+    the other two:
       • The PEL easysession catalog file exists (see FILES).
       • It has a line that identifies a session for the current directory.
       • That file is present in the session directory.
@@ -235,9 +239,12 @@ holding that Emacs executable file.
       • The easysession.el package is installed (PEL installs it when
         Emacs starts and pel-use-easysession is on)
       • The session directory exists (see FILES).
-    For unnamed, directory-specific session invoked with -s without a name,
-    the following extra condition must be met for the loading of the
-    session.  ge checks the first, Emacs pel-session code checks the other two:
+
+    For a named session, the corresponding file must exist in the session
+    directory.  When the resolved session name is "." (as is the case for -s
+    or with --session=. )  the following extra condition must be met for the
+    loading of the session.  ge checks the first, Emacs pel-session code checks
+    the other two:
       • The PEL easysession catalog file exists (see FILES).
       • It has a line that identifies a session for the current directory.
       • That file is present in the session directory.
@@ -412,6 +419,41 @@ The ec_ command:
          to set the PEL_GE_DIR environment variable to the name of the
          directory holding the Emacs executable file.
 
+
+List name and sockets of all running Emacs daemon with: lses
+------------------------------------------------------------
+
+The lses_ command lists the names and socket path for all currently running
+Emacs daemons.  On a system with two Emacs daemon (the default one and another
+named 'work'), the output is something like the following::
+
+  zsh% lses
+  -> Daemon Running: [Name: server] [Path: /var/folders/xz/zsb6i74n5431mmmn/T/emacs501/server]
+  -> Daemon Running: [Name: work]   [Path: /var/folders/xz/zsb6i74n5431mmmn/T/emacs501/work]
+
+**Usage**::
+
+   lses -- List currently running Emacs daemon server/sockets
+
+    Usage: lses -h | --help
+
+     • Print this help information.
+
+    Usage: lses
+
+     • Print names and path of currently running Emacs daemon sockets
+       on stdout.
+       - Supports the EMACS_SOCKET_NAME environment variable, if defined.
+
+       This script returns the following exit code values:
+       - 0: one or more daemon socket is found.
+       - 2: No Emacs daemon socket found.
+
+
+   LIMITATION:  Supports Linux and macOS.
+                No explicit check for Windows or other OS.
+
+.. ---------------------------------------------------------------------------
 
 Closing and Terminating Emacs
 =============================
@@ -672,6 +714,7 @@ install emacs`` command::
 .. _e:  ../bin/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
+.. _lses: ../bin/lses
 .. _Closing Suspending PEL PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/closing-suspending.pdf
 .. _quick installation script: ./install_e_ge_ec.rst.txt
 .. _exec-path-from-shell: https://github.com/purcell/exec-path-from-shell
@@ -680,8 +723,7 @@ install emacs`` command::
 .. _start Emacs in terminal mode: `Start Emacs in terminal mode with: e`_
 .. _start Emacs in graphics mode: `Start a stand-alone graphics-mode Emacs with: ge`_
 .. _start Emacs daemons and their clients: `Start Emacs daemons and their clients with: ec`_
-
-
+.. _list name and sockets of all running Emacs daemons: `List name and sockets of all running Emacs daemon with: lses`_
 
 .. ---------------------------------------------------------------------------
 

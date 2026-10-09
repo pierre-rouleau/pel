@@ -4,7 +4,7 @@
 # Purpose   : Start Emacs in terminal mode.  Support multiple environments
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 16:15:45 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-08 22:04:40 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -83,9 +83,12 @@ print_usage()
     • The easysession.el package is installed (PEL installs it when
       Emacs starts and pel-use-easysession is on)
     • The session directory exists (see FILES).
-  For unnamed, directory-specific session invoked with -s without a name,
-  the following extra condition must be met for the loading of the
-  session.  %s checks the first, Emacs pel-session code checks the other two:
+
+  For a named session, the corresponding file must exist in the session
+  directory.  When the resolved session name is \".\" (as is the case for -s
+  or with --session=. )  the following extra condition must be met for the
+  loading of the session.  %s checks the first, Emacs pel-session code checks
+  the other two:
     • The PEL easysession catalog file exists (see FILES).
     • It has a line that identifies a session for the current directory.
     • That file is present in the session directory.
