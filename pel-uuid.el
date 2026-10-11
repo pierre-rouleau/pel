@@ -112,6 +112,7 @@ Leaves point after the inserted UUID."
   (interactive)
   (insert (pel-uuid)))
 
+;;-pel-autoload
 (defun pel-c-include-guard (with-uuid &optional with-endif)
   "Return a multiple-line C pre-processor include guard string.
 

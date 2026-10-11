@@ -207,16 +207,20 @@ With a double `\\[universal-argument]', compile to a .app application file.
 When compiling, the generated file is stored in the same directory as the
 source file."
   (interactive "P")
-  (let* ((fname  (buffer-file-name))
-         (no-ext-fname (file-name-sans-extension fname))
-         (output-fname (cond
-                        ((null arg) "/dev/null")
-                        ((equal arg '(4))  (concat no-ext-fname ".scpt"))
-                        ((equal arg '(16)) (concat no-ext-fname ".app"))
-                        (t (user-error "Invalid argument: %S" arg)))))
-    (if (executable-find "osacompile")
-        (compile (format "osacompile -o %s %s" output-fname fname))
-      (user-error "osacompile not found in this system!"))))
+  (if buffer-file-name
+      (let* ((fname  (buffer-file-name))
+             (no-ext-fname (file-name-sans-extension fname))
+             (output-fname (cond
+                            ((null arg) "/dev/null")
+                            ((equal arg '(4))  (shell-quote-argument
+                                                (concat no-ext-fname ".scpt")))
+                            ((equal arg '(16)) (shell-quote-argument
+                                                (concat no-ext-fname ".app")))
+                            (t (user-error "Invalid argument: %S" arg)))))
+        (if (executable-find "osacompile")
+            (compile (format "osacompile -o %s %s" output-fname fname))
+          (user-error "osacompile not found in this system!")))
+    (user-error "Buffer is not visiting a file!")))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-applescript)

@@ -3,7 +3,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 * New in Version 0.4.2 (under development):
 - New version numbers for early-init.el and init.el: both use version 0.6.
   - Please *update your files* using the files in example/init.
-- New *pel-c-precedence* command, bound to ~<f12 @~ in C buffers: prints a C operator precedence table
+- New *pel-c-precedence* command, bound to ~<f12> @~ in C buffers: prints a C operator precedence table
   or open a cppreference.com web site describing them.
 - New *pel-applescript-compile* command to static check, compile AppleScript file to .scpt or .app file.
   The command is bound to the ~<f12> c~ key sequence.

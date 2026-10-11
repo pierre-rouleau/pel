@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 10 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-11 16:43:06 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 18:29:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,6 +65,7 @@ the second element is nil."
             cmt-start)
           comment-end)))
 
+;;-pel-autoload
 (defun pel-separator-line (&optional linelen char comment-prefix)
   "Return a (commented) line string.
 The number of characters is identified by LINELEN.

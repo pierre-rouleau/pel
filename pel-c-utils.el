@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-09 16:59:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 18:14:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -382,7 +382,10 @@ With a single `\\[universal-argument]': open the cppreference.com web page."
 Precedence | Operator                 | Description                      | Associativity
 -----------+--------------------------+----------------------------------+--------------
 1 (Highest)| () [] . -> ++ --         | Postfix operators / Calling      | Left-to-right
+1          | (type){list}             | Compound literal(C99)            | Left-to-right
 2          | ++ -- + - ! ~ * & sizeof | Unary operators / Casts          | Right-to-left
+2          | _Alignof                 | Alignment requirement([C11, C17])| Right-to-left
+2          | alignof                  | Alignment requirement(C23)       | Right-to-left
 3          | * / %                    | Multiplicative                   | Left-to-right
 4          | + -                      | Additive                         | Left-to-right
 5          | << >>                    | Bitwise shift                    | Left-to-right

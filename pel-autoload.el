@@ -1166,6 +1166,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-customize-insert-date-time
     pel-insert-todo-note
     pel-customize-todo-note)
+  (pel-autoload-function "pel-text-insert-base" for:
+    pel-separator-line)
 
   (pel-autoload "pel-text-transform" for:
     pel-capitalize-word-or-region
@@ -1214,6 +1216,8 @@ Argument FOR: just a required separator keyword to make code look better."
   ;; --
   (pel-autoload "pel-uuid" for:
     pel-insert-c-include-guard)
+  (pel-autoload-function "pel-uuid" for:
+    pel-c-include-guard)
 
   ;; --
   (pel-autoload "pel-v" for:

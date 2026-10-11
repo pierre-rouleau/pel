@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 10 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-11 16:39:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 18:46:19 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -122,10 +122,12 @@ Can't detect Erlang root path." pel-erlang-path-detection-method)
 
 (defvar pel---detected-erlang-root-dir nil
   "Copied value for debugging purpose.")
+(defvar erlang-root-dir)  ; defined as defcustom in erlang.el
 
 (defun pel--erlang-man-dir (erlang-man-dir subdir &optional no-download)
-  "Replace erlang-man-dir with specified Erlang root directory.
-The directory is specified by `pel-erlang-man-parent-rootdir'."
+  "Replace `erlang-man-dir' with specified Erlang root directory.
+The directory used is controlled by PEL Erlang customization, as
+selected dynamically by the `pel-erlang-root-path' function."
   ;; erlang-man-dir arguments: (subdir &optional no-download)
   (let ((erlang-root-dir (pel-erlang-root-path)))
     (setq pel---detected-erlang-root-dir erlang-root-dir)
@@ -136,7 +138,7 @@ The directory is specified by `pel-erlang-man-parent-rootdir'."
 
 ;;-pel-autoload
 (defun pel-erlang-setup-erlang-man-dir-root ()
-  "Setup a replacement for erlang-man-dir."
+  "Setup a replacement for the erlang.el `erlang-man-dir'."
   (unless pel--erlang-man-dir--setup
     (advice-add 'erlang-man-dir
                 :around (function pel--erlang-man-dir))
