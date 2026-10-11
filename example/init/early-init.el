@@ -147,8 +147,18 @@ Has no effect when Emacs runs in terminal/TTY mode.")
 ;; The code below this line does not require editing.
 ;; ==================================================
 
-(defconst pel-early-init-file-version "0.5"
+(defconst pel-early-init-file-version "0.6"
   "Version of PEL early-init.el. Verified by pel-setup logic. Do NOT change.")
+;; Update notes:
+;; - version 0.6:  early-init.el/init.el store current dir where Emacs was
+;;                 launched
+;;                 The new `pel-emacs-launch-directory' defconst stores the
+;;                 current directory from where Emacs got launched.  The value
+;;                 may start with "~".  The value will be correct even if some
+;;                 code inside the user-init code executes `cd'.
+;;                 This value is will be used in session management: restore
+;;                 Emacs session to the session associated with a directory.
+
 
 (defconst pel--ei-in-graphics-p
   (or

@@ -5,7 +5,7 @@
 ;;
 ;;   Abstract:         Emacs Initialization
 ;;
-;;   Time-stamp: <2026-03-13 23:39:26 EDT, updated by Pierre Rouleau>
+;;   Time-stamp: <2026-10-11 17:15:15 EDT, updated by Pierre Rouleau>
 ;;
 ;;   Copyright (c) 2018-2021, 2023, 2024, 2025, 2026, Pierre Rouleau. All rights reserved.
 ;;
@@ -93,9 +93,14 @@
   "Directory where PEL Emacs Lisp source files are stored.")
 
 ;; --
-(defconst pel-init-file-version "0.3"
+(defconst pel-init-file-version "0.6"
   "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
 ;; Update notes:
+;;  - version 0.6:   Sync version number with early-init version.
+;;                   Clarified documentation.
+;;                   Add section F: user can now place the user initialization
+;;                   code into the pel-user-init.el file.  That is disabled
+;;                   by default.
 ;;  - version 0.3: OPTION C code modified:
 ;;                 - Now explicitly load benchmark-init-modes.  It was not
 ;;                   required in older versions of Emacs but is required in

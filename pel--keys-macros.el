@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-02 11:02:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 08:46:41 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -76,12 +76,17 @@
 (require 'pel--base)    ; use: `macroexp-file-name'
 (require 'pel--macros)  ; use: `pel-append-to'
 (require 'pel--options) ; use: `pel-use-call-graph', `pel-use-tree-sitter', ...
-(require 'pel-prompt)   ; use: `pel-select-from'
 (require 'seq)          ; use: `seq-concatenate', `seq-drop', `seq-subseq'
 (eval-when-compile
   (require 'cl-lib)     ; use: `cl-dolist', `cl-return'
   (require 'cl-macs))   ; use: `cl-eval-when'
 (require 'vc-dir)       ; use: `vs-dir-backend'
+
+;; Declare the following functions; they are only needed via execution of
+;; interactive commands, therefore we prevent early loading of a tree of files
+;; during initialization by just declaring the function that resides in
+;; pel-prompt.
+(declare-function pel-select-from "pel-prompt")
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:

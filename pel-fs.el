@@ -122,6 +122,7 @@ Return t if it's OK, issue a user-error otherwise."
           (user-error "Error: %s MD5 differs from pel-bin-md5-alist value!" fname))
       (user-error "Error: %s does not exist. Check your PEL installation!" fname))))
 
+;;-pel-autoload
 (defun pel-exec-pel-bin (cmd &rest args)
   "Execute a PEL bin executable CMD with ARGS.
 

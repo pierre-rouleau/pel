@@ -49,8 +49,6 @@
 ;; pel-toggle-imenu-index-follows-order, but the index list is not updated
 ;; until a rescan is done.  Maybe I have to use hook for that, I have not
 ;; looked into the code enough to find out.
-;
-
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -72,18 +70,10 @@
 - t:   the entries are shown as an outline: in the exact same other
        as they appear in the buffer/file -- (new default behaviour).")
 
-;;-pel-autoload
-(defun pel-imenu-toggle-follows-order ()
-  "Change the way the imenu entries are organized.
-Toggle between default order and ordered by position in file."
-  (interactive)
-  (pel-toggle 'pel--imenu-index-follows-order-p)
-  (beep)
-  (message "Rescan the menu to show sub-menus %s."
-           (if pel--imenu-index-follows-order-p
-               "in order of appearance of content in file"
-             "at the top")))
+;; Setup Code
+;; ----------
 
+;;-pel-autoload
 (defun pel-imenu-outline--split-menu (oldfun menulist title)
   "Replacement function for `imenu--split-menu'.
 This function does not move sub-menus to the top, to keep buffer's
@@ -110,6 +100,22 @@ via OLDFUN.  The original two arguments MENULIST and TITLE follow."
         (funcall oldfun menulist title))
     (error "Internal error: the function imenu--split is unknown")))
 
+;; ---------------------------------------------------------------------------
+;; Menu Interactive Functions
+;; --------------------------
+
+;;-pel-autoload
+(defun pel-imenu-toggle-follows-order ()
+  "Change the way the imenu entries are organized.
+Toggle between default order and ordered by position in file."
+  (interactive)
+  (pel-toggle 'pel--imenu-index-follows-order-p)
+  (beep)
+  (message "Rescan the menu to show sub-menus %s."
+           (if pel--imenu-index-follows-order-p
+               "in order of appearance of content in file"
+             "at the top")))
+
 ;;-pel-autoload
 (defun pel-imenu-rescan ()
   "Force immediate imenu rescan."
@@ -132,11 +138,6 @@ argument is specified."
   (if (require 'imenu nil :noerror)
       (pel-toggle-and-show-user-option 'imenu-auto-rescan globally)
     (user-error "Cannot load imenu")))
-
-;;-pel-autoload
-(defun pel-imenu-init ()
-  "Initialize the use of imenu by PEL."
-  (advice-add 'imenu--split-menu :around #'pel-imenu-outline--split-menu))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-imenu)

@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-05 11:01:55 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-11 16:58:57 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -238,6 +238,7 @@ EL_FILES := pel--base.el \
 		pel-emacs-analyze.el \
 		pel-emacs.el \
 		pel-erlang.el \
+		pel-erlang-setup.el \
 		pel-ert.el \
 		pel-etags.el \
 		pel-face-ut.el \
@@ -348,6 +349,7 @@ EL_FILES := pel--base.el \
 		pel-tcl.el \
 		pel-tempo.el \
 		pel-text-insert.el \
+		pel-text-insert-base.el \
 		pel-text-transform.el \
 		pel-time.el \
 		pel-timestamp.el \
@@ -940,7 +942,8 @@ pel-elixir.elc:           pel--base.elc pel--options.elc pel-indent.elc pel-mode
 pel-elpa.elc:             pel-filedir.elc
 pel-emacs-analyze.elc:    pel--base.elc
 pel-emacs.elc:            pel--base.elc pel--options.elc pel-prompt.elc pel-setup-base.elc
-pel-erlang.elc:           pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc
+pel-erlang.elc:           pel--base.elc pel--options.elc pel-ffind.elc pel-fs.elc pel-indent.elc pel-modes.elc pel-syntax.elc pel-xref.elc pel-comment.elc pel-erlang-setup.elc
+pel-erlang-setup.elc:     pel--options.elc pel-fs.elc
 pel-face-ut.elc:          pel--base.elc
 pel-ffind.elc:            pel--base.elc pel--options.elc
 pel-ffind-inpath.elc:     pel--base.elc
@@ -1020,8 +1023,8 @@ pel-skels-c.elc:          pel--base.elc pel--options.elc pel--macros.elc pel-pro
 pel-skels-clisp.elc:      pel--options.elc pel-text-insert.elc pel-prompt.elc pel-tempo.elc pel-skels.elc
 pel-skels-cpp.elc:        pel--base.elc pel--options.elc pel-prompt.elc pel-text-insert.elc pel-uuid.elc pel-tempo.elc pel-skels.elc pel-skels-c.elc
 pel-skels-elisp.elc:      pel--base.elc pel--options.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
-pel-skels-erlang.elc:     pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-skels.elc
-pel-skels-generic.elc:    pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
+pel-skels-erlang.elc:     pel--base.elc pel--options.elc pel--macros.elc pel-list.elc pel-tempo.elc pel-prompt.elc pel-skels.elc
+pel-skels-generic.elc:    pel--base.elc pel--options.elc pel--macros.elc pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert-base.elc
 pel-skels-rst.elc:        pel-prompt.elc pel-skels.elc pel-tempo.elc pel-text-insert.elc
 pel-skels.elc:            pel--base.elc pel--options.elc pel-prompt.elc
 pel-smartparens.elc:      pel--base.elc pel-syntax.elc
@@ -1030,7 +1033,8 @@ pel-spell.elc:            pel--base.elc pel--macros.elc pel--options.elc pel-pro
 pel-syntax.elc:           pel--base.elc pel--options.elc pel--syntax-macros.elc pel--macros.elc
 pel-tcl.elc:              pel--base.elc pel--options.elc pel-ccp.elc pel-indent.elc pel-modes.elc
 pel-tempo.elc:            pel--keys-macros.elc pel-prompt.elc
-pel-text-insert.elc:      pel--base.elc pel--macros.elc pel-window.elc pel-syntax.elc
+pel-text-insert.elc:      pel--base.elc pel--macros.elc pel-window.elc pel--syntax-macros.elc pel-text-insert-base.elc
+pel-text-insert-base.elc: pel--base.elc pel--macros.elc
 pel-text-transform.elc:   pel--base.elc pel--options.elc
 pel-time.elc:             pel--base.elc
 pel-timestamp.elc:        pel--base.elc pel--options.elc

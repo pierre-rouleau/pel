@@ -2,12 +2,12 @@
 
 ;; Created   : Sunday, August 30 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2025-03-19 15:14:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 16:41:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2020, 2021, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2025, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -62,18 +62,27 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'pel--base)       ; use: pel-current-buffer-filename
-(require 'pel--options)    ; use: pel-generic-skel-module-header-block-style
-(require 'pel--macros)     ; use: pel-append-to
-(require 'pel-prompt)      ; use: pel-prompt-purpose-for
-(require 'pel-skels)       ; use: pel-skel-create-comment
-;;                         ;      pel-skel-author-comment
-;;                         ;      pel-skel-time-stamp
-;;                         ;      pel-skel-call
-(require 'pel-tempo)       ; use: pel-tempo-install-pel-skel
-(require 'pel-text-insert) ; use: pel-separator-line
+(require 'pel--base)             ; use: `pel-current-buffer-filename'
+(require 'pel--options)          ; use: `pel-generic-skel-module-header-block-style'
+(require 'pel--macros)           ; use: `pel-append-to'
 (eval-when-compile
-  (require 'subr-x))       ; use: string-trim-right
+  (require 'subr-x))             ; use: `string-trim-right'
+
+;; Declare the following auto-loaded functions; they are only needed via
+;; execution of interactive commands, therefore we prevent early loading of a
+;; tree of files during initialization by just declaring the function that
+;; resides in pel-prompt.
+(declare-function pel-prompt-purpose-for     "pel-prompt")
+(declare-function pel-skel-author-comment    "pel-skels")
+(declare-function pel-skel-time-stamp        "pel-skels")
+(declare-function pel-skel-call              "pel-skels")
+(declare-function pel-skel-comments-strings  "pel-skels")
+(declare-function pel-skel-created-comment   "pel-skels")
+(declare-function pel-skel-copyright-comment "pel-skels")
+(declare-function pel-tempo-install-pel-skel "pel-tempo")
+
+;; TODO
+(require 'pel-text-insert-base)  ; use: `pel-separator-line'
 
 ;;; ----------------------------------------------------------------------------
 ;;; Code:
@@ -261,8 +270,16 @@ The file header portion is controlled by the style selected by the
 - CUSTOMIZE-FCT-NAME-SUFFIX: optional string. A suffix to add to the name of
   the generated function, used to distinguish that function from others.
 
-This function is meant to be called by the function `pel-init' only.
-"
+To minimize PEL file loading at startup, this function should be called:
+- when the visited file buffer opens,
+- after completion of pel_keys.el loading to install the F6 generic
+  skeletons."
+  ;; Activate following commented out code to see who calls this early.
+  ;; (message "PEL====: pel--install-generic-skel, called by: %s"
+  ;;          (pel-caller-name :trace t))
+  ;; (message "PEL====: key-map: %S" key-map)
+  ;; (message "PEL====: customize-group: %S" customize-group)
+  ;; (message "PEL====: customize-fct-name-suffix: %S" customize-fct-name-suffix)
   (pel-tempo-install-pel-skel
    "generic"
    pel--generic-skels

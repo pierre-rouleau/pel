@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, February 29 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-05 11:31:14 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 16:40:06 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -447,6 +447,7 @@ Holds an independent class prompt history for each major mode."
         (setq fname (funcall transform-class fname))))
     fname))
 
+;;-pel-autoload
 (defun pel-prompt-function (&optional transform-function)
   "Prompt for function and return potentially transformed input string.
 If TRANSFORM-FUNCTION is non-nil it must be a function that accepts
@@ -465,6 +466,7 @@ Holds an independent function prompt history for each major mode."
         (setq fname (funcall transform-function fname))))
     fname))
 
+;;-pel-autoload
 (defun pel-prompt-args (&optional transform-function)
   "Prompt for argument(s) and return potentially transformed input string.
 

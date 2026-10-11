@@ -28,18 +28,20 @@
 ;; The functions below can operate on both and are good candidate for
 ;; command replacement.
 
-;;; Code:
+;;; --------------------------------------------------------------------------
+;;; Dependencies:
+;;
+;;
 (require 'pel--base)     ; use: `pel-at-lowercase-p', `pel-at-uppercase-p'
 (require 'pel--options)  ; use: `pel-modes-activating-align-on-return'
-;;(require 'paragraphs)  ; use: `sentence-end-double-space', `paragraph-start'
-;;                       ;      and `paragraph-separate'.
-;;                       ; However, paragraphs.el has no provide form,
-;;                       ; probably because it's always part of Emacs.
+
 ;;  Declare paragraph.el variables used dynamically to prevent warnings.
 (defvar sentence-end-double-space)
 (defvar paragraph-start)
 (defvar paragraph-separate)
 
+;; ---------------------------------------------------------------------------
+;;; Code:
 ;; PEL: Text Changing Case
 ;; -----------------------
 ;;

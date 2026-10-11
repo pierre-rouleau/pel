@@ -99,11 +99,23 @@
 ;;                            ;      pel-erlang-skel-use-secondary-separators
 (require 'pel--macros)
 (require 'pel-list)           ; use: pel-insert-list-in-list, pel-join
-(require 'pel-tempo)          ; use: pel-tempo-install-pel-skel
-;;                            ;      pel-tempo-include
-;;                            ;      pel-tempo-include-when
-(require 'pel-skels)
+
 (eval-when-compile (require 'subr-x)) ; use: string-trim
+
+;; Declare the following auto-loaded functions; they are only needed via
+;; execution of interactive commands, therefore we prevent early loading of a
+;; tree of files during initialization by just declaring the function that
+;; resides in pel-prompt and pel-skels.
+(declare-function pel-prompt-purpose-for     "pel-prompt")
+(declare-function pel-prompt-function        "pel-prompt")
+(declare-function pel-prompt-args            "pel-prompt")
+(declare-function pel-skel-time-stamp        "pel-skels")
+(declare-function pel-tempo-install-pel-skel "pel-tempo")
+(declare-function pel-tempo-include          "pel-tempo")
+(declare-function pel-tempo-include-when     "pel-tempo")
+
+;; Also declare variables defined in pel-skels
+(defvar pel--skel-last-purpose)
 
 ;; -----------------------------------------------------------------------------
 ;;; Code:
@@ -366,6 +378,8 @@ Please see the function `tempo-define-template'.")
 The returned skel list uses EDoc style if EDoc must be used,
 and inserts the last specified purpose string as the single
 line description if it was identified."
+  (require 'pel-skels)             ; although declared at the top, ensure that
+                                   ; `pel--skel-last-purpose' variable is accessible.
   (if (pel-erlang-file-is-module)
       (if (pel-erlang-skel-edoc-in-header-p)
           ;; with Edoc

@@ -86,9 +86,14 @@
   "Directory where PEL Emacs Lisp source files are stored.")
 
 ;; --
-(defconst pel-init-file-version "0.3.1"
+(defconst pel-init-file-version "0.6"
   "Version of PEL init.el. Verified by pel-setup logic. Do NOT change.")
 ;; Update notes:
+;;  - version 0.6:   Sync version number with early-init version.
+;;                   Clarified documentation.
+;;                   Add section F: user can now place the user initialization
+;;                   code into the pel-user-init.el file.  That is disabled
+;;                   by default.
 ;;  - version 0.3.1: In Emacs >= 27, code no longer setup the hook to execute
 ;;                   `package-activate-all' after emacs startup because it has
 ;;                   already been done by PEL early-init.
