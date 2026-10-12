@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October  9 2022.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 13:53:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 18:14:30 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -42,16 +42,19 @@
 ;;; Code:
 ;;
 
+;;-pel-autoload
 (defun pel-c-search-equal-NULL ()
   "Search for code comparing '== NULL'."
   (interactive)
   (re-search-forward "\\(NULL[[:blank:]]*==\\)\\|\\(==[[:blank:]]*NULL\\)"))
 
+;;-pel-autoload
 (defun pel-c-search-not-equal-NULL ()
   "Search for code comparing '!= NULL'."
   (interactive)
   (re-search-forward "\\(NULL[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*NULL\\)"))
 
+;;-pel-autoload
 (defun pel-c-search-equal-true ()
   "Search for code comparing '== true'."
   (interactive)
@@ -60,6 +63,7 @@
                   "\\(TRUE[[:blank:]]*==\\)\\|\\(==[[:blank:]]*TRUE\\)")
                 "\\|")))
 
+;;-pel-autoload
 (defun pel-c-search-not-equal-true ()
   "Search for code comparing '!= true'."
   (interactive)
@@ -68,6 +72,7 @@
                   "\\(TRUE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*TRUE\\)")
                 "\\|")))
 
+;;-pel-autoload
 (defun pel-c-search-equal-false ()
   "Search for code comparing '== false'."
   (interactive)
@@ -76,6 +81,7 @@
                   "\\(FALSE[[:blank:]]*==\\)\\|\\(==[[:blank:]]*FALSE\\)")
                 "\\|")))
 
+;;-pel-autoload
 (defun pel-c-search-not-equal-false ()
   "Search for code comparing '!= false'."
   (interactive)
@@ -84,6 +90,7 @@
                   "\\(FALSE[[:blank:]]*!=\\)\\|\\(!=[[:blank:]]*FALSE\\)")
                 "\\|")))
 
+;;-pel-autoload
 (defun pel-c-search-any-comparison-problem ()
   "Search for any problematic comparing code."
   (interactive)
@@ -170,6 +177,7 @@ Return adjusted regexp."
                     "\\([_[:alpha:]][_[:alnum:]]*::\\)*"
                   "")))
 
+;;-pel-autoload
 (defun pel-c-fix-comparison-problems ()
   "Fix C/C++ code that compares pointer explicitly to NULL, false and true.
 
@@ -313,16 +321,19 @@ object code file to generate the assembler file."
   "^\\([[:blank:]]*\\)#\\([[:blank:]]*\\)if[[:blank:]]+\\([[:alpha:]_][[:alnum:]_]+\\)[[:blank:]]*\\(==\\)[[:blank:]]*\\(%s\\)[[:blank:]]*$"
   "Regexp to locate '#if VAR == 0', '#if VAR == 1'.")
 
+;;-pel-autoload
 (defun pel-c-search-preproc-if ()
   "Search for pre-processor '#if VAR' statement."
   (interactive)
   (re-search-forward pel-preproc-if-regexp))
 
+;;-pel-autoload
 (defun pel-c-search-preproc-if-set ()
   "Search for pre-processor '#if VAR == 0', '#if VAR == 1'."
   (interactive)
   (re-search-forward (format pel-preproc-if-eq-regexp-format "[01]")))
 
+;;-pel-autoload
 (defun pel-c-fix-preproc-if-problems ()
   "Fix the C/C++ pre-processor #if statements not checking for defined var.
 Return a list of changed if-counts and count-if-set."
@@ -351,6 +362,45 @@ Return a list of changed if-counts and count-if-set."
                changed-count-if-set)
       ;; return list of change count
       (list changed-count-if changed-count-if-set))))
+;; ---------------------------------------------------------------------------
+
+;;-pel-autoload
+(defun pel-c-precedence (&optional web-page)
+  "Display the C operator precedence table.
+
+By default display it in a temporary buffer.
+With a single `\\[universal-argument]': open the cppreference.com web page."
+  (interactive "P")
+  (if web-page
+      (browse-url
+       "https://en.cppreference.com/c/language/operator_precedence")
+    (let ((buf (get-buffer-create "*C Precedence*")))
+      (with-current-buffer buf
+        (read-only-mode -1)
+        (erase-buffer)
+        (insert "
+Precedence | Operator                 | Description                      | Associativity
+-----------+--------------------------+----------------------------------+--------------
+1 (Highest)| () [] . -> ++ --         | Postfix operators / Calling      | Left-to-right
+1          | (type){list}             | Compound literal(C99)            | Left-to-right
+2          | ++ -- + - ! ~ * & sizeof | Unary operators / Casts          | Right-to-left
+2          | _Alignof                 | Alignment requirement([C11, C17])| Right-to-left
+2          | alignof                  | Alignment requirement(C23)       | Right-to-left
+3          | * / %                    | Multiplicative                   | Left-to-right
+4          | + -                      | Additive                         | Left-to-right
+5          | << >>                    | Bitwise shift                    | Left-to-right
+6          | < <= > >=                | Relational inequality            | Left-to-right
+7          | == !=                    | Relational equality              | Left-to-right
+8          | &                        | Bitwise AND                      | Left-to-right
+9          | ^                        | Bitwise XOR                      | Left-to-right
+10         | |                        | Bitwise OR                       | Left-to-right
+11         | &&                       | Logical AND                      | Left-to-right
+12         | ||                       | Logical OR                       | Left-to-right
+13         | ?:                       | Ternary conditional              | Right-to-left
+14         | = += -= *= /= %= etc.    | Assignment                       | Right-to-left
+15 (Lowest)| ,                        | Comma                            | Left-to-right\n")
+        (special-mode))
+      (display-buffer buf))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-c-utils)

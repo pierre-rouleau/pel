@@ -47,20 +47,26 @@
 ;;   - `pel--convert-to-strings'
 ;; - `pel-run-applescript'
 ;;
+;; It also provides extra commands to compile .applescript files:
 
+;; ---------------------------------------------------------------------------
 ;;; Code:
 
 (require 'pel--base)                ; use: `pel-system-is-macos-p'
 (require 'pel--options)
 (require 'pel-read)                 ; use: `pel-mac-voice-name'
 
+;; ---------------------------------------------------------------------------
+;; Dictation Support
+;; -----------------
+
 (defconst pel-narration-translations
   '(("[_(){}`*~\\<>/^•]" . " ")
     ("\""  .  "")
-    (";"   . ".  ")        ; pause longer on semicolon
-    ("--+" . "")           ; remove  underlining
-    ("==+" . "")           ; remove underlining
-    ("#"   . " pound ")) ; only supporting English (todo: support more)
+    (";"   . ".  ")             ; pause longer on semicolon
+    ("--+" . "")                ; remove  underlining
+    ("==+" . "")                ; remove underlining
+    ("#"   . " pound "))        ; only supporting English (todo: support more)
 
   "List of (`input regexp` . `output text`).
 Used by `pel-say' to help translate input text to help smooth the narration.
@@ -185,6 +191,36 @@ Return t if the text was said, nil otherwise."
                              " "))))
         (shell-command cmd))
     (error "This is only available in macOS systems!")))
+
+;; ---------------------------------------------------------------------------
+;; Applescript Compilation Support
+;; -------------------------------
+
+;;-pel-autoload
+(defun pel-applescript-compile (&optional arg)
+  "Compile the applescript file in buffer.
+
+With no argument: perform static analysis.
+With a single `\\[universal-argument]', compile to a .scpt script file.
+With a double `\\[universal-argument]', compile to a .app application file.
+
+When compiling, the generated file is stored in the same directory as the
+source file."
+  (interactive "P")
+  (if buffer-file-name
+      (let* ((fname  (buffer-file-name))
+             (no-ext-fname (file-name-sans-extension fname))
+             (output-fname (cond
+                            ((null arg) "/dev/null")
+                            ((equal arg '(4))  (shell-quote-argument
+                                                (concat no-ext-fname ".scpt")))
+                            ((equal arg '(16)) (shell-quote-argument
+                                                (concat no-ext-fname ".app")))
+                            (t (user-error "Invalid argument: %S" arg)))))
+        (if (executable-find "osacompile")
+            (compile (format "osacompile -o %s %s" output-fname fname))
+          (user-error "osacompile not found in this system!")))
+    (user-error "Buffer is not visiting a file!")))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-applescript)

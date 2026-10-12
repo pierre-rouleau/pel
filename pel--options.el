@@ -10866,7 +10866,7 @@ stored for processing."
 ;;       or how to detect it, for the value that is used by the erlang.el
 ;;       logic to open Erlang Man files: the function `erlang-man-dir'.
 ;;
-;;       PEL implements the `pel-erlang-man-dir' wrapper that sets the
+;;       PEL implements the `pel--erlang-man-dir' wrapper that sets the
 ;;       `erlang-root-dir' to the value identified by
 ;;       `pel-erlang-man-parent-rootdir' user-option.
 ;;

@@ -76,10 +76,6 @@
 ;; - `pel-erlang-man-parent-rootdir'
 ;;   - `pel--erlang-dirpath'
 
-;; Detect Erlang Root Directory:
-;; - `pel-erlang-root-path'
-;;   - `pel--read-erlang-root-dir'
-
 ;; Read/Show Erlang Version:
 ;; * `pel-show-erlang-version'
 ;;   - `pel-erlang-ls-version'
@@ -115,6 +111,7 @@
 (require 'pel-syntax)           ; use: `pel-insert-space-in-enclosing-block'
 (require 'pel-xref)             ; use: `pel-xref-find-definitions'
 (require 'pel-comment)          ; use: `pel-comment-dwim'
+(require 'pel-erlang-setup)     ; use: `pel---extracted-erlang-root-dir'
 
 ;; newcomment is always available
 (require 'newcomment)           ; use: `comment-dwim'
@@ -839,101 +836,6 @@ user option."
            (format "Invalid %s: %s" (symbol-name user-option) error-msg)
            :error)
         (funcall action erl-dirpath)))))
-
-
-;; ---------------------------------------------------------------------------
-;; Replacement of erlang-man-dir that uses pel-erlang-man-parent-rootdir for
-;; erlang-root-dir
-
-(defvar pel---detected-erlang-root-dir nil
-  "Copied value for debugging purpose.")
-
-(defun pel--erlang-man-dir (erlang-man-dir subdir &optional no-download)
-  "Replace erlang-man-dir with specified Erlang root directory.
-The directory is specified by `pel-erlang-man-parent-rootdir'."
-  ;; erlang-man-dir arguments: (subdir &optional no-download)
-  (let ((erlang-root-dir (pel-erlang-root-path)))
-    (setq pel---detected-erlang-root-dir erlang-root-dir)
-    (funcall erlang-man-dir subdir no-download)))
-
-(defvar pel--erlang-man-dir--setup nil
-  "Set t if pel--erlang-man-dir is setup.")
-
-;;-pel-autoload
-(defun pel-erlang-setup-erlang-man-dir-root ()
-  "Setup a replacement for erlang-man-dir."
-  (unless pel--erlang-man-dir--setup
-    (advice-add 'erlang-man-dir
-                :around (function pel--erlang-man-dir))
-    (setq pel--erlang-man-dir--setup t)))
-
-;; ---------------------------------------------------------------------------
-;; Detect Erlang Root Directory
-;; ----------------------------
-
-(defvar pel---extracted-erlang-root-dir nil
-  "Cached value of the Erlang root dir  extracted by pel/bin/erlang-root-dir.")
-
-(defvar pel--read-erlang-root-dir-reported-error nil
-  "Remember error detected by pel--read-erlang-root-dir.")
-
-(defun pel--read-erlang-root-dir ()
-  "Return Erlang root directory extracted from pel/bin/erlang-root-dir."
-  (or pel---extracted-erlang-root-dir
-      (let* ((exit-code.version.stderr (pel-exec-pel-bin "erlang-root-dir"))
-             (exit-code (car exit-code.version.stderr)))
-        (if (eq exit-code 0)
-            (setq pel---extracted-erlang-root-dir (cadr exit-code.version.stderr))
-          (progn
-            (unless pel--read-erlang-root-dir-reported-error
-              (display-warning
-               'pel-erlang-root-path
-               (format "pel/bin/erlang-root-dir failed with exit code: %S.
-Cannot detect Erlang root path: %s"
-                       (car exit-code.version.stderr)
-                       (nth 2 exit-code.version.stderr))
-               :error)
-              (setq pel--read-erlang-root-dir-reported-error t))
-            nil)))))
-
-
-;;-pel-autoload
-(defun pel-erlang-root-path ()
-  "Return the Erlang root path to use, according to PEL's customization.
-
-The method used by PEL to detect Erlang root path is the
-`pel-erlang-path-detection-method' user-option.
-
-Return the path string on success.
-On error issue a warning describing the error and return nil."
-  (cond
-   ;;
-   ;; When a path is specified, use it.
-   ((stringp pel-erlang-path-detection-method)
-    pel-erlang-path-detection-method)
-   ;;
-   ;; When automatic detection is requested, use the utility.
-   ((eq pel-erlang-path-detection-method 'auto-detect)
-    (pel--read-erlang-root-dir))
-   ;;
-   ;; When environment variable is used, read its value.
-   ((and (consp pel-erlang-path-detection-method)
-         (eq (car pel-erlang-path-detection-method) 'by-envvar))
-    (let* ((envvar-name (cadr pel-erlang-path-detection-method))
-           (version-string (getenv envvar-name)))
-      (unless version-string
-        (display-warning
-         'pel-erlang-root-path
-         (format "Can't extract Erlang root path from envvar '%S'"
-                 envvar-name)
-         :error))
-      version-string))
-   (t (display-warning
-       'pel-erlang-version
-       (format "Non-compliant data type: %S
-Can't detect Erlang root path." pel-erlang-path-detection-method)
-       :error)
-      nil)))
 
 ;; ---------------------------------------------------------------------------
 ;; Read/Show Erlang Version

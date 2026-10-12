@@ -104,7 +104,8 @@ Argument FOR: just a required separator keyword to make code look better."
       pel-say-sentence
       pel-say-paragraph
       pel-say-region
-      pel-say)
+      pel-say
+      pel-applescript-compile)
     (pel-autoload-function "pel-applescript" for:
       pel-run-applescript
       pel-say-words))
@@ -151,7 +152,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-c-fix-comparison-problems
     pel-c-search-preproc-if
     pel-c-search-preproc-if-set
-    pel-c-fix-preproc-if-problems)
+    pel-c-fix-preproc-if-problems
+    pel-c-precedence)
 
   (pel-autoload "pel-cc-navigate" for:
     pel-cc-to-switch-begin
@@ -431,15 +433,16 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-erlang-mode-used-text
     pel-erlang-insert-indent-info
     pel-erlang-insert-tab-info
-    pel-erlang-root-path
     pel-erlang-version
     pel-erlang-set-dirpath
     pel-erlang-man-parent-rootdir
     pel-erlang-exec-path
     pel-erlang-shell-mode-init
     pel-erlang-setup-electric-key-behaviour
-    pel-erlang-setup-erlang-man-dir-root
     pel-erlang-find-file)
+  (pel-autoload-function "pel-erlang-setup" for:
+    pel-erlang-root-path
+    pel-erlang-setup-erlang-man-dir-root)
 
   (pel-autoload-function "pel-skels-erlang" for:
     pel--erlang-mode-setup
@@ -497,6 +500,10 @@ Argument FOR: just a required separator keyword to make code look better."
   (pel-autoload-function "pel-forth" for:
     pel-forth-insert-indent-info
     pel-forth-insert-tab-info)
+
+  ;; --
+  (pel-autoload-function "pel-fs" for:
+    pel-exec-pel-bin)
 
   ;; --
   (pel-autoload "pel-fypp" for:
@@ -581,11 +588,13 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-set-ido-use-url-at-point)
 
   ;; --
+  (pel-autoload-function "pel-imenu" for:
+    pel-imenu-outline--split-menu)
   (pel-autoload "pel-imenu" for:
     pel-imenu-toggle-follows-order
+    pel-imenu-rescan
     pel-imenu-toggle-auto-rescan)
-  (pel-autoload-function "pel-imenu" for:
-    pel-imenu-init)
+
 
   (pel-autoload "pel-imenu-dbg" for:
     pel-imenu-print-vars)
@@ -598,6 +607,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-imenu-toggle-popup
     pel-imenu-toggle-flatten
     pel-show-goto-symbol-settings)
+
+  ;; --
 
   (pel-autoload "pel-itemize" for:
     pel-itemize-lines)
@@ -852,8 +863,11 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-process-tree)
 
   (pel-autoload-function "pel-prompt" for:
+    pel-prompt-purpose-for
     pel-y-n-e-or-l-p
-    pel-select-from)
+    pel-select-from
+    pel-prompt-function
+    pel-prompt-args)
 
   (pel-autoload "pel-psw" for:
     pel-psw-navigate-files)
@@ -1024,11 +1038,14 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-shell-as-sudo)
 
   (pel-autoload-function "pel-skels" for:
+    pel-skel-call
     pel-date
     pel-time-stamp
     pel-skel-author-comment
     pel-skel-created-comment
+    pel-skel-comments-strings
     pel-skel-copyright-comment
+    pel-skel-time-stamp
     pel-skel-insert-license-when)
 
   (pel-autoload-function "pel-skels-generic" for:
@@ -1079,6 +1096,12 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-syntax" for:
     pel-syntax-at-point)
+
+  ;; --
+  (pel-autoload-function "pel-tempo" for:
+    pel-tempo-install-pel-skel
+    pel-tempo-include
+    pel-tempo-include-when)
 
   ;; --
   (pel-autoload "pel-tcl" for:
@@ -1143,7 +1166,7 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-customize-insert-date-time
     pel-insert-todo-note
     pel-customize-todo-note)
-  (pel-autoload-function "pel-text-insert" for:
+  (pel-autoload-function "pel-text-insert-base" for:
     pel-separator-line)
 
   (pel-autoload "pel-text-transform" for:
@@ -1189,6 +1212,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-sp-erlang-handler
     pel-smartparens-setup-erlang
     pel-smartparens-augment)
+
+  ;; --
+  (pel-autoload "pel-uuid" for:
+    pel-insert-c-include-guard)
+  (pel-autoload-function "pel-uuid" for:
+    pel-c-include-guard)
 
   ;; --
   (pel-autoload "pel-v" for:

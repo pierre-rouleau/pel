@@ -1,6 +1,12 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- New version numbers for early-init.el and init.el: both use version 0.6.
+  - Please *update your files* using the files in example/init.
+- New *pel-c-precedence* command, bound to ~<f12> @~ in C buffers: prints a C operator precedence table
+  or open a cppreference.com web site describing them.
+- New *pel-applescript-compile* command to static check, compile AppleScript file to .scpt or .app file.
+  The command is bound to the ~<f12> c~ key sequence.
 - Add (preliminary) support for [[https://github.com/jamescherti/buffer-terminator.el][buffer-terminator.el]] package when
   *pel-use-buffer-terminator* user-option is turned on.
 - Add (preliminary) support for [[https://github.com/jamescherti/easysession.el][easysession.el]] package when *pel-use-easysession* user-option is turned on.
@@ -338,6 +344,10 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * Changes since Version 0.4.1:
 ** Modifications, Fixes and Improvements:
+- Fix loading order: minimize loading PEL files while pel_keys.el is executing to speed up Emacs startup
+  and also prevent being affected by an Emacs 30.2 bug that prevents *describe-symbol* to properly
+  identify the file defining a auto-loaded function.  Reduced the number of require statements in PEL code;
+  declare auto-loaded functions instead.
 - Improve *pel-ccp-info*: it now prints the content of the kill ring and key bindings of useful commands.
 - Add dont-move optional argument to the pel-read.el utility function *pel-word-at-point*, *pel-sentence-at-point* and *pel-paragraph-at-point*.
 - Move *pel-prompt-for-filename* from pel-file.el to pel-prompt.el

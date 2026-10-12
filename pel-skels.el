@@ -48,11 +48,17 @@
 ;; -----------------------------------------------------------------------------
 ;;; Dependencies:
 
-(require 'pel--base)                  ; use: pel-line-has-only-whitespace-p
-;;                                    ;      pel-string-when
-;;                                    ;      pel-ends-with-space-p
-(require 'pel--options)               ; use: pel-c-skel-comment-with-2stars
-(require 'pel-prompt)                 ; use: pel-prompt-purpose-for
+(require 'pel--base)                  ; use: `pel-line-has-only-whitespace-p'
+;;                                    ;      `pel-string-when'
+;;                                    ;      `pel-ends-with-space-p'
+(require 'pel--options)               ; use: `pel-c-skel-comment-with-2stars'
+
+;; Declare the following auto-loaded functions; they are only needed via
+;; execution of interactive commands, therefore we prevent early loading of a
+;; tree of files during initialization by just declaring the function that
+;; resides in pel-prompt.
+(declare-function pel-prompt-purpose-for "pel-prompt")
+
 ;; -----------------------------------------------------------------------------
 ;;; Code:
 
@@ -119,6 +125,7 @@ when `pel-update-time-stamp' is non-nil."
             (format (or user-format ", by %s")
                     (user-full-name)))))
 
+;;-pel-autoload
 (defun pel-skel-time-stamp (condition &optional
                                       comment-prefix
                                       format-string
@@ -384,6 +391,7 @@ Return nil otherwise."
                      scheme-mode
                      racket-mode)))
 
+;;-pel-autoload
 (defun pel-skel-comments-strings ()
   "Return a list of 3 strings describing comments.
 These 3 strings are:

@@ -1,6 +1,6 @@
 ;;; pel-tempo.el --- Specialized tempo mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2021, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2021, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau <prouleau001@gmail.com>
 
@@ -120,6 +120,7 @@ Key1 bindings:
 ;; --
 ;; Tempo-compliant skeleton inclusion
 
+;;+ pel-autoload
 (defun pel-tempo-include (&rest args)
   "Return a tempo include list of the elements in ARGS.
 The first element of the returned list is the \\='l symbol and then
@@ -133,6 +134,7 @@ This is used to inserts several elements inside a tempo template."
         (setq elements (cons elem elements))))
     (cons 'l (nreverse elements))))
 
+;;+ pel-autoload
 (defun pel-tempo-include-when (option &rest forms)
   "Include a tempo template inside another one.
 Used like this:
@@ -199,6 +201,7 @@ Return the created skeleton menu list (or nil if no MENU-ITEM-CREATOR-FUNCTION).
 ;; -----------------------------------------------------------------------
 ;;
 
+;;-pel-autoload
 (defun pel-tempo-install-pel-skel (mode skeletons key-map keys-alist
                                         &optional mode-abbrev
                                         skels-custom-group

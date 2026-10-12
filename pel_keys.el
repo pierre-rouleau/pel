@@ -1806,9 +1806,10 @@ can't bind negative-argument to C-_ and M-_"
 ;; M-b M-f M-F M-g M-P M-r
 
 ;; Initialize PEL special imenu handling
-(declare-function pel-imenu-init "pel-imenu")
+(declare-function pel-imenu-outline--split-menu "pel-imenu")
 (pel-eval-after-load imenu
-  (pel-imenu-init))
+  ;; Initialize the use of imenu by PEL (without loading pel-imenu now)
+  (advice-add 'imenu--split-menu :around #'pel-imenu-outline--split-menu))
 
 (define-pel-global-prefix pel:menu (kbd "<f11> <f10>"))
 (define-key pel:menu "B"     #'menu-bar-mode)
@@ -3247,10 +3248,10 @@ MODE must be a symbol."
 
   (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
   (define-key pel:for-applescript "s" 'apples-open-scratch)
+  (define-key pel:for-applescript "c" 'pel-applescript-compile)
   ;;
   ;; activate the <f12> key binding for apples-mode
   (pel--mode-hook-maybe-call
-
    (lambda ()
      (pel-local-set-f12 'pel:for-applescript))
    'apples-mode 'apples-mode-hook))
@@ -5773,9 +5774,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
 ;; ⚠️  I recommend that you stay away from the external package python-mode.el
 ;;    as much as possible.
-;; Support for pel-use-external-python-mode was removed because use-package
-;; will load it and once it is loaded, it conflicts with Emacs built-in
-;; python.el.
+;;    - Support for `pel-use-external-python-mode' was removed because once it
+;;      is once it is loaded, it conflicts with Emacs built-in python.el.
 
 (when pel-use-python
   (pel-setup-major-mode python :same-for-ts
@@ -5817,7 +5817,6 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (define-key pel:for-python    "z"        'run-python)
     (define-key pel:for-python (kbd "M-p")  #'superword-mode)
     ;; activate skeletons
-    (pel--install-generic-skel pel:python-skel 'pel-pkg-for-python "python")
     ;;
     (when pel-use-plantuml
       (define-key pel:for-python    "u"      'pel-render-commented-plantuml))
@@ -5832,8 +5831,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (define-key pel:for-python "1"         'lispy-describe-inline)
       (define-key pel:for-python "2"         'lispy-arglist-inline))
 
-
     when-buffer-opens:
+    ;; Activate skeletons
+    (pel--install-generic-skel pel:python-skel 'pel-pkg-for-python "python")
     (when (boundp 'python-indent-offset)
       (setq-local python-indent-offset pel-python-indent-width))
     (when (boundp 'py-indent-offset)
@@ -5950,10 +5950,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     when-buffer-opens:
     ;; 6- Activate Ruby setup.
     ;; activate skeletons
-        (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")
-        ;; Ensure consistency among indentation user-options
-        (when (boundp 'ruby-indent-level)
-          (setq-local ruby-indent-level pel-ruby-indent-width))))
+    (pel--install-generic-skel pel:ruby-skel 'pel-pkg-for-ruby "ruby")
+    ;; Ensure consistency among indentation user-options
+    (when (boundp 'ruby-indent-level)
+      (setq-local ruby-indent-level pel-ruby-indent-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Rust Programming Language Support

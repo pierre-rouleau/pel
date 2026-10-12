@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, August 24 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-03 16:22:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-11 10:14:26 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -139,6 +139,13 @@
 (require 'pel--base)       ; use: pel-current-buffer-filename
 (require 'pel--options)    ; use: pel-c-skel-...
 (require 'pel--macros)     ; use: pel-append-to
+(eval-when-compile (require 'subr-x)) ; use: string-trim
+
+;; Declare the following auto-loaded functions; they are only needed via
+;; execution of interactive commands, therefore we prevent early loading of a
+;; tree of files during initialization by just declaring the function that
+;; resides in pel-prompt.
+
 (require 'pel-prompt)      ; use: pel-prompt-purpose-for
 (require 'pel-list)        ; use: pel-list-split
 (require 'pel-skels)       ; use: pel-skel-create-comment
@@ -147,8 +154,8 @@
 ;;                         ;      pel-skel-call
 (require 'pel-tempo)       ; use: pel-tempo-install-pel-skel
 (require 'pel-text-insert) ; use: pel-separator-line
-(require 'pel-uuid)        ; use: pel-c-include-guard
-(eval-when-compile (require 'subr-x)) ; use: string-trim
+(declare-function pel-c-include-guard  "pel-uuid")
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -166,26 +173,26 @@ SECTION-TITLES may be nil.  In that case the function returns nil."
     (let ((sk (list 'l)))
       (dolist (mtitle section-titles)
         (pel-append-to
-         sk
-         (cond
-          ;; titles that start with a . are inserted as string (skipping the
-          ;; first character)is after a separator line
-          ((string= (substring mtitle 0 1) ".")
-           (list
-            (funcall line-separator-fct)
-            (substring mtitle 1)))
-          ;; titles that start with a "," are inserted as string (skipping
-          ;; first character) without a separator line.
-          ((string= (substring mtitle 0 1) ",")
-           (list
-            (substring mtitle 1)))
-          ;; insert normal title section
-          (t (list
-              (funcall line-separator-fct)
-              cb (pel-skel-space-for cb) mtitle 'n
-              cc (pel-skel-space-for cc) (make-string (length mtitle) ?-) 'n
-              ce 'n (pel-when-text-in ce 'n)
-              'p 'n 'n)))))
+            sk
+          (cond
+           ;; titles that start with a . are inserted as string (skipping the
+           ;; first character)is after a separator line
+           ((string= (substring mtitle 0 1) ".")
+            (list
+             (funcall line-separator-fct)
+             (substring mtitle 1)))
+           ;; titles that start with a "," are inserted as string (skipping
+           ;; first character) without a separator line.
+           ((string= (substring mtitle 0 1) ",")
+            (list
+             (substring mtitle 1)))
+           ;; insert normal title section
+           (t (list
+               (funcall line-separator-fct)
+               cb (pel-skel-space-for cb) mtitle 'n
+               cc (pel-skel-space-for cc) (make-string (length mtitle) ?-) 'n
+               ce 'n (pel-when-text-in ce 'n)
+               'p 'n 'n)))))
       sk)))
 
 (defun pel-skel-cc-file-header-block (cc-module-header-block-style
