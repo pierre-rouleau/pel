@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 10:41:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 12:33:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -902,8 +902,11 @@ but not for direct concatenation with a repetition operator."
 
 (defun pel--patterns-to-regexp (file-patterns)
   "Return a regexp for literal FILE-PATTERNS.
-Dot-prefixed patterns match suffixes.  Other patterns match exact
-basenames.  Each match ends at the end of the filename."
+Dot-prefixed patterns match suffixes.
+A pattern that starts with \"/.\" is interpreted as a file name that
+starts with a period.
+Other patterns match exact basenames.
+Each match ends at the end of the filename."
   (unless file-patterns
     (error "At least one file pattern is required"))
   (let (filenames extensions parts)

@@ -717,7 +717,9 @@ Use the INS and DEL buttons to add associations:
 - the second is a major mode symbol.
 
 NOTE: If regular expressions overlap within themselves, the first entry
-has higher priority than the following entries."
+has higher priority than the following entries.  If another overlapping
+entry exists in the `auto-mode-alist' it might affect the usefulness of
+the entry here;  please verify `auto-mode-alist' content."
   :group 'pel-base-emacs
   :type
   '(repeat

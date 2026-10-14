@@ -5123,7 +5123,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel-js-mode           "pel-js")
   (declare-function pel--js-ts-mode-fixer "pel-js")
 
-  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\)\\'"
+  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\|.cjs\\)\\'"
     "File regexp for Javascript.")
 
   (when pel-use-speedbar

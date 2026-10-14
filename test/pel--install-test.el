@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 14 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 11:02:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 12:42:31 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -43,7 +43,6 @@
 
 (ert-deftest pel-regexp-top-level-alternation ()
   "A top-level alternation needs protection before adding an anchor."
-  (ert-skip "test currently failing- investigating")
   (should
    (pel--regexp-top-level-alternation-p "icc\\|inl"))
 
@@ -69,16 +68,23 @@
 ;; ============================
 
 (ert-deftest pel-regexp-removes-redundant-outer-group ()
-  "Test a known group reduction."
-  (ert-skip "test currently failing- investigating")
+  "Remove the redundant outer group without changing literal matches."
   (let* ((patterns '(".inl" ".icc"))
          (original (regexp-opt patterns))
          (optimized
-          (pel--literal-alternatives-regexp patterns)))
-    (should
-     (equal optimized "\\.\\(?:icc\\|inl\\)"))
-    (should
-     (< (length optimized) (length original)))))
+          (pel--literal-alternatives-regexp patterns))
+         (anchored (concat "\\`" optimized "\\'")))
+    ;; This case has an outer group protecting a multi-character
+    ;; expression for use with a postfix operator.
+    (should (string-prefix-p "\\(?:" original))
+    (should (string-suffix-p "\\)" original))
+    (should (equal optimized (substring original 4 -2)))
+    (should (= (- (length original) (length optimized)) 6))
+
+    (dolist (name '(".icc" ".inl"))
+      (should (string-match-p anchored name)))
+    (dolist (name '(".iccx" ".inlx" "x.icc" ".cc" ".nl"))
+      (should-not (string-match-p anchored name)))))
 
 
 ;; Test matching behaviour against an independent rule
@@ -86,7 +92,6 @@
 
 (ert-deftest pel-regexp-filenames-and-suffixes ()
   "Test matching behaviour against an independent rule"
-  (ert-skip "test currently failing- investigating")
   (let ((regexp
          (pel--patterns-to-regexp
           '("Emakefile" "/.erlang" ".inl" ".icc"))))
