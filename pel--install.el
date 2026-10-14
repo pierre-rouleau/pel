@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-10 14:24:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-13 22:29:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -821,22 +821,97 @@ time format returned by, e.g., `current-idle-time’."
 
 
 ;; --
-(defmacro pel-set-auto-mode (mode for: &rest regexps)
-  "Activate automatic MODE for the list of file REGXEPS.
-The FOR: argument is a cosmetic separator.
-MODE must be an un-quoted symbol.
-FOR: separator must be present.  It is cosmetic only.
-REGEXPS is on or several regular expression strings."
+;; (defmacro pel-set-auto-mode (mode for: &rest regexps)
+;;   "Activate automatic MODE for the list of file REGXEPS.
+;; The FOR: argument is a cosmetic separator.
+;; MODE must be an un-quoted symbol.
+;; FOR: separator must be present.  It is cosmetic only.
+;; REGEXPS is on or several regular expression strings."
+;;   (declare (indent 0))
+;;   (ignore for:)
+;;   (let ((forms ()))
+;;     (setq forms
+;;           (dolist (regxp regexps (nreverse forms))
+;;             (push `(add-to-list 'auto-mode-alist
+;;                                 (quote (,regxp . ,mode)))
+;;                   forms)))
+;;     `(progn
+;;        ,@forms)))
+
+;; --
+
+(defun pel--patterns-to-regexp (file-regexps)
+  "Process PATTERNS list and return an optimized regular expression string.
+Splits standalone filenames from dot-prefixed extensions, omitting
+unnecessary groups for single items."
+  (let* ((filenames '())
+         (extensions '())
+         (regex-parts '()))
+
+    ;; 1. Sort file-regexps into extensions and filenames
+    (dolist (p file-regexps)
+      (if (string-prefix-p "." p)
+          (push (substring p 1) extensions)
+        (push p filenames)))
+
+    ;; 2. Build exact filename matches (escape literal dots for safety)
+    (when filenames
+      (let* ((escaped-files (mapcar (lambda (f)
+                                      (replace-regexp-in-string "\\." "\\\\." f))
+                                    filenames))
+             (files-regex (regexp-opt escaped-files nil)))
+        (if (null (cdr filenames))
+            (push (concat files-regex "\\'") regex-parts)
+          (push (concat "?:" files-regex "\\'") regex-parts))))
+
+    ;; 3. Build extension matches cleanly
+    (when extensions
+      (if (null (cdr extensions))
+          ;; Single extension: drop all groups entirely
+          (push (concat "\\." (car extensions) "\\'") regex-parts)
+        ;; Multiple extensions: build an optimized non-capturing trie branch
+        (let ((exts-regex (regexp-opt extensions nil)))
+          (push (concat "\\." exts-regex "\\'") regex-parts))))
+
+    ;; 4. Combine parts cleanly with a single regex OR separator
+    (if (null (cdr regex-parts))
+        (car regex-parts)
+      (concat "\\(?:" (mapconcat 'identity regex-parts "\\|") "\\)"))))
+
+
+;; [:todo 2026-10-13, by Pierre Rouleau: Improve the efficiency of the
+;; generated regexp: for 2 file extensions ythere is no need for a
+;; non-capturing group]
+(defmacro pel-set-auto-mode (mode marker &rest file-patterns)
+  "Associate files described by the FILE-PATTERNS with major mode MODE.
+
+- MODE must be an un-quoted symbol representing a major mode.
+- MARKER is either for: or for-end:, where the first one identifies
+  that the new entry is added at the beginning of the auto-mode-alist
+  and for-end: is to place it at the end.
+- FILE_PATTERNS is one or several file names or dot-separated file extensions.
+
+Do NOT use regular expressions in the FILE-PATTERNS; the macro generates
+optimized regular expression based on the list of file and file extensions
+passed directory.  Also do NOT put the end-of-string delimiter for file
+extensions; the macro does it.
+
+The macro generates a `add-to-list' call with a fully optimized set of
+regular expressions into the `auto-mode-alist'.  The regexp is computed at
+compile time, inducing no run-time overhead.
+
+By using this macro you can place comments that describe the purpose of each
+file and file extension placed in the list and still use efficient code."
   (declare (indent 0))
-  (ignore for:)
-  (let ((forms ()))
-    (setq forms
-          (dolist (regxp regexps (nreverse forms))
-            (push `(add-to-list 'auto-mode-alist
-                                (quote (,regxp . ,mode)))
-                  forms)))
-    `(progn
-       ,@forms)))
+  (let ((optimized-regex (pel--patterns-to-regexp file-patterns)))
+    (cond
+     ((eq marker 'for:)
+      `(add-to-list 'auto-mode-alist '(,optimized-regex . ,mode)))
+     ((eq marker 'for-end:)
+      `(add-to-list 'auto-mode-alist '(,optimized-regex . ,mode) t))
+     (t (error "Invalid macro marker %S" marker)))))
+
+;; ---------------------------------------------------------------------------
 
 ;; --
 
