@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-09-10 14:24:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 14:45:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -821,22 +821,134 @@ time format returned by, e.g., `current-idle-time’."
 
 
 ;; --
-(defmacro pel-set-auto-mode (mode for: &rest regexps)
-  "Activate automatic MODE for the list of file REGXEPS.
-The FOR: argument is a cosmetic separator.
-MODE must be an un-quoted symbol.
-FOR: separator must be present.  It is cosmetic only.
-REGEXPS is on or several regular expression strings."
+
+(defun pel--regexp-top-level-alternation-p (regexp)
+  "Return non-nil if REGEXP contains a top-level alternation.
+REGEXP must be a complete regexp, or a complete group body, produced
+by `regexp-opt' from literal strings.  This is not a general-purpose
+Emacs regexp parser."
+  (let ((index 0)
+        (length (length regexp))
+        (depth 0)
+        (in-class nil))
+    (catch 'found
+      (while (< index length)
+        (let ((char (aref regexp index)))
+          (cond
+           ;; In an Emacs character class, backslash is literal.
+           ;; Group and alternation tokens therefore have no effect.
+           (in-class
+            (when (= char ?\])
+              (setq in-class nil))
+            (setq index (1+ index)))
+
+           ;; regexp-opt puts a literal closing bracket first.
+           ;; Skip that bracket rather than treating it as the end.
+           ((= char ?\[)
+            (setq in-class t
+                  index (1+ index))
+            (when (and (< index length)
+                       (= (aref regexp index) ?\]))
+              (setq index (1+ index))))
+
+           ;; Outside character classes, consume an escape as a pair.
+           ((= char ?\\)
+            (when (< (1+ index) length)
+              (let ((next (aref regexp (1+ index))))
+                (cond
+                 ((= next ?\()
+                  (setq depth (1+ depth)))
+                 ((= next ?\))
+                  (setq depth (1- depth)))
+                 ((and (= next ?|)
+                       (= depth 0))
+                  (throw 'found t)))))
+            (setq index (+ index 2)))
+
+           (t
+            (setq index (1+ index))))))
+      nil)))
+
+(defun pel--literal-alternatives-regexp (strings)
+  "Return an optimized regexp for nonempty literal STRINGS.
+Remove the outer shy group if its body has no top-level alternation.
+The result is suitable for concatenation with boundaries and anchors,
+but not for direct concatenation with a repetition operator."
+  (let ((regexp (regexp-opt strings)))
+    (when (and (string-prefix-p "\\(?:" regexp)
+               (string-suffix-p "\\)" regexp))
+      (let ((body (substring regexp 4 -2)))
+        (unless (pel--regexp-top-level-alternation-p body)
+          (setq regexp body))))
+    regexp))
+
+(defun pel--patterns-to-regexp (file-patterns)
+  "Return a regexp for literal FILE-PATTERNS.
+Dot-prefixed patterns match suffixes.
+A pattern that starts with \"/.\" is interpreted as a file name that
+starts with a period.
+Other patterns match exact basenames.
+Each match ends at the end of the filename."
+  (unless file-patterns
+    (error "At least one file pattern is required"))
+  (let (filenames extensions parts)
+    (dolist (pattern file-patterns)
+      (if (string-prefix-p "/." pattern)
+          (push (substring pattern 1) filenames)
+        (if (string-prefix-p "." pattern)
+            (push pattern extensions)
+          (push pattern filenames))))
+
+    (when filenames
+      (push (concat "/"
+                    (pel--literal-alternatives-regexp filenames)
+                    "\\'")
+            parts))
+
+    (when extensions
+      (push (concat
+             (pel--literal-alternatives-regexp extensions)
+             "\\'")
+            parts))
+
+    ;; Each branch already has its own end anchor.
+    ;; No enclosing group is needed for this final alternation.
+    (mapconcat #'identity (nreverse parts) "\\|")))
+
+(defmacro pel-set-auto-mode (mode marker &rest file-patterns)
+  "Associate files described by the FILE-PATTERNS with major mode MODE.
+
+- MODE must be an un-quoted symbol representing a major mode.
+- MARKER is either for: or for-end:, where the first one identifies
+  that the new entry is added at the beginning of the auto-mode-alist
+  and for-end: is to place it at the end.
+- FILE-PATTERNS is one or several file names or dot-prefixed suffixes
+  (file extensions).
+  Prepend a forward slash to identify a file name that starts with a period.
+  For example, use \"/.erlang\" to identify the \".erlang\" file instead of
+  the extension.
+
+Do NOT use regular expressions in the FILE-PATTERNS; the macro generates
+optimized regular expression based on the list of file and file extensions
+passed directly.  Also do NOT put the end-of-string delimiter for file
+extensions; the macro does it.
+
+The macro generates a `add-to-list' call with a optimized set of regular
+expressions into the `auto-mode-alist'.  The regexp is computed at
+macro-expansion time.
+
+By using this macro you can place comments that describe the purpose of each
+file and file extension placed in the list and still use efficient code."
   (declare (indent 0))
-  (ignore for:)
-  (let ((forms ()))
-    (setq forms
-          (dolist (regxp regexps (nreverse forms))
-            (push `(add-to-list 'auto-mode-alist
-                                (quote (,regxp . ,mode)))
-                  forms)))
-    `(progn
-       ,@forms)))
+  (let ((optimized-regex (pel--patterns-to-regexp file-patterns)))
+    (cond
+     ((eq marker 'for:)
+      `(add-to-list 'auto-mode-alist '(,optimized-regex . ,mode)))
+     ((eq marker 'for-end:)
+      `(add-to-list 'auto-mode-alist '(,optimized-regex . ,mode) t))
+     (t (error "Invalid macro marker %S" marker)))))
+
+;; ---------------------------------------------------------------------------
 
 ;; --
 

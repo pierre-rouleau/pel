@@ -1,6 +1,10 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- The *pel-set-auto-mode* macro input semantics changed: it now takes a list of
+  file names or file extensions and generates an optimized regular expression for the
+  provided list.  PEL now generates a shorter *auto-mode-alist* that should also be
+  more efficient.
 - New version numbers for early-init.el and init.el: both use version 0.6.
   - Please *update your files* using the files in example/init.
 - New *pel-c-precedence* command, bound to ~<f12> @~ in C buffers: prints a C operator precedence table

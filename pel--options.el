@@ -714,7 +714,12 @@ See `auto-mode-alist' for more information.
 Use the INS and DEL buttons to add associations:
 - the first element is a string regxp pattern identifying the
   file name to identify (which may only be matching it by its extension),
-- the second is a major mode symbol."
+- the second is a major mode symbol.
+
+NOTE: If regular expressions overlap within themselves, the first entry
+has higher priority than the following entries.  If another overlapping
+entry exists in the `auto-mode-alist' it might affect the usefulness of
+the entry here;  please verify `auto-mode-alist' content."
   :group 'pel-base-emacs
   :type
   '(repeat
@@ -10851,7 +10856,6 @@ stored for processing."
 ;;  - supports the use of MANPATH in the parent shell to identify the
 ;;    path where the man files are stored, and
 ;;  - supports the ivy-erlang-complete package.
-;;
 ;;  - Provides independent management of the Erlang root directory for man
 ;;    files used by erlang.el and the use of Erlang root directory for
 ;;    everything else.
@@ -10862,13 +10866,22 @@ stored for processing."
 ;;
 ;;  -  Provides the following user-options:
 ;;
-;;     - `pel-erlang-man-parent-rootdir' identifies the Erlang root directory
-;;       or how to detect it, for the value that is used by the erlang.el
-;;       logic to open Erlang Man files: the function `erlang-man-dir'.
+;;     - `pel-erlang-man-parent-rootdir' identifies the root directory of the
+;;        Erlang system that holds the manual page files you want to consult.
+;;        For example, if the man1 directory of that directory tree is
+;;        /some/erlang/dir/man/man1, then set this to: /some/erlang/dir.
 ;;
-;;       PEL implements the `pel--erlang-man-dir' wrapper that sets the
-;;       `erlang-root-dir' to the value identified by
-;;       `pel-erlang-man-parent-rootdir' user-option.
+;;         Note that you can identify the directory that is the root directory
+;;         of the Erlang system you use since the man directory tree is
+;;         normally right under it and you normally want to consult the man
+;;         pages of the Erlang system that runs your code.
+;;
+;;         However, you may also want to use *another* directory, when you
+;;         want to consult the man pages of another version of Erlang.
+;;
+;;         PEL implements the `pel--erlang-man-dir' wrapper function that
+;;         dynamically sets the `erlang-root-dir' to the value identified
+;;         by `pel-erlang-man-parent-rootdir' user-option.
 ;;
 ;;       If `pel-erlang-man-parent-rootdir' is non-nil it either identifies
 ;;       the parent directory of the Erlang man directory or an environment
@@ -10880,7 +10893,6 @@ stored for processing."
 ;;       else, like ~/docs/Erlang and create symlink ~/.emacs.d/edts/doc/V
 ;;       pointing to the directory ~/docs/Erlang/V that holds the man
 ;;       directory for the version V of Erlang.
-;;
 ;;
 ;;     - The `pel-erlang-version-detection-method' identify how to detect
 ;;       Erlang's version.  It supports selects one of 3 methods:
@@ -10899,40 +10911,43 @@ stored for processing."
 ;;    process.
 
 (defcustom pel-erlang-man-parent-rootdir nil
-  "Root directory holding OTP man/man1 directory.
+  "Root directory holding OTP man[1-7] directories.
 
-Select how to identify the absolute path of the Erlang/OTP man directory,
-the directory that should hold a man1, man3, man4 and man6 directories of
-Erlang man files.
+Select how to identify the absolute path of the Erlang/OTP directory
+that is the parent of the man directory you want to use: that is the
+directory that holds the man[1-7] directories for the Erlang version
+you want to consult via the man commands.
 
-This can differ from the real Erlang root directory: PEL wraps erlang.el
-`erlang-man-dir' with a function that sets the value of
-`erlang-root-dir' to the value identified by the variable
-`pel-erlang-man-parent-rootdir' user-option as returned by the function
-of the same name.
+For example, with a directory tree like /some/erlang/dir/man/man1, then
+set this to: /some/erlang/dir
+
+This directory identified may be located under an Erlang root directory
+that differ from the real Erlang root directory allowing a man search
+in a different version of Erlang than the version used to run Erlang.
+
+PEL wraps erlang.el `erlang-man-dir' with a function that sets the value of
+`erlang-root-dir' to the value identified by `pel-erlang-man-parent-rootdir'
+ user-option as returned by the function of the same name.
 
 Available choices:
 
-- nil : Use the value in `erlang-root-dir' user-option,
-  which is itself set according to the method selected by the
-  `pel-erlang-path-detection-method' user-option.
-- Enter a string, such as \"/usr/local/otp\", that holds the man
+- nil : use the value in `erlang-root-dir' user-option, set according
+  to `pel-erlang-path-detection-method' user-option.
+- Use a string, such as \"/usr/local/otp\", that holds the man
   directory which holds man1, man3, man4 and man6.
-- Use an environment variable, such as PEL_ERLANG_MAN_PARENT_DIR, that
-  contains the name of the directory to use.  This is more flexible, as it
-  allows several OS shells to be defined with different values of that
-  environment variable that identifies the location of the man file directory
-  for the version of Erlang each shell activates."
+- Use an environment variable name, such as PEL_ERLANG_MAN_PARENT_DIR, that
+  holds the absolute path of the directory to use.
+  This is the most flexible way, as it allows several OS shells use different
+  values of that environment variable identifying different man directories."
   :group 'pel-erlang-environment
   :type '(radio
-          (const  :tag "Use path stored in `erlang-root-dir'" nil)
+          (const  :tag "Use man under `erlang-root-dir'" nil)
           (string :tag "Use this absolute directory path"
                   :value "/usr/local/otp")
-          (cons
-           (const  :tag "Path set by content of environment variable"
-                   in-envvar)
-           (string :tag "Use this environment variable   "
-                   :value "PEL_ERLANG_MAN_PARENT_DIR"))))
+          (cons :tag "Use the path identified by the"
+                (const  :tag "" :format "" in-envvar)
+                (string :tag "value of this environment variable"
+                        :value "PEL_ERLANG_MAN_PARENT_DIR"))))
 
 (defcustom pel-erlang-exec-path nil
   "Directory where the Erlang binaries are located.
@@ -10943,21 +10958,23 @@ PATH environment variable.  You can do it here.
 
 The choices are:
 
-- nil   : use the execution path identified by the PATH OS
-          environment variable.
-- string: Identify the absolute path explicitly, ignoring PATH.
-- environment variable: specify the name of an environment variable that holds
-          the absolute path where Erlang binaries are located."
+- nil : use the execution path identified by the PATH environment variable.
+- Use a string, such as \"/usr/local/otp/bin\" that identifies the absolute
+  path explicitly.
+- Use an environment variable name, such as PEL_ERLANG_BIN_DIR, that
+  holds the absolute path of the directory where Erlang binaries are located.
+  This is the most flexible way, as it allows several OS shells use different
+  values of that environment variable identifying different Erlang executable
+  directories."
   :group 'pel-erlang-environment
   :type '(radio
           (const :tag "Use execution path identified by PATH" nil)
           (string :tag "Use this absolute directory path"
                   :value "/usr/local/otp/bin")
-          (cons
-           (const  :tag "Path set by content of environment variable"
-                   in-envvar)
-           (string :tag "Use this environment variable   "
-                   :value "PEL_ERLANG_EXECPATH"))))
+          (cons :tag "Use the path identified by the"
+                (const  :tag "" :format "" in-envvar)
+                (string :tag "value of this environment variable"
+                        :value "PEL_ERLANG_BIN_DIR"))))
 
 
 (defcustom pel-erlang-version-detection-method 'auto-detect
@@ -10973,18 +10990,16 @@ The choices are:
 - by-envvar   : A string that is the name of an OS environment variable that
                 holds the version of Erlang.  The default environment
                 variable name is PEL_ERLANG_VERSION, you can select another one.
-- Fixed string  that represents the Erlang version number.
-                Use this to impose a specific version.
+- Fixed string: Force using a specific Erlang version number you identify here.
                 Useful for storing in a .dir-locals.el file.
                 Something like \"22.3.4.2\" or \"23.0\" or \"R16B03\"."
   :group 'pel-erlang-environment
   :type '(radio
           (const :tag "Automatic detection using PEL's bin/version-erl script."
                  auto-detect)
-          (cons
-           (const :tag "Version set by content of environment variable."
-                  by-envvar)
-           (string :tag "Use this environment variable"
+          (cons :tag "Use the version identified by the"
+           (const :tag "" :format "" by-envvar)
+           (string :tag "value of this environment variable"
                    :value "PEL_ERLANG_VERSION"))
           (string :tag "Set Erlang version to")))
 
@@ -11001,21 +11016,21 @@ The choices are:
 
 - auto-detect : PEL extracts Erlang root directory by running the
                 bin/erlang-root-dir Erlang script.  This is the default.
-- by-envvar   : A string that is the name of the OS environment variable that
-                holds Erlang's root path.  The default environment
-                variable is PEL_ERLANG_ROOT_DIR, you can select another one.
+- by-envvar   : The name of en environment variable,
+                such as PEL_ERLANG_ROOT_DIR, that holds the absolute path of
+                Erlang root's directory.
 - Fixed string  that represents the Erlang root path.
                 Use this to impose a specific version.
                 Useful for storing in a .dir-locals.el file.
                 Something like \"~/.asdf/installs/erlang/21.3\"."
   :group 'pel-erlang-environment
   :type '(radio
-          (const :tag "Automatic detection using PEL's bin/erlang-root-dir script."
-                 auto-detect)
-          (cons
-           (const :tag "PATH set by content of environment variable."
-                  by-envvar)
-           (string :tag "Use this environment variable"
+          (const
+           :tag "Detect Erlang root by using PEL's bin/erlang-root-dir script."
+           auto-detect)
+          (cons :tag "Use the Erlang root identified by the"
+           (const :tag "" :format "" by-envvar)
+           (string :tag "value of this environment variable"
                    :value "PEL_ERLANG_ROOT_DIR"))
           (string :tag "Set Erlang version to")))
 

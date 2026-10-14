@@ -869,7 +869,7 @@ Cannot detect Erlang version: %s"
    ;; When environment variable is used, read its value.
    ((and (consp pel-erlang-version-detection-method)
          (eq (car pel-erlang-version-detection-method) 'by-envvar))
-    (let* ((envvar-name (cadr pel-erlang-version-detection-method))
+    (let* ((envvar-name (cdr pel-erlang-version-detection-method))
            (version-string (getenv envvar-name)))
       (unless version-string
         (display-warning

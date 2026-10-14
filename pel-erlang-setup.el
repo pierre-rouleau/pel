@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 10 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-11 18:46:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 13:46:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -100,7 +100,7 @@ On error issue a warning describing the error and return nil."
    ;; When environment variable is used, read its value.
    ((and (consp pel-erlang-path-detection-method)
          (eq (car pel-erlang-path-detection-method) 'by-envvar))
-    (let* ((envvar-name (cadr pel-erlang-path-detection-method))
+    (let* ((envvar-name (cdr pel-erlang-path-detection-method))
            (version-string (getenv envvar-name)))
       (unless version-string
         (display-warning
@@ -125,7 +125,9 @@ Can't detect Erlang root path." pel-erlang-path-detection-method)
 (defvar erlang-root-dir)  ; defined as defcustom in erlang.el
 
 (defun pel--erlang-man-dir (erlang-man-dir subdir &optional no-download)
-  "Replace `erlang-man-dir' with specified Erlang root directory.
+  "Replace `erlang-man-dir' with PEL controlled value.
+
+Use the Erlang root directory specified by PEL.
 The directory used is controlled by PEL Erlang customization, as
 selected dynamically by the `pel-erlang-root-path' function."
   ;; erlang-man-dir arguments: (subdir &optional no-download)

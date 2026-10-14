@@ -594,13 +594,13 @@ Your version of Emacs does not support dynamic module.")))
 ;; ---------------------------------------------------------------------------
 ;;* File Format Parsing Support
 ;;  ===========================
-(add-to-list 'auto-mode-alist  '("\\.repo\\'" . conf-unix-mode))
-(add-to-list 'auto-mode-alist  '("\\.permission\\'" . java-mode))
-(add-to-list 'auto-mode-alist  '("\\.properties\\'" . conf-javaprop-mode))
+(pel-set-auto-mode conf-unix-mode     for: ".repo")
+(pel-set-auto-mode java-mode          for: ".permission" )
+(pel-set-auto-mode conf-javaprop-mode for: ".properties")
 ;; conf-mode further parses the file and selects an appropriate sub-mode.
-(add-to-list 'auto-mode-alist  '("\\.?.+rc\\'" . conf-mode))
+(add-to-list 'auto-mode-alist  '(".+rc\\'" . conf-mode))
 ;; files like /etc/ssh/ssh_config
-(add-to-list 'auto-mode-alist  '("\\.?.+config\\'" . conf-mode))
+(add-to-list 'auto-mode-alist  '(".+config\\'" . conf-mode))
 (when pel-system-is-linux-p
   ;; prevent Linux crypto-policy files to be opened as Pike programming language files.
   (add-to-list 'auto-mode-alist
@@ -620,7 +620,7 @@ Your version of Emacs does not support dynamic module.")))
                            "tomlparse.el")
 
   ;; Use toml-ts-mode instead of Emacs standard `conf-toml-mode'
-  (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
+  (pel-set-auto-mode toml-ts-mode for: ".toml")
 
   ;; [:todo 2025-04-09, by Pierre Rouleau: May have to do the following code.
   ;;                    But I'm not sure it's required.]
@@ -640,7 +640,11 @@ Your version of Emacs does not support dynamic module.")))
 
 (when pel-use-kconfig
   (pel-install-github-file "delaanthonio/kconfig-mode/master" "kconfig-mode.el")
-  (add-to-list 'auto-mode-alist '("\\Kconfig\\'" . kconfig-mode))
+  (pel-set-auto-mode kconfig-mode for:
+                     "Kconfig"
+                     "Kconfig.debug"
+                     "Kconfig.board"
+                     "Kconfig.soc")
   (pel-autoload-file kconfig-mode for: kconfig-mode))
 (when pel-use-dockerfile
   (pel-ensure-package-elpa dockerfile-mode from: melpa))
@@ -2593,11 +2597,12 @@ can't bind negative-argument to C-_ and M-_"
   (if (and pel-use-tree-sitter
            pel-emacs-has-dynamic-module-support-p
            (pel-package-installed-p 'cmake-ts-mode))
-      (progn
-        (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-ts-mode))
-        (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-ts-mode)))
-    (add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
-    (add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))))
+      (pel-set-auto-mode cmake-ts-mode for:
+                         "CMakeLists.txt"
+                         ".cmake")
+    (pel-set-auto-mode cmake-mode for:
+                       "CMakeLists.txt"
+                       ".cmake")))
 
 ;;*** Makefile editing support
 ;;    ------------------------
@@ -2631,9 +2636,10 @@ can't bind negative-argument to C-_ and M-_"
   (define-pel-global-prefix pel:for-meson (kbd "<f11> SPC 3"))
 
   (pel-ensure-package-elpa meson-mode from: melpa)
-  (add-to-list 'auto-mode-alist
-               '("/meson\\(\\.build\\|_options\\.txt\\|\\.options\\)\\'"
-                 . meson-mode))
+  (pel-set-auto-mode meson-mode for:
+                     "meson.build"
+                     "meson_options.txt"
+                     "meson.options")
   (pel-eval-after-load meson-mode
     (pel-config-major-mode meson pel:for-meson :no-ts)))
 
@@ -2643,7 +2649,7 @@ can't bind negative-argument to C-_ and M-_"
   (define-pel-global-prefix pel:for-ninja (kbd "<f11> SPC 5"))
 
   (pel-ensure-package-elpa ninja-mode from: melpa)
-  (add-to-list 'auto-mode-alist '("\\.ninja\\'" . ninja-mode))
+  (pel-set-auto-mode ninja-mode for: ".ninja")
   (pel-eval-after-load ninja-mode
     (pel-soft-require-or-warn pel-iedit-modes-support
       (declare-function pel-iedit-enhance-ninja "pel-iedit-modes-support" ())
@@ -2654,7 +2660,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;    ---------------------------
 (when pel-use-nix
   (pel-ensure-package-elpa nix-mode from: melpa)
-  (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+  (pel-set-auto-mode nix-mode for: ".nix")
   (pel-eval-after-load nix-mode
     (defun pel-nix-help (&optional open-github-page-p)
       "Open Nix PDF"
@@ -2671,7 +2677,7 @@ can't bind negative-argument to C-_ and M-_"
   (pel-install-github-file "pierre-rouleau/tup-mode/master" "tup-mode.el")
   (pel-autoload-file tup-mode for: tup-mode)
   (pel-set-auto-mode tup-mode for:
-                     "\\.tup\\'"
+                     ".tup"
                      "Tupfile"
                      "tup.config")
   (pel-eval-after-load tup-mode
@@ -2701,10 +2707,11 @@ can't bind negative-argument to C-_ and M-_"
 ;;    ------------------------------------
 (when pel-use-intel-hex
   (pel-ensure-package-elpa intel-hex-mode from: melpa)
-  (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
-  (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
-  (add-to-list 'auto-mode-alist '("\\.a43\\'" . intel-hex-mode))
-  (add-to-list 'auto-mode-alist '("\\.ihx\\'" . intel-hex-mode))
+  (pel-set-auto-mode intel-hex-mode for:
+                     ".hex"
+                     ".a90"
+                     ".a43"
+                     ".ihx")
   (pel-eval-after-load intel-hex-mode
     (pel-config-major-mode intel-hex :no-f12-keys :no-ts)))
 
@@ -2825,7 +2832,7 @@ can't bind negative-argument to C-_ and M-_"
   ;; C++ code.  Therefore it is important to run this code if only Pike is
   ;; activated.
   (setq auto-mode-alist (delete '("\\.h\\'" . c-or-c++-mode) auto-mode-alist))
-  (add-to-list 'auto-mode-alist '("\\.h\\'" . pel-cc-mode))
+  (pel-set-auto-mode pel-cc-mode for: ".h")
 
   (when pel-use-call-graph
     (pel-ensure-package-elpa call-graph from: melpa)
@@ -3179,8 +3186,12 @@ MODE must be a symbol."
       (pel-ensure-package-elpa ada-ts-mode from: melpa))
 
     ;; 2- Associate files with Ada mode dispatcher.  Uses a mode fixer.
-    (add-to-list 'auto-mode-alist '("\\.ad[abs]\\'" . pel-ada-mode))
-
+    (pel-set-auto-mode pel-ada-mode for:
+                       ".ads"           ; Ada Description/Specification
+                       ".adb"           ; Ada Body
+                       ".ada"           ; general Ada source file
+                       ".gpr"           ; GNAT project file - Ada like syntax
+                       )
     ;; 3- Speedbar support for Ada
     (when pel-use-speedbar
       (pel-add-speedbar-extension ".ad[abs]"))
@@ -3205,8 +3216,8 @@ MODE must be a symbol."
      "a68-mode.el")
     (pel-autoload-file a68-mode for: a68-mode)
 
-    ;; 2- Associate files with Algol mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.a68\\'" . a68-mode))
+    ;; 2- Associate files with Algol mode
+    (pel-set-auto-mode a68-mode for: ".a68")
 
     ;; 3- Speedbar support for Algol
     (when pel-use-speedbar
@@ -3243,8 +3254,7 @@ MODE must be a symbol."
   (pel-autoload-file apples-mode for:
                      apples-mode
                      apples-open-scratch)
-  (add-to-list 'auto-mode-alist '("\\.\\(applescript\\|scpt\\)\\'"
-                                  . apples-mode))
+  (pel-set-auto-mode apples-mode for: ".applescript")
 
   (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
   (define-key pel:for-applescript "s" 'apples-open-scratch)
@@ -3271,7 +3281,7 @@ MODE must be a symbol."
                               '("arc.el"
                                 "inferior-arc.el"))
     ;; associate .arc file with arc-mode
-    (add-to-list 'auto-mode-alist '("\\.arc\\'" . arc-mode))
+    (pel-set-auto-mode arc-mode for: ".arc")
     (when pel-use-speedbar
       (pel-add-speedbar-extension ".arc"))
 
@@ -3379,8 +3389,8 @@ MODE must be a symbol."
       ;;                                 .l -> flex-mode
       ;;                                 .jison -> jison-mode
       ;; add missing associations
-      (pel-set-auto-mode bison-mode for: "\\.yacc\\'")
-      (pel-set-auto-mode flex-mode for:  "\\.lex\\'")
+      (pel-set-auto-mode bison-mode for: ".yacc")
+      (pel-set-auto-mode flex-mode for:  ".lex")
       ;; and add speedbar support when activated
       (when pel-use-speedbar
         (pel-add-speedbar-extension '(".y"
@@ -3497,8 +3507,8 @@ MODE must be a symbol."
                                     ".icc")))
     ;; Add auto support for extensions not supported by default
     (pel-set-auto-mode c++-mode for:
-                       "\\.inl\\'"
-                       "\\.icc\\'")
+                       ".inl"
+                       ".icc")
 
     ;; Add extra key bindings specific to the C++ mode
     (when pel-use-plantuml
@@ -3589,7 +3599,11 @@ MODE must be a symbol."
         (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
     ;; 2- Associate files with C3 mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.c3[it]?\\'" . c3-ts-mode))
+    (pel-set-auto-mode c3-ts-mode for:
+                       ".c3"    ; C3 source
+                       ".c3i"   ; C3 interface file
+                       ".c3t"   ; C3 template/test file
+                       )
 
     ;; 3- Speedbar support for C3
     (when pel-use-speedbar (pel-add-speedbar-extension ".c3[it]?"))
@@ -3663,7 +3677,7 @@ MODE must be a symbol."
         (pel-add-speedbar-extension ext-regexp)))
     ;; Add extra Common Lisp file extensions if requested by user
     (dolist (ext-regexp pel-clisp-extra-files)
-      (add-to-list 'auto-mode-alist ext-regexp))
+      (add-to-list 'auto-mode-alist (cons ext-regexp 'lisp-mode)))
 
     (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
     (define-pel-global-prefix pel:cl-analyze (kbd "<f11> SPC L a"))
@@ -3805,7 +3819,10 @@ MODE must be a symbol."
       (pel-autoload-file company-dcd for: company-dcd-mode))
 
     ;; When opening a D source code file, load the d-mode feature.
-    (add-to-list 'auto-mode-alist '("\\.d[i]?\\'" . d-mode))
+    (pel-set-auto-mode d-mode for:
+                       ".d"             ; D source
+                       ".di"            ; D interface
+                       )
     ;; Overcome omission bug in d-mode: add support for Speedbar
     (when pel-use-speedbar
       (pel-add-speedbar-extension ".d"))
@@ -3886,7 +3903,7 @@ d-mode not added to ac-modes!"
                          dart-ts-mode))
 
     ;; 2- Associate files with Dart mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.dart\\'" . pel-dart-mode))
+    (pel-set-auto-mode pel-dart-mode for: ".dart")
 
     ;; 3- Speedbar support for Dart
     (when pel-use-speedbar
@@ -3923,7 +3940,7 @@ d-mode not added to ac-modes!"
     (pel-autoload-file factor-mode for: factor-mode)
 
     ;; associate .factor file with factor-mode
-    (add-to-list 'auto-mode-alist '("\\.factor\\'" . factor-mode))
+    (pel-set-auto-mode factor-mode for: ".factor")
     (when pel-use-speedbar (pel-add-speedbar-extension ".factor"))
 
     ;; the <f12> key provides access to help and customization
@@ -3939,7 +3956,7 @@ d-mode not added to ac-modes!"
   (pel-install-github-file "pierre-rouleau/eiffel-mode/master"
                            "eiffel-mode.el")
   (pel-autoload "eiffel-mode" for: eiffel-mode)
-  (add-to-list 'auto-mode-alist '("\\.e\\'" . eiffel-mode))
+  (pel-set-auto-mode eiffel-mode for: ".e" )
   (when pel-use-speedbar
     (pel-add-speedbar-extension ".e"))
 
@@ -3985,11 +4002,11 @@ d-mode not added to ac-modes!"
     (pel-autoload-file elixir-mode for: elixir-mode)
 
     ;; 2- Associate files with Elixir mode dispatcher
-    (add-to-list 'auto-mode-alist
-                 (cons
-                  (regexp-opt '(".ex'" ".exs'" ".elixir'" "mix.lock"))
-                  'pel-elixir-mode))
-
+    (pel-set-auto-mode pel-elixir-mode for:
+                       ".ex"
+                       ".exs"
+                       ".elixir"
+                       "mix.lock")
     ;; 3- Speedbar support for Elixir (not done by elixir-mode.el)
     (when pel-use-speedbar
       (pel-add-speedbar-extension '(".ex"
@@ -4328,25 +4345,63 @@ d-mode not added to ac-modes!"
   ;; 2- Associate files with Erlang mode dispatcher
   ;; Invocation control
   ;; - Identify Erlang files:
-  ;;   The ~/.erlang is the Erlang configuration file: allow the file
-  ;;   to be located anywhere but currently don't allow something.erlang
-  ;;   to be recognized. Is this too harsh?  It might be, OTOH it will
-  ;;   allow opening the file in fundamental mode and then choose to activate
-  ;;   the erlang mode, just in case we want to modify it without it having
-  ;;   an impact on the Erlang process we're trying to modify.
+  ;;   - Emakefile:      Configuration file used by Erlang’s built-in build
+  ;;                     system, make (specifically the make:all/0 or
+  ;;                     make:files/1 functions), to compile Erlang source
+  ;;                     files into beam code.  It serves a similar purpose to
+  ;;                     a traditional Makefile but uses native Erlang terms to
+  ;;                     specify compilation instructions.
+  ;;   - rebar.config:   Central configuration file for Rebar3, which is the
+  ;;                     standard, modern build tool and package manager for
+  ;;                     the Erlang ecosystem
+  ;;   - relx.config:    Configuration file used by Relx, a release assembly
+  ;;                     tool for Erlang.
+  ;;   - sys.config:     The main, production-ready system configuration file
+  ;;                     for an Erlang application release.  Can only hold
+  ;;                     static constants.
+  ;;   - sys.config.src: The development/template system configuration file,
+  ;;                     used to avoid hard-coding secrets.  It allows the use
+  ;;                     of environment variable placeholders
+  ;;                     (e.g., {db_password, "${DB_PASS}"}).
+  ;; - Identify file extensions:
+  ;;   - .erl            Erlang source
+  ;;   - .hrl            Erlang header
+  ;;   - .eix            Erlang documentation control
+  ;;   - .escript        Erlang non-compiled scripts (but extension
+  ;;                     is not necessary)
+  ;;   - .erlang         Optional, user-specific initialization and
+  ;;                     configuration script that the Erlang runtime system
+  ;;                     automatically reads and executes whenever the Erlang
+  ;;                     shell launches.
+  ;;   - .config.src     Secondary configuration templates like the
+  ;;                     sys.config.src file.
+  ;;   - .config.script  Like sys.config but bypass its limitations: When the
+  ;;                     build tool (like Rebar3) compiles or packages your
+  ;;                     release, it executes this script using the
+  ;;                     file:script/1 evaluation function. Whatever final
+  ;;                     list of tuples the script returns becomes the actual
+  ;;                     configuration used by the running system.
+  ;;   - .app            Application Resource Specification file in Erlang
+  ;;   - .app.src        Source blueprint for an Erlang application resource
+  ;;                     file.
   (pel-set-auto-mode pel-erlang-mode for:
-                     "\\.erl?\\'"
-                     "\\.hrl?\\'"
-                     "[\\/]\\.erlang\\'"
-                     "rebar\\.config\\'"
-                     "relx\\.config\\'"
-                     "sys\\.config\\.src\\'"
-                     "sys\\.config\\'"
-                     "\\.config\\.src?\\'"
-                     "\\.config\\.script?\\'"
-                     "\\.app?\\'"
-                     "\\.app.src?\\'"
-                     "\\Emakefile")
+                     ;; files:
+                     "Emakefile"
+                     "rebar.config"
+                     ;; "rebar.config.script"
+                     "relx.config"
+                     "sys.config"
+                     ;; "sys.config.src"
+                     "/.erlang"
+                     ;; extensions:
+                     ".hrl"
+                     ".erl"
+                     ".eix"
+                     ".escript"
+                     ".config.src"
+                     ".config.script"
+                     ".app"
+                     ".app.src")
 
   ;; 3- Speedbar support for Erlang (not done by erlang.el)
   (when pel-use-speedbar
@@ -4824,7 +4879,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (pel-setup-major-mode fypp :no-ts
     features: pel-fypp
     at-init:
-    (add-to-list 'auto-mode-alist '("\\.fypp\\'" . fypp-mode))
+    (pel-set-auto-mode fypp-mode for: ".fypp")
     (when pel-use-speedbar (pel-add-speedbar-extension '(".fypp")))))
 
 ;; ---------------------------------------------------------------------------
@@ -4844,7 +4899,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-autoload-file gleam-ts-mode for: gleam-ts-mode)
 
     ;; 2- Associate files with Gleam mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
+    (pel-set-auto-mode gleam-ts-mode for: ".gleam")
 
     ;; 3- Speedbar support for Gleam
     (when pel-use-speedbar (pel-add-speedbar-extension ".gleam"))
@@ -4882,8 +4937,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                 '("go-flycheck.el" "go-flymake.el")))
 
     ;; 2- Associate files with Go mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.go\\'" . pel-go-mode))
-    (add-to-list 'auto-mode-alist '("go\\.mod\\'" . pel-go-dot-mod-mode))
+    (pel-set-auto-mode pel-go-mode for: ".go")
+    (pel-set-auto-mode pel-go-dot-mod-mode for: "go.mod")
 
     ;; 3- Speedbar support for Go
     (when pel-use-speedbar
@@ -5015,7 +5070,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                "janet-mode.el")
       (pel-autoload-file janet-mode for:
                          janet-mode)
-      (add-to-list 'auto-mode-alist '("\\.janet\\'" . janet-mode))
+      (pel-set-auto-mode janet-mode for: ".janet" )
       (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
 
     (when pel-use-ijanet
@@ -5068,11 +5123,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel-js-mode           "pel-js")
   (declare-function pel--js-ts-mode-fixer "pel-js")
 
-  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\)\\'"
+  (defconst pel--js-files-regexp "\\.\\(?:[cm]js\\|js[mx]?\\|har\\)\\'"
     "File regexp for Javascript.")
 
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".js" ".jsx" ".mjs" ".har")))
+    (pel-add-speedbar-extension '(".js" ".jsx" ".mjs" ".har" ".cjs")))
 
   ;; PEL code deals with the language name extracted from the
   ;; LANG-ts-mode major mode name.  For Javascript, this is js.
@@ -5111,7 +5166,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-ensure-package-elpa js3-mode from: melpa)
       (pel-autoload-file js3-mode for: js3-mode)
       ;; 2- Associate files with js3-mode
-      (add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js3-mode))
+      ( add-to-list 'auto-mode-alist (cons pel--js-files-regexp 'js3-mode))
       ;; ----------------
       when-buffer-opens:
       (when (boundp 'js3-indent-level)
@@ -5283,7 +5338,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;    - The lua-ts-mode is built-in Emacs.
 
     ;; 2- Associate files with Lua mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.lua\\'" . pel-lua-mode))
+    (pel-set-auto-mode pel-lua-mode for: ".lua")
 
     ;; 3- Speedbar support for Lua
     (when pel-use-speedbar
@@ -5328,9 +5383,12 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     features: modula2
     at-init:
     (define-pel-global-prefix pel:for-modula-2  (kbd "<f11> SPC 2"))
-    ;; add the extension to the end: .mod clashes with Go
-    (add-to-list
-     'auto-mode-alist '("\\.\\(mod\\|MOD\\|m2\\)\\'" . modula-2-mode) t)))
+    ;; add the extension to the end because .mod clashes with Go
+    (pel-set-auto-mode modula-2-mode for-end:
+                       ".mod"
+                       ".MOD"
+                       ".m2" ; .m2 is used in modern compilers
+                       )))
 
 ;; ---------------------------------------------------------------------------
 ;;** NetRexx Programming Language Support - a REXX language
@@ -5345,7 +5403,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              "netrexx-mode.el")
     (pel-autoload-file netrexx-mode for: netrexx-mode)
     ;; Set the file extension for NetRexx: ".nrx"
-    (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
+    (pel-set-auto-mode netrexx-mode for: ".nrx")
 
     ;; Set the mode specific key prefix
     (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
@@ -5531,7 +5589,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
       (pel-autoload-file flycheck-odin for: flycheck-odin-setup))
 
     (define-pel-global-prefix pel:for-odin (kbd "<f11> SPC O"))
-    (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
+    (pel-set-auto-mode odin-mode for: ".odin" )
 
     ;; ----------------
     when-buffer-opens:
@@ -5572,7 +5630,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 2- Associate files with Perl mode
     ;;    perltidyrc files use conf-unix-mode regardless of selected Perl mode
-    (add-to-list 'auto-mode-alist '("\\.?perltidyrc\\'" . conf-unix-mode))
+    (pel-set-auto-mode conf-unix-mode for:
+                       "/.perltidyrc"   ; the ~/.perltidyrc is often used
+                       "perltidyrc"     ; or placed elsewhere as regular file.
+                       )
     (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
       (add-to-list 'auto-mode-alist (cons "\\.tdy\\'" selected-perl-mode))
       (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex selected-perl-mode)))
@@ -5873,9 +5934,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     (pel-autoload-file rebol for: rebol-mode)
 
     ;; 2- Associate files with Rebol mode
-    (add-to-list 'auto-mode-alist '("\\.reb\\'" . rebol-mode))
+    (pel-set-auto-mode rebol-mode for: ".reb" )
     ;; the .r extension clashes with the R language .r, place it at the end.
-    (add-to-list 'auto-mode-alist '("\\.r\\'" . rebol-mode) 'append)
+    (pel-set-auto-mode rebol-mode for-end: ".r")
 
     ;; 3- Speedbar support for Rebol
     (when pel-use-speedbar
@@ -5904,7 +5965,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                        rexx-goto-previous-procedure)
     ;; set the file extensions
     (pel-set-auto-mode rexx-mode for:
-                       "\\.\\(rexx?\\|elx\\|ncomm\\|cpr\\)\\'")
+                       ".rex"
+                       ".rexx"
+                       ".elx"
+                       ".ncomm"
+                       ".cpr")
 
     ;; Set the mode specific key prefix
     (define-pel-global-prefix pel:for-rexx (kbd "<f11> SPC R"))
@@ -5990,7 +6055,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
         (pel-soft-require-or-warn flycheck-rust)))
 
     ;; 2- Associate files with Rust major mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.rs\\'" . pel-rust-mode))
+    (pel-set-auto-mode pel-rust-mode for: ".rs" )
 
     ;; 3- Speedbar support for Rust
     (when pel-use-speedbar (pel-add-speedbar-extension ".rs"))
@@ -6046,7 +6111,9 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
 
     (pel-autoload-file seed7-mode for: seed7-mode)
 
-    (add-to-list 'auto-mode-alist '("\\.s\\(d7\\|7i\\)\\'" . seed7-mode))
+    (pel-set-auto-mode seed7-mode for:
+                       ".sd7"
+                       ".s7i")
 
     (define-pel-global-prefix pel:for-seed7  (kbd "<f11> SPC 7"))
     (define-key pel:for-seed7 "c" 'seed7-compile)
@@ -6355,7 +6422,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       ;; The racket-mode is already supported via scheme-mode and the associations
       ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
       (pel-delete-from-auto-mode-alist 'racket-mode)
-      (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
+      (pel-set-auto-mode racket-mode for:
+                         ".rkt"    ; Standard Racket source file.
+                         ".rktd"   ; Racket Data file.
+                         ".rktl")  ; Racket Library/Load file
+      ;; (add-to-list 'auto-mode-alist '("\\.rkt[dl]?\\'" . racket-mode))
       ;; Activate Speedbar support
       (when pel-use-speedbar (pel-add-speedbar-extension "\\.rkt[dl]?\\'"))))
 
@@ -6495,7 +6566,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; V file name extension clashes with Verilog file names.
   ;; To allow both V and Verilog to coexist,
   ;;   use `pel-v-or-verilog-mode' for .v files.
-  (add-to-list 'auto-mode-alist (cons "\\.v\\'" 'pel-v-or-verilog-mode))
+  (pel-set-auto-mode pel-v-or-verilog-mode for: ".v")
   ;; The other file types are not ambiguous.
   (add-to-list 'auto-mode-alist (cons "\\.\\(vv\\|vsh\\)\\'"
                                       (if (eq pel-use-v 'v-mode)
@@ -6616,7 +6687,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     at-init:
     (when pel-use-tree-sitter
       (pel-ensure-package-elpa vhdl-ts-mode from: melpa))
-    (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
+    (pel-set-auto-mode vhdl-mode for: ".vhdl" ".vhd")
     (define-pel-global-prefix pel:for-vhdl  (kbd "<f11> SPC H"))))
 
 ;; ---------------------------------------------------------------------------
@@ -6635,8 +6706,9 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (pel-ensure-package-elpa zig-ts-mode from: melpa))
 
     ;; 2- Associate files with Zig mode dispatcher
-    (add-to-list 'auto-mode-alist '("\\.zig\\'" . pel-zig-mode))
-    (add-to-list 'auto-mode-alist '("\\.zon\\'" . pel-zig-mode))
+    (pel-set-auto-mode pel-zig-mode for:
+                       ".zig"
+                       ".zon")
 
     ;; 3- Speedbar support for Zig
     (when pel-use-speedbar
@@ -6774,8 +6846,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (when pel-use-speedbar
     (pel-add-speedbar-extension '("adoc" ".adoc.txt")))
   (pel-set-auto-mode adoc-mode for:
-                     "\\.adoc\\'"
-                     "\\.adoc\\.txt\\'")
+                     ".adoc"
+                     ".adoc.txt")
   (pel-eval-after-load adoc-mode
     (pel-config-major-mode adoc pel:for-asciidoc :no-ts
       ;; Preliminary bindings - there's way too many - and not structured
@@ -6871,7 +6943,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 ;;   (pel-autoload-file creole-mode for: creole-mode)
 ;;
 ;;   (define-pel-global-prefix pel:for-creole (kbd "<f11> SPC M-O"))
-;;   (pel-set-auto-mode creole-mode for: "\\.creole\\'")
+;;   (pel-set-auto-mode creole-mode for: ".creole")
 ;;   (pel-eval-after-load creole-mode
 ;;     (pel-config-major-mode creole pel:for-creole :no-ts)))
 
@@ -7148,7 +7220,11 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; .yml and .yaml for YAML
   ;; .eyaml for encrypted (see hiera, puppet)
   ;; .raml for RESTful API Modeling Language
-  (pel-set-auto-mode yaml-mode for: "\\.\\(e?ya?\\|ra\\)ml\\'")
+  (pel-set-auto-mode yaml-mode for:
+                     ".yml"
+                     ".yaml"
+                     ".eyaml"
+                     ".raml")
   (pel-eval-after-load yaml-mode
     (pel-config-major-mode yaml pel:for-yaml :no-ts)))
 
@@ -7159,7 +7235,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (define-pel-global-prefix pel:for-cwl (kbd "<f11> SPC M-c"))
   (pel-ensure-package-elpa cwl-mode from: melpa)
   ;; .cwl files are associated with cwl-mode
-  (pel-set-auto-mode cwl-mode for: "\\.cwl\\'")
+  (pel-set-auto-mode cwl-mode for: ".cwl")
   (pel-eval-after-load cwl-mode
     (pel-config-major-mode cwl pel:for-cwl :no-ts)))
 
@@ -7296,8 +7372,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   ;; This allows reStructuredText files to be rendered by tools
   ;; that can read normal text files.
   (pel-set-auto-mode rst-mode for:
-                     "\\.stxt\\'"
-                     "\\.rst\\.txt\\'")
+                     ".stxt"
+                     ".rst.txt")
 
   (define-key pel:for-reST (kbd "M--") 'pel-itemize-lines)
   (define-key pel:for-reST (kbd "M-t") 'pel-rst-table-dup-separator-lines)
@@ -7419,7 +7495,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
                      mscgen-mode)
   ;; set the file extensions
   (pel-set-auto-mode mscgen-mode for:
-                     "\\.\\(msc?\\|msc\\.txt\\)\\'")
+                     ".msc"
+                     ".msc.txt"
+                     ".mscgen"
+                     ".mscin")
   ;; Add speedbar support
   (when pel-use-speedbar
     (pel-add-speedbar-extension '(".msc" ".msc.txt")))
@@ -7490,7 +7569,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
    "https://gist.githubusercontent.com/mikeshulman/ab124d5db7aaa9330ff6457649b05f3a/raw/73026b4b9c8b74326186095dbb3ef7bdf9d4925b/cram-mode.el"
    "cram-mode.el")
   (pel-autoload-file cram-mode for: cram-mode)
-  (add-to-list 'auto-mode-alist '("\\.t\\'" . cram-mode))
+  (pel-set-auto-mode cram-mode for: ".t" )
   (pel-eval-after-load cram-mode
     (pel-config-major-mode cram pel:for-cram :no-ts
       ;; Although Text start starts at the beginning of the line is a comment,
@@ -9222,7 +9301,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-install-github-file "pierre-rouleau/rpm-spec-mode/master"
                            "rpm-spec-mode.el")
   (pel-autoload "rpm-spec-mode" for: rpm-spec-mode)
-  (add-to-list 'auto-mode-alist '("\\.spec\\'" . rpm-spec-mode))
+  (pel-set-auto-mode rpm-spec-mode for: ".spec" )
 
   ;; TODO: Future: if we want to support all PEL features for rpm-spec mode
   ;;       including the ability to configure automatic minor mode activations
@@ -9248,7 +9327,7 @@ See `flyspell-auto-correct-previous-word' for more info."
   ;; The following works only for direct files, not files inside a archive
   ;; container.  That's a limitation of the x509 mode code that should be
   ;; looked into. (TODO).
-  (add-to-list 'auto-mode-alist '("\\.crt\\'" . x509-dwim)))
+  (pel-set-auto-mode x509-dwim for: ".crt" ))
 
 (when pel-use-emacs-ssh-file-modes
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC 0`` : ssh-authorized-keys-mode
@@ -9262,9 +9341,12 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-autoload "ssh-file-modes" for: ssh-authorized-keys-mode
                 ssh-known-hosts-mode
                 ssh-abbreviated-keys-mode)
-  (add-to-list 'auto-mode-alist '(".ssh/authorized_keys2?\\'" . ssh-authorized-keys-mode))
-  (add-to-list 'auto-mode-alist '(".ssh/known_hosts\\'"       . ssh-known-hosts-mode))
-  (add-to-list 'auto-mode-alist '("ssh_known_hosts\\'"        . ssh-known-hosts-mode))
+  (add-to-list 'auto-mode-alist
+               '("/\\.ssh/authorized_keys2?\\'" . ssh-authorized-keys-mode))
+  (add-to-list 'auto-mode-alist
+               '("/\\.ssh/known_hosts\\'"       . ssh-known-hosts-mode))
+  (add-to-list 'auto-mode-alist
+               '("/ssh_known_hosts\\'"          . ssh-known-hosts-mode))
 
   (pel-eval-after-load ssh-file-modes
     (pel-config-major-mode ssh-authorized-keys pel:for-ssh-autorized-keys :no-ts)
@@ -11670,7 +11752,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;  ---------------------------------------------------
 ;;
 ;; Activate the list identified by the `pel-auto-mode-alist' user option
-(dolist (pattern-mode pel-auto-mode-alist)
+(dolist (pattern-mode (reverse pel-auto-mode-alist))
   (let ((pattern (car pattern-mode))
         (mode    (cadr pattern-mode)))
     (if (fboundp mode)
@@ -11696,7 +11778,6 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-turn-on-global-minor-modes-in 'pel-activates-global-minor-modes))
 
 (pel-defer-run pel--cfg-global-minor-modes)
-
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Hydras Control
