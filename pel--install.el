@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-13 22:29:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 07:42:18 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -840,48 +840,47 @@ time format returned by, e.g., `current-idle-time’."
 
 ;; --
 
-(defun pel--patterns-to-regexp (file-regexps)
-  "Process PATTERNS list and return an optimized regular expression string.
-Splits standalone filenames from dot-prefixed extensions, omitting
-unnecessary groups for single items."
-  (let* ((filenames '())
-         (extensions '())
-         (regex-parts '()))
+(defun pel--literal-alternatives-regexp (strings)
+  "Return an optimized regexp for nonempty literal STRINGS.
+Remove the outer shy group when its body contains no alternation."
+  (let ((regexp (regexp-opt strings)))
+    (when (and (string-prefix-p "\\(?:" regexp)
+               (string-suffix-p "\\)" regexp))
+      (let ((body (substring regexp 4 -2)))
+        ;; Conservative: retain the outer group if any alternation
+        ;; occurs, including alternation inside a nested group.
+        (unless (string-match-p (regexp-quote "\\|") body)
+          (setq regexp body))))
+    regexp))
 
-    ;; 1. Sort file-regexps into extensions and filenames
-    (dolist (p file-regexps)
-      (if (string-prefix-p "." p)
-          (push (substring p 1) extensions)
-        (push p filenames)))
+(defun pel--patterns-to-regexp (file-patterns)
+  "Return a regexp for literal FILE-PATTERNS.
+Dot-prefixed patterns match suffixes.  Other patterns match exact
+basenames.  Each match ends at the end of the filename."
+  (unless file-patterns
+    (error "At least one file pattern is required"))
+  (let (filenames extensions parts)
+    (dolist (pattern file-patterns)
+      (if (string-prefix-p "." pattern)
+          (push pattern extensions)
+        (push pattern filenames)))
 
-    ;; 2. Build exact filename matches (escape literal dots for safety)
     (when filenames
-      (let* ((escaped-files (mapcar (lambda (f)
-                                      (replace-regexp-in-string "\\." "\\\\." f))
-                                    filenames))
-             (files-regex (regexp-opt escaped-files nil)))
-        (if (null (cdr filenames))
-            (push (concat files-regex "\\'") regex-parts)
-          (push (concat "?:" files-regex "\\'") regex-parts))))
+      (push (concat "/"
+                    (pel--literal-alternatives-regexp filenames)
+                    "\\'")
+            parts))
 
-    ;; 3. Build extension matches cleanly
     (when extensions
-      (if (null (cdr extensions))
-          ;; Single extension: drop all groups entirely
-          (push (concat "\\." (car extensions) "\\'") regex-parts)
-        ;; Multiple extensions: build an optimized non-capturing trie branch
-        (let ((exts-regex (regexp-opt extensions nil)))
-          (push (concat "\\." exts-regex "\\'") regex-parts))))
+      (push (concat
+             (pel--literal-alternatives-regexp extensions)
+             "\\'")
+            parts))
 
-    ;; 4. Combine parts cleanly with a single regex OR separator
-    (if (null (cdr regex-parts))
-        (car regex-parts)
-      (concat "\\(?:" (mapconcat 'identity regex-parts "\\|") "\\)"))))
+    ;; Each branch already has its own end anchor.
+    ;; No enclosing group is needed for this final alternation.
+    (mapconcat #'identity (nreverse parts) "\\|")))
 
-
-;; [:todo 2026-10-13, by Pierre Rouleau: Improve the efficiency of the
-;; generated regexp: for 2 file extensions ythere is no need for a
-;; non-capturing group]
 (defmacro pel-set-auto-mode (mode marker &rest file-patterns)
   "Associate files described by the FILE-PATTERNS with major mode MODE.
 

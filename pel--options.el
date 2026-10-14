@@ -10861,9 +10861,18 @@ stored for processing."
 ;;
 ;;  -  Provides the following user-options:
 ;;
-;;     - `pel-erlang-man-parent-rootdir' identifies the Erlang man pages
-;;       parent root directory or how to detect it.  It's the value used by the erlang.el function
-;;       `erlang-man-dir' to open Erlang Man files.
+;;     - `pel-erlang-man-parent-rootdir' identifies the root directory of the
+;;        Erlang system that holds the manual page files you want to consult.
+;;        For example, if the man1 directory of that directory tree is
+;;        /some/erlang/dir/man/man1, then set this to: /some/erlang/dir.
+;;
+;;         Note that you can identify the directory that is the root directory
+;;         of the Erlang system you use since the man directory tree is
+;;         normally right under it and you normally want to consult the man
+;;         pages of the Erlang system that runs your code.
+;;
+;;         However, you may also want to use *another* directory, when you
+;;         want to consult the man pages of another version of Erlang.
 ;;
 ;;         PEL implements the `pel--erlang-man-dir' wrapper function that
 ;;         dynamically sets the `erlang-root-dir' to the value identified
@@ -10899,8 +10908,13 @@ stored for processing."
 (defcustom pel-erlang-man-parent-rootdir nil
   "Root directory holding OTP man[1-7] directories.
 
-Select how to identify the absolute path of the Erlang/OTP man directory,
-the directory that holds the man[1-7] directories for Erlang.
+Select how to identify the absolute path of the Erlang/OTP directory
+that is the parent of the man directory you want to use: that is the
+directory that holds the man[1-7] directories for the Erlang version
+you want to consult via the man commands.
+
+For example, if the man1 directory is /some/erlang/dir/man/man1, then
+set this to: /some/erlang/dir
 
 This directory identified may be located under an Erlang root directory
 that differ from the real Erlang root directory allowing a man search
@@ -10912,9 +10926,9 @@ PEL wraps erlang.el erlang-man-dir' with a function that sets the value of
 
 Available choices:
 
-- nil : use the value in `erlang-root-dir' user-option.
-  This is set according to the method selected by the
-  `pel-erlang-path-detection-method' user-option.
+- nil : use the value in `erlang-root-dir' user-option, set according
+  to `pel-erlang-path-detection-method' user-option.  This means you want
+  to consult the man files of the currently active Erlang system.
 - Use a string, such as \"/usr/local/otp\", that holds the man
   directory which holds man1, man3, man4 and man6.
 - Use an environment variable name, such as PEL_ERLANG_MAN_PARENT_DIR, that
@@ -10925,7 +10939,7 @@ Available choices:
   :type '(radio
           (const  :tag "Use man under `erlang-root-dir'" nil)
           (string :tag "Use this absolute directory path"
-                  :value "/usr/local/otp/man")
+                  :value "/usr/local/otp")
           (cons :tag "Use the path identified by the"
                 (const  :tag "" :format "" in-envvar)
                 (string :tag "value of this environment variable"

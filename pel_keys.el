@@ -5068,7 +5068,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                                "janet-mode.el")
       (pel-autoload-file janet-mode for:
                          janet-mode)
-      (pel-set-auto-mode janet-mode for: ".janet'" )
+      (pel-set-auto-mode janet-mode for: ".janet" )
       (add-to-list 'interpreter-mode-alist '("janet" . janet-mode)))
 
     (when pel-use-ijanet
@@ -5401,7 +5401,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
                              "netrexx-mode.el")
     (pel-autoload-file netrexx-mode for: netrexx-mode)
     ;; Set the file extension for NetRexx: ".nrx"
-    (pel-set-auto-mode netrexx-mode for: "\\.nrx\\'")
+    (pel-set-auto-mode netrexx-mode for: ".nrx")
 
     ;; Set the mode specific key prefix
     (define-pel-global-prefix pel:for-netrexx (kbd "<f11> SPC N"))
@@ -6841,8 +6841,8 @@ Can't load ac-geiser: geiser-repl-mode: %S"
   (when pel-use-speedbar
     (pel-add-speedbar-extension '("adoc" ".adoc.txt")))
   (pel-set-auto-mode adoc-mode for:
-                     "adoc"
-                     "adoc.txt")
+                     ".adoc"
+                     ".adoc.txt")
   (pel-eval-after-load adoc-mode
     (pel-config-major-mode adoc pel:for-asciidoc :no-ts
       ;; Preliminary bindings - there's way too many - and not structured
