@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 12:33:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 14:45:17 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -819,24 +819,6 @@ time format returned by, e.g., `current-idle-time’."
   `(cl-eval-when 'load
      (pel--require-after-init (quote ,feature) ,secs)))
 
-
-;; --
-;; (defmacro pel-set-auto-mode (mode for: &rest regexps)
-;;   "Activate automatic MODE for the list of file REGXEPS.
-;; The FOR: argument is a cosmetic separator.
-;; MODE must be an un-quoted symbol.
-;; FOR: separator must be present.  It is cosmetic only.
-;; REGEXPS is on or several regular expression strings."
-;;   (declare (indent 0))
-;;   (ignore for:)
-;;   (let ((forms ()))
-;;     (setq forms
-;;           (dolist (regxp regexps (nreverse forms))
-;;             (push `(add-to-list 'auto-mode-alist
-;;                                 (quote (,regxp . ,mode)))
-;;                   forms)))
-;;     `(progn
-;;        ,@forms)))
 
 ;; --
 
