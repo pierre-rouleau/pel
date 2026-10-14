@@ -598,9 +598,9 @@ Your version of Emacs does not support dynamic module.")))
 (pel-set-auto-mode java-mode          for: ".permission" )
 (pel-set-auto-mode conf-javaprop-mode for: ".properties")
 ;; conf-mode further parses the file and selects an appropriate sub-mode.
-(add-to-list 'auto-mode-alist  '("\\.?.+rc\\'" . conf-mode))
+(add-to-list 'auto-mode-alist  '(".+rc\\'" . conf-mode))
 ;; files like /etc/ssh/ssh_config
-(add-to-list 'auto-mode-alist  '("\\.?.+config\\'" . conf-mode))
+(add-to-list 'auto-mode-alist  '(".+config\\'" . conf-mode))
 (when pel-system-is-linux-p
   ;; prevent Linux crypto-policy files to be opened as Pike programming language files.
   (add-to-list 'auto-mode-alist
@@ -5123,7 +5123,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel-js-mode           "pel-js")
   (declare-function pel--js-ts-mode-fixer "pel-js")
 
-  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\|\\.cjs\\)\\'"
+  (defconst pel--js-files-regexp "\\.\\(?:[cm]js\\|js[mx]?\\|har\\)\\'"
     "File regexp for Javascript.")
 
   (when pel-use-speedbar
