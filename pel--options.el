@@ -10913,22 +10913,21 @@ that is the parent of the man directory you want to use: that is the
 directory that holds the man[1-7] directories for the Erlang version
 you want to consult via the man commands.
 
-For example, if the man1 directory is /some/erlang/dir/man/man1, then
+For example, with a directory tree like /some/erlang/dir/man/man1, then
 set this to: /some/erlang/dir
 
 This directory identified may be located under an Erlang root directory
 that differ from the real Erlang root directory allowing a man search
 in a different version of Erlang than the version used to run Erlang.
 
-PEL wraps erlang.el erlang-man-dir' with a function that sets the value of
+PEL wraps erlang.el `erlang-man-dir' with a function that sets the value of
 `erlang-root-dir' to the value identified by `pel-erlang-man-parent-rootdir'
  user-option as returned by the function of the same name.
 
 Available choices:
 
 - nil : use the value in `erlang-root-dir' user-option, set according
-  to `pel-erlang-path-detection-method' user-option.  This means you want
-  to consult the man files of the currently active Erlang system.
+  to `pel-erlang-path-detection-method' user-option.
 - Use a string, such as \"/usr/local/otp\", that holds the man
   directory which holds man1, man3, man4 and man6.
 - Use an environment variable name, such as PEL_ERLANG_MAN_PARENT_DIR, that
@@ -10960,7 +10959,8 @@ The choices are:
 - Use an environment variable name, such as PEL_ERLANG_BIN_DIR, that
   holds the absolute path of the directory where Erlang binaries are located.
   This is the most flexible way, as it allows several OS shells use different
-  values of that environment variable identifying different man directories."
+  values of that environment variable identifying different Erlang executable
+  directories."
   :group 'pel-erlang-environment
   :type '(radio
           (const :tag "Use execution path identified by PATH" nil)

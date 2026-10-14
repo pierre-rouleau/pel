@@ -3677,7 +3677,7 @@ MODE must be a symbol."
         (pel-add-speedbar-extension ext-regexp)))
     ;; Add extra Common Lisp file extensions if requested by user
     (dolist (ext-regexp pel-clisp-extra-files)
-      (add-to-list 'auto-mode-alist ext-regexp))
+      (add-to-list 'auto-mode-alist (cons ext-regexp 'lisp-mode)))
 
     (define-pel-global-prefix pel:for-lisp (kbd "<f11> SPC L"))
     (define-pel-global-prefix pel:cl-analyze (kbd "<f11> SPC L a"))
@@ -4006,7 +4006,7 @@ d-mode not added to ac-modes!"
                        ".ex"
                        ".exs"
                        ".elixir"
-                       ".mix.lock")
+                       "mix.lock")
     ;; 3- Speedbar support for Elixir (not done by elixir-mode.el)
     (when pel-use-speedbar
       (pel-add-speedbar-extension '(".ex"
@@ -4385,17 +4385,19 @@ d-mode not added to ac-modes!"
   ;;   - .app.src        Source blueprint for an Erlang application resource
   ;;                     file.
   (pel-set-auto-mode pel-erlang-mode for:
+                     ;; files:
                      "Emakefile"
                      "rebar.config"
-                     "rebar.config.script"
+                     ;; "rebar.config.script"
                      "relx.config"
                      "sys.config"
-                     "sys.config.src"
+                     ;; "sys.config.src"
+                     "/.erlang"
+                     ;; extensions:
                      ".hrl"
                      ".erl"
                      ".eix"
                      ".escript"
-                     ".erlang"
                      ".config.src"
                      ".config.script"
                      ".app"
@@ -6682,7 +6684,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
     at-init:
     (when pel-use-tree-sitter
       (pel-ensure-package-elpa vhdl-ts-mode from: melpa))
-    (add-to-list 'auto-mode-alist '("\\.vhdl?\\'" . vhdl-mode))
+    (pel-set-auto-mode vhdl-mode for: ".vhdl" ".vhd")
     (define-pel-global-prefix pel:for-vhdl  (kbd "<f11> SPC H"))))
 
 ;; ---------------------------------------------------------------------------
@@ -9336,9 +9338,12 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-autoload "ssh-file-modes" for: ssh-authorized-keys-mode
                 ssh-known-hosts-mode
                 ssh-abbreviated-keys-mode)
-  (add-to-list 'auto-mode-alist '(".ssh/authorized_keys2?\\'" . ssh-authorized-keys-mode))
-  (add-to-list 'auto-mode-alist '(".ssh/known_hosts\\'"       . ssh-known-hosts-mode))
-  (add-to-list 'auto-mode-alist '("ssh_known_hosts\\'"        . ssh-known-hosts-mode))
+  (add-to-list 'auto-mode-alist
+               '("/\\.ssh/authorized_keys2?\\'" . ssh-authorized-keys-mode))
+  (add-to-list 'auto-mode-alist
+               '("/\\.ssh/known_hosts\\'"       . ssh-known-hosts-mode))
+  (add-to-list 'auto-mode-alist
+               '("/ssh_known_hosts\\'"          . ssh-known-hosts-mode))
 
   (pel-eval-after-load ssh-file-modes
     (pel-config-major-mode ssh-authorized-keys pel:for-ssh-autorized-keys :no-ts)

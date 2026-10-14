@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 07:42:18 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 09:22:53 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -861,9 +861,11 @@ basenames.  Each match ends at the end of the filename."
     (error "At least one file pattern is required"))
   (let (filenames extensions parts)
     (dolist (pattern file-patterns)
-      (if (string-prefix-p "." pattern)
-          (push pattern extensions)
-        (push pattern filenames)))
+      (if (string-prefix-p "/." pattern)
+          (push (substring pattern 1) filenames)
+        (if (string-prefix-p "." pattern)
+            (push pattern extensions)
+          (push pattern filenames))))
 
     (when filenames
       (push (concat "/"
@@ -888,16 +890,20 @@ basenames.  Each match ends at the end of the filename."
 - MARKER is either for: or for-end:, where the first one identifies
   that the new entry is added at the beginning of the auto-mode-alist
   and for-end: is to place it at the end.
-- FILE_PATTERNS is one or several file names or dot-separated file extensions.
+- FILE-PATTERNS is one or several file names or dot-prefixed suffixes
+  (file extensions).
+  Prepend a forward slash to identify a file name that starts with a period.
+  For example, use \"/.erlang\" to identify the \".erlang\" file instead of
+  the extension.
 
 Do NOT use regular expressions in the FILE-PATTERNS; the macro generates
 optimized regular expression based on the list of file and file extensions
-passed directory.  Also do NOT put the end-of-string delimiter for file
+passed directly.  Also do NOT put the end-of-string delimiter for file
 extensions; the macro does it.
 
 The macro generates a `add-to-list' call with a fully optimized set of
 regular expressions into the `auto-mode-alist'.  The regexp is computed at
-compile time, inducing no run-time overhead.
+macro-expansion time.
 
 By using this macro you can place comments that describe the purpose of each
 file and file extension placed in the list and still use efficient code."
