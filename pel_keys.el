@@ -5123,11 +5123,11 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
   (declare-function pel-js-mode           "pel-js")
   (declare-function pel--js-ts-mode-fixer "pel-js")
 
-  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\|.cjs\\)\\'"
+  (defconst pel--js-files-regexp "\\(\\.js[mx]?\\|\\.har\\|\\.mjs\\|\\.cjs\\)\\'"
     "File regexp for Javascript.")
 
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".js" ".jsx" ".mjs" ".har")))
+    (pel-add-speedbar-extension '(".js" ".jsx" ".mjs" ".har" ".cjs")))
 
   ;; PEL code deals with the language name extracted from the
   ;; LANG-ts-mode major mode name.  For Javascript, this is js.
