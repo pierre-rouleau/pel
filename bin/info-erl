@@ -1,0 +1,109 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+%% SH FILE: info-erl
+%%
+%% Purpose   : Print information about Erlang System accessible in the current shell.
+%% Created   : Monday, October 12 2026.
+%% Author    : Pierre Rouleau <prouleau001@gmail.com>
+%% Time-stamp: <2026-10-12 13:27:19 EDT, updated by Pierre Rouleau>
+%% ----------------------------------------------------------------------------
+%% Module Description
+%% ------------------
+%%
+%% Print information about the currently installed Erlang.
+%% The code is written in Erlang.
+
+%% ----------------------------------------------------------------------------
+%% Dependencies
+%% ------------
+%%
+%% Erlang must be installed.
+
+%% ----------------------------------------------------------------------------
+%% Code
+%% ----
+%%
+%%
+
+man_info() ->
+
+    io:format("~n"),
+    io:format("==============================================~n"),
+    io:format("=== Erlang man directory identification logic:~n~n"),
+
+    %% 1. The Core System Component
+    Root = code:root_dir(),
+    io:format("[Component 1: System Root Directory]~n"),
+    io:format("Function:  code:root_dir/0~n"),
+    io:format("Path:      ~s~n~n", [Root]),
+
+    %% 2. Global Documentation Structural Component
+    GlobalManDoc = filename:join([Root, "doc", "man"]),
+    GlobalManRoot = filename:join([Root, "man"]),
+    io:format("[Component 2: Global Installation Targets]~n"),
+    io:format("Structural Variant A (~s/doc/man):~n", [Root]),
+    io:format("  Path:    ~s (Exists: ~p)~n", [GlobalManDoc, filelib:is_dir(GlobalManDoc)]),
+    io:format("Structural Variant B (~s/man):~n", [Root]),
+    io:format("  Path:    ~s (Exists: ~p)~n", [GlobalManRoot, filelib:is_dir(GlobalManRoot)]),
+    io:format("  *Note: Standard Unix tarball extractions often aggregate global .1-.9 man format files here.~n~n"),
+
+    %% 3. Individual OTP Application Libraries Component
+    io:format("[Component 3: Application-Specific Substructures]~n"),
+    io:format("Function:  code:lib_dir/1~n"),
+    io:format("Structure: ${OTPROOT}/lib/${Application}-${Version}/doc/man[1-9]/~n~n"),
+
+    %% Probe a few primary core applications to inspect their man path definitions
+    AppsToProbe = [kernel, stdlib, compiler],
+    lists:foreach(fun(AppName) ->
+        case code:lib_dir(AppName) of
+            {error, bad_name} ->
+                ok;
+            LibPath ->
+                AppManPath = filename:join([LibPath, "doc"]),
+                %% Wildcard checking for active sections (man1, man3, etc.)
+                ManSections = filelib:wildcard(filename:join([AppManPath, "man*"])),
+
+                io:format("  -> Application: ~p~n", [AppName]),
+                io:format("     Base Lib:     ~s~n", [LibPath]),
+                io:format("     Man Subdirs:  ~p~n", [ [filename:basename(Sec) || Sec <- ManSections] ])
+        end
+    end, AppsToProbe),
+
+    io:format("==============================================~n").
+
+
+%% Dynamically searches for the absolute exact version layout
+get_full_otp_version() ->
+    MajorVersion = erlang:system_info(otp_release),
+    %% Construct path to the true production runtime OTP_VERSION file
+    VersionFile = filename:join([code:root_dir(), "releases", MajorVersion, "OTP_VERSION"]),
+
+    case file:read_file(VersionFile) of
+        {ok, BinaryString} ->
+            %% Trim trailing whitespace/newlines from file content
+            string:trim(binary_to_list(BinaryString));
+        {error, _} ->
+            %% Fallback: piece together available engine metrics if file reading fails
+            ErtsVersion = erlang:system_info(version),
+            io_lib:format("~s (ERTS v~s)", [MajorVersion, ErtsVersion])
+    end.
+
+main(_) ->
+    %% Print the Erlang/OTP version
+    OTPVersion = erlang:system_info(otp_release),
+    io:format("- Erlang/OTP Version: ~s~n", [OTPVersion]),
+
+    %% Determine and print the full Erlang/OTP version string
+    FullVersion = get_full_otp_version(),
+    io:format("-       full Version: ~s~n", [FullVersion]),
+
+
+    io:format("- Erlang Root Path  : ~s~n", [code:root_dir()]),
+
+    %% Dynamically resolve the primary system man directory path
+    SystemManDir = filename:join([code:root_dir(), "man"]),
+    io:format("- Erlang Man  Path  : ~s~n", [SystemManDir]),
+
+    man_info().
+
+%% ----------------------------------------------------------------------------

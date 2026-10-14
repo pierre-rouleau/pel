@@ -5630,7 +5630,10 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     at-init:
     ;; 2- Associate files with Perl mode
     ;;    perltidyrc files use conf-unix-mode regardless of selected Perl mode
-    (add-to-list 'auto-mode-alist '("\\.?perltidyrc\\'" . conf-unix-mode))
+    (pel-set-auto-mode conf-unix-mode for:
+                       "/.perltidyrc"   ; the ~/.perltidyrc is often used
+                       "perltidyrc"     ; or placed elsewhere as regular file.
+                       )
     (let ((selected-perl-mode (if pel-perl-mode 'cperl-mode 'perl-mode)))
       (add-to-list 'auto-mode-alist (cons "\\.tdy\\'" selected-perl-mode))
       (add-to-list 'auto-mode-alist (cons pel-perl-fext-regex selected-perl-mode)))
@@ -11749,7 +11752,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;;  ---------------------------------------------------
 ;;
 ;; Activate the list identified by the `pel-auto-mode-alist' user option
-(dolist (pattern-mode pel-auto-mode-alist)
+(dolist (pattern-mode (reverse pel-auto-mode-alist))
   (let ((pattern (car pattern-mode))
         (mode    (cadr pattern-mode)))
     (if (fboundp mode)
@@ -11775,7 +11778,6 @@ See `flyspell-auto-correct-previous-word' for more info."
   (pel-turn-on-global-minor-modes-in 'pel-activates-global-minor-modes))
 
 (pel-defer-run pel--cfg-global-minor-modes)
-
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Hydras Control

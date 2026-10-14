@@ -37,8 +37,8 @@
 ;; MD5 hash digests for pel/bin executable files
 ;; ---------------------------------------------
 (defconst pel-bin-md5-alist
-  '(("version-erl"     . "a6719d7cabaaca23516ebfae95fecc6b")
-    ("erlang-root-dir" . "b87c653df5f8ce85fa3cd9aecc1e8bda"))
+  '(("version-erl"     . "386c3eb0cf8277f22212f15f5ad53fe2")
+    ("erlang-root-dir" . "0f9f2398c5cfcd841b5c11e60f2ce962"))
   "Maps a pel/bin file name to its MD5 hash.
 These hash digests are used by `pel-exec-pel-bin' to ensure that the
 file content was not modified.")

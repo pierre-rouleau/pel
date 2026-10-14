@@ -1,9 +1,11 @@
-#!/usr/bin/env sh
-# Name:     version-erl
-# Abstract: Print version of currently available Erlang on stdout.
+#!/bin/sh
+# SH FILE: version-erl
+#
+# Purpose   : Print version of currently available Erlang on stdout.
+# Created   : Monday, May 11 2020.
 # Requires: Accessible Erlang binaries: uses erl.
 # Used by : PEL Emacs support for Erlang to auto-detect available Erlang version.
-# Last Modified Time-stamp: <2021-10-15 21:16:08, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-14 09:52:30 EDT, updated by Pierre Rouleau>
 # -----------------------------------------------------------------------------
 # Description
 # -----------
@@ -11,6 +13,9 @@
 # Usage:  version-erl
 #
 #  This uses an inline Erlang statement passed to the Erlang interpreter.
+#
+# CAUTION: When editing this file, update pel-bin-md5-alist hash value
+#          inside pel-fs.el
 
 # ----------------------------------------------------------------------------
 # Script

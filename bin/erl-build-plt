@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# SH FILE: erl-build-plt
+#
+# Purpose   : Build the Erlang PLT (Dialyzer's Persistent Lookup Table).
+# Created   : Friday, July 3 2020.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-12 13:53:20 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# References:
+# - Learn you some Erlang
+#   - Type Specification & Erlang - PLTs are the best sandwiches.
+#   @: https://enixdark.github.io/learnyousomeerlang_vn/dialyzer.html
+#
+# Problem: This stores the information in one file (~/.dialyzer_plt)
+#          but I have several versions of Erlang and this is not managed.
+#
+#
+# This is relatively old, newer methods may exist.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# Erlang installed: dialyzer
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+prompt_yn_return=
+prompt_yn()
+{
+    # Arg 1: string prompt
+    while true; do
+        printf "%s [yn]? " "$1"
+        if ! read -r yn; then
+            prompt_yn_return=n
+            printf '\nCannot read a valid response; cancelling Emacs launch.\n' >&2
+            return 1
+        fi
+        case $yn in
+            [Yy]* )
+                prompt_yn_return=y
+                break
+                ;;
+            [Nn]* )
+                prompt_yn_return=n
+                break
+                ;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+printf -- "This builds the Erlang PLT (Dialyzer's Persistent Lookup Table)\n"
+prompt_yn "Proceed" || exit 3
+if [ "$prompt_yn_return" = "y" ]; then
+    dialyzer --build_plt --apps erts kernel stdlib crypto mnesia sasl ssl reltool
+else
+    exit 2
+fi
+
+# -----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 09:22:53 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 10:41:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -840,16 +840,63 @@ time format returned by, e.g., `current-idle-time’."
 
 ;; --
 
+(defun pel--regexp-top-level-alternation-p (regexp)
+  "Return non-nil if REGEXP contains a top-level alternation.
+REGEXP must be a complete regexp, or a complete group body, produced
+by `regexp-opt' from literal strings.  This is not a general-purpose
+Emacs regexp parser."
+  (let ((index 0)
+        (length (length regexp))
+        (depth 0)
+        (in-class nil))
+    (catch 'found
+      (while (< index length)
+        (let ((char (aref regexp index)))
+          (cond
+           ;; In an Emacs character class, backslash is literal.
+           ;; Group and alternation tokens therefore have no effect.
+           (in-class
+            (when (= char ?\])
+              (setq in-class nil))
+            (setq index (1+ index)))
+
+           ;; regexp-opt puts a literal closing bracket first.
+           ;; Skip that bracket rather than treating it as the end.
+           ((= char ?\[)
+            (setq in-class t
+                  index (1+ index))
+            (when (and (< index length)
+                       (= (aref regexp index) ?\]))
+              (setq index (1+ index))))
+
+           ;; Outside character classes, consume an escape as a pair.
+           ((= char ?\\)
+            (when (< (1+ index) length)
+              (let ((next (aref regexp (1+ index))))
+                (cond
+                 ((= next ?\()
+                  (setq depth (1+ depth)))
+                 ((= next ?\))
+                  (setq depth (1- depth)))
+                 ((and (= next ?|)
+                       (= depth 0))
+                  (throw 'found t)))))
+            (setq index (+ index 2)))
+
+           (t
+            (setq index (1+ index))))))
+      nil)))
+
 (defun pel--literal-alternatives-regexp (strings)
   "Return an optimized regexp for nonempty literal STRINGS.
-Remove the outer shy group when its body contains no alternation."
+Remove the outer shy group if its body has no top-level alternation.
+The result is suitable for concatenation with boundaries and anchors,
+but not for direct concatenation with a repetition operator."
   (let ((regexp (regexp-opt strings)))
     (when (and (string-prefix-p "\\(?:" regexp)
                (string-suffix-p "\\)" regexp))
       (let ((body (substring regexp 4 -2)))
-        ;; Conservative: retain the outer group if any alternation
-        ;; occurs, including alternation inside a nested group.
-        (unless (string-match-p (regexp-quote "\\|") body)
+        (unless (pel--regexp-top-level-alternation-p body)
           (setq regexp body))))
     regexp))
 
@@ -901,8 +948,8 @@ optimized regular expression based on the list of file and file extensions
 passed directly.  Also do NOT put the end-of-string delimiter for file
 extensions; the macro does it.
 
-The macro generates a `add-to-list' call with a fully optimized set of
-regular expressions into the `auto-mode-alist'.  The regexp is computed at
+The macro generates a `add-to-list' call with a optimized set of regular
+expressions into the `auto-mode-alist'.  The regexp is computed at
 macro-expansion time.
 
 By using this macro you can place comments that describe the purpose of each

@@ -714,7 +714,10 @@ See `auto-mode-alist' for more information.
 Use the INS and DEL buttons to add associations:
 - the first element is a string regxp pattern identifying the
   file name to identify (which may only be matching it by its extension),
-- the second is a major mode symbol."
+- the second is a major mode symbol.
+
+NOTE: If regular expressions overlap within themselves, the first entry
+has higher priority than the following entries."
   :group 'pel-base-emacs
   :type
   '(repeat
