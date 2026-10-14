@@ -5,7 +5,7 @@
 %% Purpose   : Print information about Erlang System accessible in the current shell.
 %% Created   : Monday, October 12 2026.
 %% Author    : Pierre Rouleau <prouleau001@gmail.com>
-%% Time-stamp: <2026-10-12 13:27:19 EDT, updated by Pierre Rouleau>
+%% Time-stamp: <2026-10-14 14:10:52 EDT, updated by Pierre Rouleau>
 %% ----------------------------------------------------------------------------
 %% Module Description
 %% ------------------
@@ -98,11 +98,20 @@ main(_) ->
     io:format("-       full Version: ~s~n", [FullVersion]),
 
 
-    io:format("- Erlang Root Path  : ~s~n", [code:root_dir()]),
+    OTP_RootDir = code:root_dir(),
+    io:format("- Erlang Root Path  : ~s~n", [OTP_RootDir]),
+    case filelib:is_dir(OTP_RootDir) of
+    true -> ok;
+    _ ->    io:format("  *CAUTION: The above directory is missing!~n")
+    end,
 
     %% Dynamically resolve the primary system man directory path
-    SystemManDir = filename:join([code:root_dir(), "man"]),
+    SystemManDir = filename:join([OTP_RootDir, "man"]),
     io:format("- Erlang Man  Path  : ~s~n", [SystemManDir]),
+    case filelib:is_dir(SystemManDir) of
+    true -> ok;
+    _ ->    io:format("  *CAUTION: The above directory is missing!~n")
+    end,
 
     man_info().
 

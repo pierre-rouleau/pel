@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 10 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 09:26:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-14 13:46:03 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -127,7 +127,7 @@ Can't detect Erlang root path." pel-erlang-path-detection-method)
 (defun pel--erlang-man-dir (erlang-man-dir subdir &optional no-download)
   "Replace `erlang-man-dir' with PEL controlled value.
 
-specified Erlang root directory.
+Use the Erlang root directory specified by PEL.
 The directory used is controlled by PEL Erlang customization, as
 selected dynamically by the `pel-erlang-root-path' function."
   ;; erlang-man-dir arguments: (subdir &optional no-download)
