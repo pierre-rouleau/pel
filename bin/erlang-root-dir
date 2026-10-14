@@ -4,7 +4,7 @@
 # Purpose   : Print the Erlang root directory path. No trailing slash, no newline.
 # Created   : Thursday, October 14 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-14 09:52:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-14 16:35:12 EDT, updated by Pierre Rouleau>
 # Copyright © 2021, 2026, Pierre Rouleau
 # ----------------------------------------------------------------------------
 # Description
@@ -26,6 +26,6 @@
 # Note: the `-sasl errlog_type error` prevents printing PROGRESS REPORT
 #       on some versions of Erlang.
 #
-erl -sasl errlog_type error -eval 'io:format("~ts", [code:root_dir()]),  halt().' -noshell
+erl -sasl errlog_type error -eval 'io:format("~ts~n", [code:root_dir()]),  halt().' -noshell
 
 # ----------------------------------------------------------------------------
