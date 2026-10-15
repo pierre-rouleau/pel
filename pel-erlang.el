@@ -304,11 +304,22 @@ Clears current content unless APPEND is non-nil to instead append to the end."
   "Read Erlang's code:root_dir(): root of Erlang system.
 
 Use the pel/bin/erlang-root-dir script to Extract the information directly
-from Erlang."
+from Erlang.
+Raises an error if Erlang is not available or when the script fails.
+Also raise an error if the script runs but fails to extract the path."
   (let ((exit-code.path.stderr (pel-exec-pel-bin "erlang-root-dir")))
     (unless (eq 0 (car exit-code.path.stderr))
       (error "Failed extracting Erlang root path: %S" exit-code.path.stderr))
     (cadr exit-code.path.stderr)))
+
+(defun pel-erlang-detected-root-dir-safely ()
+  "Read and return Erlang's root directory safely.
+This function always returns a string: Erlang's root directory
+or a string that describes the error."
+  (condition-case err
+      (pel-erlang-detected-root-dir)
+    (error
+     (format "Error: can't read Erlang root path: %s" err))))
 
 ;; ---------------------------------
 ;; Electric Key Behaviour Management
@@ -926,7 +937,7 @@ Clears current content unless APPEND is non-nil to instead append to the end."
   (require 'erlang nil :noerror)
   (let* ((pel-insert-symbol-content-context-buffer (current-buffer))
 
-         (detected-erlang-root-dir (pel-erlang-detected-root-dir))
+         (detected-erlang-root-dir (pel-erlang-detected-root-dir-safely))
          (path-mismatch (not (string=  detected-erlang-root-dir
                                        (bound-and-true-p erlang-root-dir))))
          (edts-settings (pel-erlang--edts-version))
@@ -956,7 +967,8 @@ Clears current content unless APPEND is non-nil to instead append to the end."
        (insert (format "\n  -  Detected erlang-root-dir             : %s"
                        detected-erlang-root-dir))
        (when path-mismatch
-         (pel-insert-bold " ⚠️  Erlang version mismatch!!
+         (pel-insert-bold "\n\t⚠️  Erlang version mismatch!!
+\t Is Erlang installed?  Is erl executable accessible from PATH?
 \t Try to restart Emacs (you might have updated Erlang recently).
 \t If the issue remains, update erlang-root-dir user-option to reflect
 \t your environment.  Otherwise some Erlang features may fail!")
