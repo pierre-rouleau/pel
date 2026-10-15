@@ -319,7 +319,11 @@ or a string that describes the error."
   (condition-case err
       (pel-erlang-detected-root-dir)
     (error
-     (format "Error: can't read Erlang root path: %s" err))))
+     (display-warning
+      'pel-erlang-detected-root-dir
+      (format "Error: can't read Erlang root path:\n %s" err)
+      :error)
+     "Error: can't read Erlang root path: see warning for details")))
 
 ;; ---------------------------------
 ;; Electric Key Behaviour Management
