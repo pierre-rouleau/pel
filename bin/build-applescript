@@ -1,0 +1,194 @@
+#!/bin/sh
+# SH FILE: build-applescript
+#
+# Purpose   :
+# Created   : Friday, October 16 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-16 15:57:01 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# Build a signed macOS .app application from an AppleScript file.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# For macOS only.
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+
+pgm_name="${0##*/}"
+
+print_usage()
+{
+    printf -- "
+%s -- Compile AppleScript file into a signed .app bundle file.
+
+ Usage: %s -h | --help
+
+  • Print this help information.
+
+ Usage: %s SOURCE  [USER-DOMAIN]
+
+  • Compile the AppleScript SOURCE file into a .app file with the same
+    base name signed with the specified USER-DOMAIN if specified or
+    the \$USER domain otherwise.
+
+  • Examples:
+    %s focus-on-ttys000
+    - Compiles the focus-on-ttys000.applescript into focus-on-ttys000.app
+      Signs it with the bundle ID: com.%s.focus-on-ttys000
+
+    %s focus-on-ttys000.applescript
+    - Compiles the focus-on-ttys000.applescript into focus-on-ttys000.app
+      Signs it with the bundle ID: com.%s.focus-on-ttys000
+
+    %s focus-on-ttys000 fpt22
+    - Compiles the focus-on-ttys000.applescript into focus-on-ttys000.app
+      Signs it with the bundle ID: com.fpt22.focus-on-ttys000
+
+" "$pgm_name" "$pgm_name" "$pgm_name" \
+  "$pgm_name"  "$USER" \
+  "$pgm_name"  "$USER" \
+  "$pgm_name"
+}
+
+# --
+# Handle help request
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# Validate arguments: at least 1 arguments are provided, but no more than 2
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    printf "Invalid number of arguments specified: %d\n" "$#"
+    printf "Use '%s -h' to print usage.\n" "$pgm_name"
+    exit 1
+fi
+
+# --
+# Extract arguments; use defaults if second argument is omitted
+INPUT_PATH="$1"
+USER_DOMAIN="${2:-$USER}"
+
+# -- Validate first argument
+# Extract just the filename to check extensions cleanly
+FILE_NAME_ONLY="${INPUT_PATH##*/}"
+
+case "$FILE_NAME_ONLY" in
+    *.applescript)
+        # File explicitly has the correct extension
+        SOURCE_SCRIPT="$INPUT_PATH"
+        ;;
+    *.*)
+        # File has some other extension (e.g., .txt, .scpt, .sh) -> REJECT
+        printf "Error: Invalid file type. Input must have a '.applescript' extension or no extension at all.\n" >&2
+        exit 1
+        ;;
+    *)
+        # File has no extension -> Programmatically append .applescript
+        SOURCE_SCRIPT="${INPUT_PATH}.applescript"
+        ;;
+esac
+
+# Then check that the .applescript file exists
+if [ ! -f "$SOURCE_SCRIPT" ]; then
+    printf "Error: Source script file not found at '%s'\n" "$SOURCE_SCRIPT" >&2
+    exit 1
+fi
+
+# --
+# Prepare names
+
+# 1. Extract the base filename without paths
+FILE_NAME="${SOURCE_SCRIPT##*/}"
+
+# 2. Safely strip the .applescript extension to get the raw name
+PURE_NAME="${FILE_NAME%.applescript}"
+
+# 3. Assemble the clean target .app package name
+TARGET_APP="${PURE_NAME}.app"
+
+# 4. Programmatically construct a perfectly structured, collision-free Bundle ID
+BUNDLE_ID="com.${USER_DOMAIN}.${PURE_NAME}"
+# then validate the built ID
+case "$BUNDLE_ID" in
+    *[!A-Za-z0-9.-]*|*..*|*.)
+        printf "Error: Invalid bundle ID '%s'. Use only letters, digits, '-' and '.'.\n" "$BUNDLE_ID" >&2
+        exit 1
+        ;;
+esac
+
+
+
+# 5. Extract the source directory path to build the output path in the same location
+case "$SOURCE_SCRIPT" in
+    */*)
+        APP_PATH="${SOURCE_SCRIPT%/*}/${TARGET_APP}"
+        ;;
+    *)
+        APP_PATH="$(pwd)/${TARGET_APP}"
+        ;;
+esac
+
+# macOS .app items are directories. Check if any file or folder already exists there.
+if [ -e "$APP_PATH" ] || [ -h "$APP_PATH" ]; then
+    printf "Error: The target bundle already exists at '%s'\n" "$APP_PATH" >&2
+    printf "       Please delete or move the existing '.app' folder first before compiling.\n" >&2
+    exit 1
+fi
+
+printf "
+Input source:       %s
+Output application: %s
+Bundle ID         : %s\n\n" "${SOURCE_SCRIPT}" "${APP_PATH}" "${BUNDLE_ID}"
+
+# --
+# Build Operations
+set -e
+
+printf "1/4. Compiling '%s' into '%s'...\n" "$SOURCE_SCRIPT" "$(basename "$APP_PATH")"
+osacompile -o "$APP_PATH" "$SOURCE_SCRIPT"
+
+printf "2/4. Injecting Bundle Identifier '%s'...\n" "$BUNDLE_ID"
+plutil -replace CFBundleIdentifier -string "$BUNDLE_ID" "$APP_PATH/Contents/Info.plist"
+
+printf "3/4. Resetting Automation (TCC) system permissions...\n"
+# Temporarily disable 'set -e' to catch the specific -10814 (No Application Found) error safely
+set +e
+TCC_OUT=$(tccutil reset AppleEvents "$BUNDLE_ID" 2>&1)
+TCC_STATUS=$?
+set -e
+# Check if tccutil failed for reasons OTHER than a missing Launch Services entry
+if [ "$TCC_STATUS" -ne 0 ]; then
+    case "$TCC_OUT" in
+        *-10814*)
+            printf "     Note: No cached permissions found to reset (safely ignored).\n"
+            ;;
+        *)
+            printf "Error: tccutil failed with unexpected error:\n%s\n" "$TCC_OUT" >&2
+            exit "$TCC_STATUS"
+            ;;
+    esac
+fi
+
+printf "4/4. Generating Ad-Hoc cryptographic signature...\n"
+codesign --force --deep --sign - "$APP_PATH"
+
+printf "\nVerifying application structure and signature integrity:\n"
+codesign --verify --verbose "$APP_PATH"
+
+printf "\nBuild complete! App generated successfully at:\n%s\n" "$APP_PATH"
+
+# ----------------------------------------------------------------------------
