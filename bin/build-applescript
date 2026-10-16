@@ -4,20 +4,19 @@
 # Purpose   :
 # Created   : Friday, October 16 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-16 15:42:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-16 15:45:51 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-#
+# Build a signed macOS .app application from an AppleScript file.
 
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#
-
+# For macOS only.
 
 # ----------------------------------------------------------------------------
 # Code
