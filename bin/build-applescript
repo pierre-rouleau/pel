@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Friday, October 16 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-16 15:57:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-16 19:36:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -70,10 +70,18 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 # --
+# This only runs on macOS: check it
+
+if [ ! "$(uname)" = "Darwin" ]; then
+    printf "Error: This only supports macOS.\n" >&2
+    exit 1
+fi
+
+# --
 # Validate arguments: at least 1 arguments are provided, but no more than 2
 if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-    printf "Invalid number of arguments specified: %d\n" "$#"
-    printf "Use '%s -h' to print usage.\n" "$pgm_name"
+    printf "Invalid number of arguments specified: %d\n" "$#" >&2
+    printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
     exit 1
 fi
 

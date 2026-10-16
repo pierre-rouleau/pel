@@ -196,6 +196,16 @@ Return t if the text was said, nil otherwise."
 ;; Applescript Compilation Support
 ;; -------------------------------
 
+(defun pel-executable-found (executables)
+  "Check for the presence of EXECUTABLES issue an error if any is missing.
+This can be one string or a list of strings.
+Return t if all are present."
+  (dolist (executable (pel-list-of executables))
+    (unless (executable-find executable)
+      (user-error "%s not found!" executable)))
+  ;; Return t
+  t)
+
 ;;-pel-autoload
 (defun pel-applescript-compile (&optional arg)
   "Compile the applescript file in buffer.
@@ -208,18 +218,24 @@ When compiling, the generated file is stored in the same directory as the
 source file."
   (interactive "P")
   (if buffer-file-name
-      (let* ((fname  (buffer-file-name))
-             (no-ext-fname (file-name-sans-extension fname))
-             (output-fname (cond
-                            ((null arg) "/dev/null")
-                            ((equal arg '(4))  (shell-quote-argument
-                                                (concat no-ext-fname ".scpt")))
-                            ((equal arg '(16)) (shell-quote-argument
-                                                (concat no-ext-fname ".app")))
-                            (t (user-error "Invalid argument: %S" arg)))))
-        (if (executable-find "osacompile")
-            (compile (format "osacompile -o %s %s" output-fname fname))
-          (user-error "osacompile not found in this system!")))
+      (let ((fname  (buffer-file-name)))
+        (if (equal arg '(16))
+            ;; Build signed .app file
+            (let ((build-script (format "%s/bin/build-applescript" pel-home-dirpath-name)))
+              (when (pel-executable-found `("osacompile"
+                                            "plutil"
+                                            "tccutil"
+                                            "codesign"
+                                            ,build-script))
+                (compile (format "%s %s" build-script fname))))
+          (when (pel-executable-found "osacompile")
+            (let* ((no-ext-fname (file-name-sans-extension fname))
+                   (output-fname (cond
+                                  ((null arg) "/dev/null")
+                                  ((equal arg '(4))  (shell-quote-argument
+                                                      (concat no-ext-fname ".scpt")))
+                                  (t (user-error "Invalid argument: %S" arg)))))
+              (compile (format "osacompile -o %s %s" output-fname fname))))))
     (user-error "Buffer is not visiting a file!")))
 
 ;; -----------------------------------------------------------------------------

@@ -3263,7 +3263,11 @@ MODE must be a symbol."
   ;; activate the <f12> key binding for apples-mode
   (pel--mode-hook-maybe-call
    (lambda ()
-     (pel-local-set-f12 'pel:for-applescript))
+     (pel-local-set-f12 'pel:for-applescript)
+     ;; The Apple AppleScript editor always uses hard tabs for those
+     ;; files: use the same.  However make the indentation with use 2 columns.
+     (setq-local indent-tabs-mode t)
+     (setq-local tab-width 2))
    'apples-mode 'apples-mode-hook))
 
 ;; ---------------------------------------------------------------------------
