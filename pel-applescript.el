@@ -221,13 +221,15 @@ source file."
       (let ((fname  (buffer-file-name)))
         (if (equal arg '(16))
             ;; Build signed .app file
-            (let ((build-script (format "%s/bin/build-applescript" pel-home-dirpath-name)))
-              (when (pel-executable-found `("osacompile"
-                                            "plutil"
-                                            "tccutil"
-                                            "codesign"
-                                            ,build-script))
-                (compile (format "%s %s" build-script fname))))
+            (if (boundp 'pel-home-dirpath-name)
+                (let ((build-script (format "%s/bin/build-applescript" pel-home-dirpath-name)))
+                  (when (pel-executable-found `("osacompile"
+                                                "plutil"
+                                                "tccutil"
+                                                "codesign"
+                                                ,build-script))
+                    (compile (format "%s %s" build-script fname))))
+              (user-error "pel-home-dirpath-name is unknown!"))
           (when (pel-executable-found "osacompile")
             (let* ((no-ext-fname (file-name-sans-extension fname))
                    (output-fname (cond
