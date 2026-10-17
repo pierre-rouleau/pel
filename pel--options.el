@@ -6808,7 +6808,7 @@ Values in the [2, 8] range are accepted."
 (defcustom pel-apples-tab-width 4
   "Column width display rendering of hard tab for `apples-mode' buffers.
 
-PEL stores this in `tab-width' when opening awk buffers.
+PEL stores this in `tab-width' when opening Applescript buffers.
 
 This does *NOT* control the indentation in Applescript
 files, it only controls the column width display rendering of hard tabs

@@ -256,6 +256,34 @@ is a macOS compliant ID return t, return nil otherwise."
         'part)
        (pel-valid-macos-bundle-id-p (user-real-login-name) 'part)))
 
+(defun pel--applescript-compile-cleanup (buffer status-string)
+  "Callback: cleanup after .app compilation.
+
+On compilation success, delete backup.  On failure restore the original
+.app directory from its backup."
+  (let ((backup-path   (buffer-local-value 'pel--applescript-backup-dirpath buffer))
+        (original-path (buffer-local-value 'pel--applescript-app-dirpath    buffer)))
+
+    (when (and backup-path original-path)
+      (if (string-match-p "^finished" status-string)
+          ;; Case A: Success -> Delete the old backup directory safely
+          (progn
+            (delete-directory backup-path t) ; 't' means recursively delete contents
+            (message "Compilation succeeded. Removed backup: %s" backup-path))
+
+        ;; Case B: Failure -> Clean up the broken compilation and restore the old one
+        ;; 1. Remove the broken build directory if the compiler created one
+        (when (file-exists-p original-path)
+          (delete-directory original-path t))
+        ;; 2. Rename the old backup folder back to its original name
+        (rename-file backup-path original-path t)
+        (message "Compilation failed! Restored original %s" original-path))))
+
+  ;; Self-destruct the hook from this compilation buffer
+  (with-current-buffer buffer
+    (remove-hook 'compilation-finish-functions #'pel--applescript-compile-cleanup t)))
+
+
 (defvar pel-home-dirpath-name)          ; defined in init.el
 
 ;;-pel-autoload
@@ -286,7 +314,9 @@ this way, otherwise it prompts for a bundle ID."
   (let ((fpath (buffer-file-name)))
     (if (not fpath)
         (user-error "Buffer is not visiting a file!")
-      (let ((app-fpath (concat (file-name-sans-extension fpath) ".app")))
+      (let* ((app-fpath (concat (file-name-sans-extension fpath) ".app"))
+             (app-fpath-bkp (concat app-fpath ".bkp"))
+             (remove-backup nil))
         (if (equal arg '(16))
             ;; Build signed .app file
             (let ((build-script (format "%s/bin/build-applescript"
@@ -297,24 +327,43 @@ this way, otherwise it prompts for a bundle ID."
                                             "tccutil"
                                             "codesign"
                                             ,build-script))
-                ;; Can't build over existing .app; request its removal if it
-                ;; already exist.
-                (when (file-exists-p app-fpath)
-                  (if (y-or-n-p (format "Delete existing %s" app-fpath))
-                      (delete-directory app-fpath t)
-                    (user-error "%s exists. Delete it first." app-fpath)))
-                ;; Check that we can build a valid macOS bundle ID.
-                ;; Use auto-generate ID if we can, otherwise prompt user for a
-                ;; valid bundle ID.
-                (if (pel-can-build-macOS-bundle-for fpath)
-                    (compile (format "%s %s"
-                                     (shell-quote-argument build-script)
-                                     (shell-quote-argument fpath)))
-                  (let ((bundle-id (pel-prompt-for-macos-bundle-id)))
-                    (compile (format "%s %s --bundle-id=%s"
-                                     (shell-quote-argument build-script)
-                                     (shell-quote-argument fpath)
-                                     bundle-id))))))
+                ;; Prepare compilation command
+                ;; If we can generate the .app bundle ID automatically
+                ;; the build script will do it.  Otherwise, prompt user
+                ;; for a valid bundle ID.
+                ;; - 1: compute the compilation command string.
+                (let ((compilation-command
+                       (if (pel-can-build-macOS-bundle-for fpath)
+                           (format "%s %s"
+                                   (shell-quote-argument build-script)
+                                   (shell-quote-argument fpath))
+                         (let ((bundle-id (pel-prompt-for-macos-bundle-id)))
+                           (format "%s %s --bundle-id=%s"
+                                   (shell-quote-argument build-script)
+                                   (shell-quote-argument fpath)
+                                   bundle-id)))))
+                  ;; - 2: Can't build over existing .app; request its removal
+                  ;;      if it already exist.  If denied, stop with error.
+                  ;;      If allowed, rename .app to .app.bkp.
+                  (when (file-exists-p app-fpath)
+                    (if (y-or-n-p (format "%s exists. Temporary backup and compile" app-fpath))
+                        (progn
+                          ;; remove old backup if it exists
+                          (when (file-exists-p app-fpath-bkp)
+                            (delete-directory app-fpath-bkp t))
+                          ;; rename current .app to .app.bkp
+                          (rename-file app-fpath app-fpath-bkp)
+                          ;; remember that was done
+                          (setq remove-backup t))
+                      (user-error "%s exists; nothing done." app-fpath)))
+                  ;; - 3: Start compilation
+                  (let ((comp-buffer (compile compilation-command)))
+                    (when remove-backup
+                      (with-current-buffer comp-buffer
+                        (setq-local pel--applescript-backup-dirpath app-fpath-bkp)
+                        (setq-local pel--applescript-app-dirpath    app-fpath)
+                        (add-hook 'compilation-finish-functions
+                                  #'pel--applescript-compile-cleanup nil t)))))))
           ;; static compiling or building a .scpt file
           (when (pel-executable-found "osacompile")
             (let* ((no-ext-fname (file-name-sans-extension fpath))
@@ -324,8 +373,7 @@ this way, otherwise it prompts for a bundle ID."
                      ((equal arg '(4)) (shell-quote-argument
                                         (concat no-ext-fname ".scpt")))
                      (t (user-error "Invalid argument: %S" arg)))))
-              (compile (format "osacompile -o %s %s" output-fname fpath)))))))
-      ))
+              (compile (format "osacompile -o %s %s" output-fname fpath)))))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-applescript)
