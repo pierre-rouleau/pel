@@ -256,6 +256,10 @@ is a macOS compliant ID return t, return nil otherwise."
         'part)
        (pel-valid-macos-bundle-id-p (user-real-login-name) 'part)))
 
+;; --
+(defvar pel--applescript-backup-dirpath) ; to prevent byte-compiler error
+(defvar pel--applescript-app-dirpath)    ; to prevent byte-compiler error
+
 (defun pel--applescript-compile-cleanup (buffer status-string)
   "Callback: cleanup after .app compilation.
 
