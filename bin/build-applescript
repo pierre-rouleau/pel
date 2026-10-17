@@ -4,13 +4,12 @@
 # Purpose   :
 # Created   : Friday, October 16 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-16 19:36:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-17 11:24:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
-# Build a signed macOS .app application from an AppleScript file.
-
+# Build a signed macOS .app application bundle from an AppleScript file.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -26,6 +25,19 @@
 
 pgm_name="${0##*/}"
 
+# --
+# Identify the real user name (even if this runs in an elevated process)
+# - First ask the system who logged into this terminal session
+REAL_USER=$(logname 2>/dev/null)
+
+# - Fallback method: If logname is empty (e.g. non-interactive environments)
+if [ -z "$REAL_USER" ]; then
+    # id -u gets the numeric ID. Under sudo, standard POSIX shells preserve the
+    # login session UID or we look at the owner of the current process parent.
+    # To be fully safe across environments, we can query who owns the login session.
+    REAL_USER=$(id -nu "${SUDO_UID:-$(id -u)}")
+fi
+
 print_usage()
 {
     printf -- "
@@ -35,11 +47,11 @@ print_usage()
 
   • Print this help information.
 
- Usage: %s SOURCE  [USER-DOMAIN]
+ Usage: %s SOURCE [USER-DOMAIN]
 
   • Compile the AppleScript SOURCE file into a .app file with the same
     base name signed with the specified USER-DOMAIN if specified or
-    the \$USER domain otherwise.
+    the real \$USER domain otherwise.
 
   • Examples:
     %s focus-on-ttys000
@@ -54,10 +66,22 @@ print_usage()
     - Compiles the focus-on-ttys000.applescript into focus-on-ttys000.app
       Signs it with the bundle ID: com.fpt22.focus-on-ttys000
 
+ Usage: %s SOURCE --bundle-id=BUNDLE-ID
+        %s SOURCE -b BUNDLE-ID
+
+  • Compile the AppleScript SOURCE file into a .app file with the same
+    base name signed with the specified BUNDLE-ID.
+
+  • Example:
+    %s focus_on_ttys000 --bundle-id=com.hydro.focus
+    - Compiles the focus_on_ttys000.applescript into focus_on_ttys000.app
+      Signs it with the bundle ID: com.hydro.focus
+
 " "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name"  "$USER" \
-  "$pgm_name"  "$USER" \
-  "$pgm_name"
+  "$pgm_name"  "$REAL_USER" \
+  "$pgm_name"  "$REAL_USER" \
+  "$pgm_name" \
+  "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
 # --
@@ -78,17 +102,80 @@ if [ ! "$(uname)" = "Darwin" ]; then
 fi
 
 # --
-# Validate arguments: at least 1 arguments are provided, but no more than 2
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
-    printf "Invalid number of arguments specified: %d\n" "$#" >&2
+# Validate arguments: at least 1 arguments must be provided
+if [ "$#" -lt 1 ]; then
+    printf "Invalid command: no argument provided!\n"  >&2
     printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
     exit 1
 fi
 
-# --
-# Extract arguments; use defaults if second argument is omitted
-INPUT_PATH="$1"
-USER_DOMAIN="${2:-$USER}"
+
+# Initialize internal state variables
+INPUT_PATH=""
+USER_DOMAIN=""
+EXPLICIT_BUNDLE_ID=""
+
+# Argument parsing loop
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -b)
+            if [ -z "$2" ]; then
+                printf "Error: -b requires an argument.\n" >&2
+                printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
+                exit 1
+            fi
+            EXPLICIT_BUNDLE_ID="$2"
+            shift 2
+            ;;
+        --bundle-id=*)
+            # Extract everything after the '=' sign using pure POSIX text substitution
+            EXPLICIT_BUNDLE_ID="${1#*=}"
+            if [ -z "$EXPLICIT_BUNDLE_ID" ]; then
+                printf "Error: --bundle-id= requires an argument.\n" >&2
+                printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
+                exit 1
+            fi
+            shift 1
+            ;;
+        -*)
+            printf "Error: Unknown option '%s'\n" "$1" >&2
+            printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
+            exit 1
+            ;;
+        *)
+            # Process positional arguments
+            if [ -z "$INPUT_PATH" ]; then
+                INPUT_PATH="$1"
+            elif [ -z "$USER_DOMAIN" ]; then
+                USER_DOMAIN="$1"
+            else
+                printf "Error: Too many positional arguments provided.\n" >&2
+                printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
+                exit 1
+            fi
+            shift 1
+            ;;
+    esac
+done
+
+# Ensure a SOURCE script path was actually specified
+if [ -z "$INPUT_PATH" ]; then
+    printf "Error: Missing required SOURCE argument.\n" >&2
+    printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
+    exit 1
+fi
+
+# Ensure mutual exclusivity between an explicit BUNDLE-ID and a custom USER-DOMAIN
+if [ -n "$EXPLICIT_BUNDLE_ID" ] && [ -n "$USER_DOMAIN" ]; then
+    printf "Error: Cannot specify both a custom USER-DOMAIN and an explicit BUNDLE-ID.\n" >&2
+    printf "Use '%s -h' to print usage.\n" "$pgm_name" >&2
+    exit 1
+fi
+
+# If no USER-DOMAIN argument is specified, use the real user name
+if [ "$USER_DOMAIN" = "" ]; then
+    USER_DOMAIN="$REAL_USER"
+fi
 
 # -- Validate first argument
 # Extract just the filename to check extensions cleanly
@@ -115,6 +202,7 @@ if [ ! -f "$SOURCE_SCRIPT" ]; then
     printf "Error: Source script file not found at '%s'\n" "$SOURCE_SCRIPT" >&2
     exit 1
 fi
+
 
 # --
 # Prepare names
