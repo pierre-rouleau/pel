@@ -3267,7 +3267,14 @@ MODE must be a symbol."
     ;; 4- Define Buffer keymap for Applescript
     (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
     (define-key pel:for-applescript "s" 'apples-open-scratch)
-    (define-key pel:for-applescript "c" 'pel-applescript-compile)))
+    (define-key pel:for-applescript "c" 'pel-applescript-compile)
+
+    ;; ---------------
+    when-buffer-opens:
+    ;; When an .applescript buffer opens, `apples-mode' uses
+    ;; `apples-indent-offset' for indentation.
+    (pel-setq-local-unless-filevar apples-indent-offset
+                                   pel-apples-indent-width)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Arc Programming Language Support

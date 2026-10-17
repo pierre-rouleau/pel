@@ -244,6 +244,16 @@ Invalid format! Enter a valid 3-part Bundle ID (e.g., com.company.app): "))
     (message "Selected Bundle ID: %s" input)
     input))
 
+(defun pel--getenv (var)
+  "Return value of environment variable VAR.
+
+Return nil if the variable does not exist in the environment
+or its value is an empty string."
+  (let ((value (getenv var)))
+    (if (equal value "")
+        nil
+      value)))
+
 (defun pel-can-build-macOS-bundle-for (fpath)
   "Return t if a valid macOS bundle ID can be inferred from FPATH.
 
@@ -254,7 +264,10 @@ is a macOS compliant ID return t, return nil otherwise."
          (file-name-nondirectory
           (expand-file-name fpath)))
         'part)
-       (pel-valid-macos-bundle-id-p (user-real-login-name) 'part)))
+       (pel-valid-macos-bundle-id-p (or (pel--getenv "SUDO_USER")
+                                        (pel--getenv "USER")
+                                        (user-login-name))
+                                     'part)))
 
 ;; --
 (defvar pel--applescript-backup-dirpath) ; to prevent byte-compiler error
