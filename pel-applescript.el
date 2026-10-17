@@ -217,9 +217,9 @@ If SINGLE-PART-P is nil or omitted, checks if STRING is a complete
               (complete-regex
                (if single-part-p
                    ;; only one chuck
-                   (concat "^" chunk-regex "\\'")
+                   (concat "\\`" chunk-regex "\\'")
                  ;; 3 dot-separated chunks only
-                 (concat "^\\(?:" chunk-regex "\\.\\)\\{2\\}"
+                 (concat "\\`\\(?:" chunk-regex "\\.\\)\\{2\\}"
                          chunk-regex "\\'"))))
          (string-match-p complete-regex string))
        t)) ; Coerce the regex match position integer to a strict boolean t
@@ -286,36 +286,45 @@ this way, otherwise it prompts for a bundle ID."
   (let ((fpath (buffer-file-name)))
     (if (not fpath)
         (user-error "Buffer is not visiting a file!")
-      (if (equal arg '(16))
-          ;; Build signed .app file
-          (let ((build-script (shell-quote-argument
-                               (format "%s/bin/build-applescript"
-                                       pel-home-dirpath-name))))
-            ;; Check presence of build-applescript and the tools it uses.
-            (when (pel-executable-found `("osacompile"
-                                          "plutil"
-                                          "tccutil"
-                                          "codesign"
-                                          ,build-script))
-              ;; first check that we can build a valid macOS bundle ID
-              (if (pel-can-build-macOS-bundle-for fpath)
-                  (compile (format "%s %s" build-script
-                                   (shell-quote-argument fpath)))
-                (let ((bundle-id (pel-prompt-for-macos-bundle-id)))
-                  (compile (format "%s %s --bundle-id=%s"
-                                   build-script
-                                   (shell-quote-argument fpath)
-                                   bundle-id))))))
-        ;; static compiling or building a .scpt file
-        (when (pel-executable-found "osacompile")
-          (let* ((no-ext-fname (file-name-sans-extension fpath))
-                 (output-fname
-                  (cond
-                   ((null arg) "/dev/null")
-                   ((equal arg '(4)) (shell-quote-argument
-                                      (concat no-ext-fname ".scpt")))
-                   (t (user-error "Invalid argument: %S" arg)))))
-            (compile (format "osacompile -o %s %s" output-fname fpath))))))
+      (let ((app-fpath (concat (file-name-sans-extension fpath) ".app")))
+        (if (equal arg '(16))
+            ;; Build signed .app file
+            (let ((build-script (format "%s/bin/build-applescript"
+                                        pel-home-dirpath-name)))
+              ;; Check presence of build-applescript and the tools it uses.
+              (when (pel-executable-found `("osacompile"
+                                            "plutil"
+                                            "tccutil"
+                                            "codesign"
+                                            ,build-script))
+                ;; Can't build over existing .app; request its removal if it
+                ;; already exist.
+                (when (file-exists-p app-fpath)
+                  (if (y-or-n-p (format "Delete existing %s" app-fpath))
+                      (delete-directory app-fpath t)
+                    (user-error "%s exists. Delete it first." app-fpath)))
+                ;; Check that we can build a valid macOS bundle ID.
+                ;; Use auto-generate ID if we can, otherwise prompt user for a
+                ;; valid bundle ID.
+                (if (pel-can-build-macOS-bundle-for fpath)
+                    (compile (format "%s %s"
+                                     (shell-quote-argument build-script)
+                                     (shell-quote-argument fpath)))
+                  (let ((bundle-id (pel-prompt-for-macos-bundle-id)))
+                    (compile (format "%s %s --bundle-id=%s"
+                                     (shell-quote-argument build-script)
+                                     (shell-quote-argument fpath)
+                                     bundle-id))))))
+          ;; static compiling or building a .scpt file
+          (when (pel-executable-found "osacompile")
+            (let* ((no-ext-fname (file-name-sans-extension fpath))
+                   (output-fname
+                    (cond
+                     ((null arg) "/dev/null")
+                     ((equal arg '(4)) (shell-quote-argument
+                                        (concat no-ext-fname ".scpt")))
+                     (t (user-error "Invalid argument: %S" arg)))))
+              (compile (format "osacompile -o %s %s" output-fname fpath)))))))
       ))
 
 ;; -----------------------------------------------------------------------------

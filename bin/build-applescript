@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Friday, October 16 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-17 11:24:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-17 12:57:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -216,8 +216,13 @@ PURE_NAME="${FILE_NAME%.applescript}"
 # 3. Assemble the clean target .app package name
 TARGET_APP="${PURE_NAME}.app"
 
-# 4. Programmatically construct a perfectly structured, collision-free Bundle ID
-BUNDLE_ID="com.${USER_DOMAIN}.${PURE_NAME}"
+# 4. Use EXPLICIT_BUNDLE_ID if it was defined, otherwise Programmatically
+#    construct a perfectly structured, collision-free Bundle ID
+if [ -n "$EXPLICIT_BUNDLE_ID" ]; then
+    BUNDLE_ID="$EXPLICIT_BUNDLE_ID"
+else
+    BUNDLE_ID="com.${USER_DOMAIN}.${PURE_NAME}"
+fi
 # then validate the built ID
 case "$BUNDLE_ID" in
     *[!A-Za-z0-9.-]*|*..*|*.)
