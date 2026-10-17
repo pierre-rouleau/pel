@@ -3273,8 +3273,9 @@ MODE must be a symbol."
     when-buffer-opens:
     ;; When an .applescript buffer opens, `apples-mode' uses
     ;; `apples-indent-offset' for indentation.
-    (pel-setq-local-unless-filevar apples-indent-offset
-                                   pel-apples-indent-width)))
+    (when (boundp 'apples-indent-offset)
+      (pel-setq-local-unless-filevar apples-indent-offset
+                                     pel-apples-indent-width))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Arc Programming Language Support
