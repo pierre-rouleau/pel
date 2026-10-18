@@ -6791,6 +6791,40 @@ Values in the [2, 8] range are accepted."
     :group 'pel-pkg-for-applescript
     :type 'string))
 
+(defcustom pel-apples-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for Applescript buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-applescript
+  :type '(repeat function))
+
+(defcustom pel-apples-indent-width 4
+  "Number of columns for Applescript source code indentation.
+Values in the [2, 8] range are accepted."
+  :group 'pel-pkg-for-applescript
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-apples-tab-width 4
+  "Column width display rendering of hard tab for `apples-mode' buffers.
+
+PEL stores this in `tab-width' when opening Applescript buffers.
+
+This does *NOT* control the indentation in Applescript
+files, it only controls the column width display rendering of hard tabs
+in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
+  :group 'pel-pkg-for-applescript
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+(defcustom pel-apples-use-tabs t
+  "Value of `indent-tabs-mode' for editing Applescript files.
+- If set to nil: only spaces are used for indentation.
+- If set to t: hard tabs are used when possible."
+  :group 'pel-pkg-for-applescript
+  :type 'boolean
+  :safe #'booleanp)
+
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; CC Mode Language support
 ;; ------------------------

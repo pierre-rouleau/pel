@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-23 14:19:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 10:30:04 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,7 +36,7 @@
 ;;   pel-setq                       - warning-suppressing setq
 ;;   pel-setq-local                 - warning-suppressing setq-local
 ;;   pel-setq-default               - warning-suppressing setq-default
-;;   pel-setq-local-unless-filevar  - setq-local guarded by file-local-variable-alist
+;;   pel-setq-local-unless-filevar  - setq-local guarded by file-local-variables-alist
 ;;   while-n                        - bounded while loop
 ;;   pel-with-required              - conditional body on resource availability
 ;;   pel-turn-mode-on-when-off      - turn a mode on only when it is currently off
@@ -252,7 +252,7 @@
 (ert-deftest pel--macros-test/setq-local-unless-filevar/sets-when-no-filevar ()
   "Sets the local value when the symbol is absent from file-local-variable-alist."
   (with-temp-buffer
-    (setq-local file-local-variable-alist nil)
+    (setq-local file-local-variables-alist nil)
     (pel-setq-local-unless-filevar pel--macros-test--fv-var :new)
     (should (eq pel--macros-test--fv-var :new))))
 
@@ -260,7 +260,7 @@
   "Does NOT change the value when the symbol appears in file-local-variable-alist."
   (defvar pel--macros-test--fv-var)
   (with-temp-buffer
-    (setq-local file-local-variable-alist
+    (setq-local file-local-variables-alist
                 '((pel--macros-test--fv-var . :from-file)))
     (setq-local pel--macros-test--fv-var :from-file)
     (pel-setq-local-unless-filevar pel--macros-test--fv-var :override)

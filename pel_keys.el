@@ -3230,41 +3230,55 @@ MODE must be a symbol."
 ;;** AppleScript support
 ;; Function Keys - <f11> - Prefix ``<f11> SPC a`` :
 (when pel-use-applescript
-  ;; the Melpa package does not seemed maintained. Use my copy instead.
-  (pel-install-github-files "pierre-rouleau/apples-mode/master"
-                            '("apples-mode.el"
-                              "apples-mode/comment"
-                              "apples-mode/considering"
-                              "apples-mode/considering-application-responses"
-                              "apples-mode/display-dialog"
-                              "apples-mode/if"
-                              "apples-mode/ignoring"
-                              "apples-mode/ignoring-application-responses"
-                              "apples-mode/on"
-                              "apples-mode/repeat"
-                              "apples-mode/repeat-until"
-                              "apples-mode/repeat-while"
-                              "apples-mode/repeat-with"
-                              "apples-mode/tell-application"
-                              "apples-mode/tell-application-to-activate"
-                              "apples-mode/try"
-                              "apples-mode/using-terms-from-application"
-                              "apples-mode/with-timeout-of-seconds"
-                              "apples-mode/with-transaction"))
-  (pel-autoload-file apples-mode for:
-                     apples-mode
-                     apples-open-scratch)
-  (pel-set-auto-mode apples-mode for: ".applescript")
+  (pel-setup-major-mode apples :no-ts
+    key-prefix:  pel:for-applescript
+    ;; ---------------
+    at-init:
+    ;; 1- Install required packages for Applescript
+    ;;    The Melpa package does not seemed maintained. Use my copy instead.
+    (pel-install-github-files "pierre-rouleau/apples-mode/master"
+                              '("apples-mode.el"
+                                "apples-mode/comment"
+                                "apples-mode/considering"
+                                "apples-mode/considering-application-responses"
+                                "apples-mode/display-dialog"
+                                "apples-mode/if"
+                                "apples-mode/ignoring"
+                                "apples-mode/ignoring-application-responses"
+                                "apples-mode/on"
+                                "apples-mode/repeat"
+                                "apples-mode/repeat-until"
+                                "apples-mode/repeat-while"
+                                "apples-mode/repeat-with"
+                                "apples-mode/tell-application"
+                                "apples-mode/tell-application-to-activate"
+                                "apples-mode/try"
+                                "apples-mode/using-terms-from-application"
+                                "apples-mode/with-timeout-of-seconds"
+                                "apples-mode/with-transaction"))
+    (pel-autoload-file apples-mode for:
+                       apples-mode
+                       apples-open-scratch)
+    ;; 2- Associate files with apples-mode
+    (pel-set-auto-mode apples-mode for: ".applescript")
+    ;; 3- Speedbar support for Applescript
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".applescript"))
+    ;; 4- Define Buffer keymap for Applescript
+    (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
+    (define-key pel:for-applescript "s" 'apples-open-scratch)
+    (define-key pel:for-applescript "c" 'pel-applescript-compile)
 
-  (define-pel-global-prefix pel:for-applescript (kbd "<f11> SPC a"))
-  (define-key pel:for-applescript "s" 'apples-open-scratch)
-  (define-key pel:for-applescript "c" 'pel-applescript-compile)
-  ;;
-  ;; activate the <f12> key binding for apples-mode
-  (pel--mode-hook-maybe-call
-   (lambda ()
-     (pel-local-set-f12 'pel:for-applescript))
-   'apples-mode 'apples-mode-hook))
+    ;; ---------------
+    when-buffer-opens:
+    ;; When an .applescript buffer opens, `apples-mode' uses
+    ;; `apples-indent-offset' for indentation.
+    (when (boundp 'apples-indent-offset)
+      (pel-setq-local-unless-filevar apples-indent-offset
+                                     pel-apples-indent-width)
+      (when (boundp 'apples-continuation-offset)
+        (pel-setq-local-unless-filevar apples-continuation-offset
+                                       pel-apples-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Arc Programming Language Support
