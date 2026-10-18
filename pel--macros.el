@@ -2,7 +2,7 @@
 
 ;; Created   : Monday, March 23 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-05 15:46:43 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 10:29:36 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package
 ;; This file is not part of GNU Emacs.
@@ -269,8 +269,8 @@ any existing buffers that have not explicitly overridden the value of SYM."
 
 (defmacro pel-setq-local-unless-filevar (sym val)
   "Set symbol SYM to value VAL unless it is specified by file variable."
-  `(unless (and (boundp 'file-local-variable-alist)
-                (assoc (quote ,sym) file-local-variable-alist))
+  `(unless (and (boundp 'file-local-variables-alist)
+                (assoc (quote ,sym) file-local-variables-alist))
      (setq-local ,sym ,val)))
 
 ;; ---------------------------------------------------------------------------
