@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-18 09:24:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:46:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1150,7 +1150,7 @@ local variable."
 Automatic activation is done for a file identified inside
 `pel-files-activating-syntax-check' when the major mode is in
 `pel-fly-engine-for-modes' and identifies an fly engine."
-  (let ((filename (buffer-file-name))
+  (let ((filename buffer-file-name)
         (found nil)
         (fullpath-name nil)
         (engine nil))
@@ -1160,14 +1160,15 @@ Automatic activation is done for a file identified inside
                      (assoc (intern (pel-file-type-for major-mode))
                             pel-fly-engine-for-modes))))
       (when engine
-        ;; [:todo 2025-12-11, by Pierre Rouleau: optimize with a while?]
-        (dolist (pathname pel-files-activating-syntax-check)
-          (setq fullpath-name (expand-file-name pathname))
-          (if (pel-string-ends-with-p pathname "/")
-              (when (pel-string-starts-with-p filename fullpath-name)
-                (setq found t))
-            (when (string= fullpath-name filename)
-              (setq found t))))
+        (setq found
+              (catch 'found
+                (dolist (pathname pel-files-activating-syntax-check)
+                  (setq fullpath-name (expand-file-name pathname))
+                  (if (pel-string-ends-with-p pathname "/")
+                      (when (pel-string-starts-with-p filename fullpath-name)
+                        (throw 'found t))
+                    (when (string= fullpath-name filename)
+                      (throw 'found t))))))
         (when found
           (cond
            ((eq engine 'flymake) (flymake-mode 1))
