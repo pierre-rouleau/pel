@@ -3275,7 +3275,10 @@ MODE must be a symbol."
     ;; `apples-indent-offset' for indentation.
     (when (boundp 'apples-indent-offset)
       (pel-setq-local-unless-filevar apples-indent-offset
-                                     pel-apples-indent-width))))
+                                     pel-apples-indent-width)
+      (when (boundp 'apples-continuation-offset)
+        (pel-setq-local-unless-filevar apples-continuation-offset
+                                       pel-apples-indent-width)))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Arc Programming Language Support

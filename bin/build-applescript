@@ -4,7 +4,7 @@
 # Purpose   :
 # Created   : Friday, October 16 2026.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-17 12:57:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-17 19:14:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -225,7 +225,7 @@ else
 fi
 # then validate the built ID
 case "$BUNDLE_ID" in
-    *[!A-Za-z0-9.-]*|*..*|*.)
+    .*|*[!A-Za-z0-9.-]*|*..*|*.)
         printf "Error: Invalid bundle ID '%s'. Use only letters, digits, '-' and '.'.\n" "$BUNDLE_ID" >&2
         exit 1
         ;;
