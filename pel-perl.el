@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, December 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-05-11 16:06:36 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:59:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -72,7 +72,7 @@ Show errors in compilation-mode buffer in a format that allows navigation."
     ;; holding the file visited in the buffer. This prevents using the current
     ;; directory of the Emacs session set to another host directory when
     ;; several buffers access remote files via Tramp.
-    (let* ((current-filename (buffer-file-name))
+    (let* ((current-filename buffer-file-name)
            (default-directory (file-name-directory current-filename))
            (is-a-tramp-fname (tramp-tramp-file-p current-filename)))
       (if (pel-executable-find "perlcritic" is-a-tramp-fname)

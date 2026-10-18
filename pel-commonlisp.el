@@ -159,7 +159,7 @@ Set `pel-inferior-lisp-program' or `inferior-lisp-program'"))))
 Use the linter program specified by `pel-clisp-linter'."
   (interactive)
   (if pel-clisp-linter
-      (let ((fname (buffer-file-name)))
+      (let ((fname buffer-file-name))
         (unless fname
           (user-error "Current buffer is not visiting a file"))
         (setq fname (shell-quote-argument fname))

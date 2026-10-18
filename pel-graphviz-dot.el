@@ -81,7 +81,7 @@ NOTE: creates an image file in a temporary directory."
                                  (format "pel-gdot-%s-"
                                          (file-name-nondirectory
                                           (file-name-sans-extension
-                                           (buffer-file-name))))
+                                           buffer-file-name)))
                                  nil ".dot")))
                 (find-file temp-fname)
                   (insert text)

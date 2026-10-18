@@ -149,7 +149,7 @@ by a UUID with all dash characters replaced by underscore to be
 compatible with the C pre-processor."
   (let* ((fn (file-name-nondirectory
               (file-name-sans-versions
-               (buffer-file-name))))
+               buffer-file-name)))
          (fn-extension (file-name-extension fn))
          (fn-body (file-name-base fn))
          (preproc-symbol

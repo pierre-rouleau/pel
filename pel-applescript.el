@@ -331,7 +331,7 @@ this way, otherwise it prompts for a bundle ID.
 KNOWN LIMITATION: If the user kills the compilation buffer during a
  build, you may need yo recover the application from its backup."
   (interactive "P")
-  (let ((fpath (buffer-file-name)))
+  (let ((fpath buffer-file-name))
     (if (not fpath)
         (user-error "Buffer is not visiting a file!")
       (let* ((app-fpath (concat (file-name-sans-extension fpath) ".app"))

@@ -1275,7 +1275,7 @@ See `pel-find-file-at-point-in-window' for more information."
     (save-excursion
       (unwind-protect
           (progn
-            (when (and (buffer-file-name)
+            (when (and buffer-file-name
                        (not ignore-rest-link))
               (cd (file-name-directory (pel-current-buffer-filename))))
             ;; A reStructuredText link may have to be escaped in the
@@ -1371,7 +1371,7 @@ under the table title line."
                                  command-line)))
     (if (executable-find pgm)
         (compile (format "%s %s"
-                         command-line (buffer-file-name)))
+                         command-line buffer-file-name))
       (user-error "Specified command line is invalid: %s is not on PATH.\
  Update pel-rst-compiler!" pgm))))
 

@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, October 30 2021.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-22 14:55:16 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:55:55 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -396,7 +396,7 @@ Return the matching project entry (a list) if found, nil otherwise."
 Return nil if no project name is found.
 The project name is extracted from information found in `pel-dev-projects'
 considering the name of the currently visited file or the specified FILENAME."
-  (let ((fname (or filename (buffer-file-name))))
+  (let ((fname (or filename buffer-file-name)))
     (when fname
       (let* ((project-root (pel-ffind-project-directory-of fname))
              (project-name nil))
@@ -507,7 +507,7 @@ Return nil if no project root is found by either method."
 Return nil if no project is found.
 The inspected project is identified by the specified FILENAME if any,
 otherwise by the currently visited file."
-  (let ((fname (or filename (buffer-file-name))))
+  (let ((fname (or filename buffer-file-name)))
     (when fname
       (let* ((project-root (pel-ffind-project-directory-of fname))
              (project-settings nil))
