@@ -2,12 +2,12 @@
 
 ;; Created   : Wednesday, November 20 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2024-11-23 13:45:54 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 12:00:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
 
-;; Copyright (C) 2024  Pierre Rouleau
+;; Copyright (C) 2024, 2026  Pierre Rouleau
 ;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@
    ;; to comply with compile-mode supported error/warning lines.
    (format "%s/bin/rpmlint-4emacs %s"
            pel-home-dirpath-name
-           (shell-quote-argument (buffer-file-name)))
+           (shell-quote-argument buffer-file-name))
    nil))
 
 (defconst pel--rpmbuild-subdirs '(""
@@ -72,8 +72,7 @@
 Prompt for the command line with rpmbuild -ba as default,
 supporting history.  Create the ~/rpmbuild directory tree
 if it does not exist and then perform the rpmbuild command.
-Write report in a compile-mode buffer.
-"
+Write report in a compile-mode buffer."
   (interactive)
   (let ((cmd (read-shell-command
               "Build RPM with: "
@@ -85,7 +84,7 @@ Write report in a compile-mode buffer.
     (compile
      (format "%s %s"
              cmd
-             (shell-quote-argument (buffer-file-name)))
+             (shell-quote-argument buffer-file-name))
      nil)))
 
 ;;; --------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, August 13 2024.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-14 15:58:48 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:55:13 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -104,7 +104,7 @@
 
 (defun pel--lkcs-maybe-activate ()
   "Activate the Linux Kernel Code Style in buffer if needed."
-  (let ((filename (buffer-file-name)))
+  (let ((filename buffer-file-name))
     ;; Enable kernel mode for the appropriate files
     (when
         (and filename

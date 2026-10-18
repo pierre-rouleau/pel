@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-02 13:54:33 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:59:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -127,7 +127,7 @@ Return the property value as stored, or nil when no headline defines it."
 (defun pel--org-archive-original ()
   "Return file name/location of first file entry if buffer is an Org archive.
 Return nil otherwise."
-  (when (buffer-file-name)              ; must be visiting a physical file
+  (when buffer-file-name              ; must be visiting a physical file
     (let ((fname (pel--org-archive-file-first-property "ARCHIVE_FILE")))
       (when fname
         (list (file-truename (expand-file-name fname))
@@ -163,7 +163,7 @@ Returns nil if the structural path cannot be found."
 
 (defun pel--org-buffer-is-archive-p ()
   "Return t if current buffer is an Org archive file."
-  (let ((fname (buffer-file-name)))
+  (let ((fname buffer-file-name))
     (and fname
          (string-suffix-p ".org_archive" fname)
          (eq major-mode 'org-mode))))
