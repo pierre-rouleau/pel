@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 14:45:17 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 09:24:01 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1198,6 +1198,11 @@ Automatic activation is done for a file identified inside
 ;; TODO: pel-config-major-mode does not seem to support shell-mode and
 ;;       term-mode properly.  Investigate and fix.
 
+(defvar-local pel--nonfile-mode-setups-done nil
+  "PEL setup functions completed in this non-file buffer.
+Used to avoid duplicate setup through related major-mode hooks.
+Normal major-mode initialization clears this buffer-local value.")
+
 (defmacro pel-config-major-mode (target-mode key-prefix ts-option &rest body)
   "Setup the major mode identified by TARGET-MODE.
 
@@ -1237,9 +1242,12 @@ NOTES:
   the major mode is identified inside the `pel--tab-controlling-major-modes'
   internal constant list.
 
-The BODY is a set of forms to execute when the major mode hook
-executes, at the moment when a buffer with that major mode opens
-and after the local variables have been loaded."
+The BODY is a set of forms that configure a buffer.
+For file buffers, run BODY through `hack-local-variables-hook',
+after local-variable processing.
+For non-file buffers, run BODY directly from the major-mode hook,
+once per generated setup function until major-mode initialization
+clears the buffer-local tracking state."
   (declare (indent 3))
   (unless (memq ts-option '(:no-ts :ts-only :same-for-ts :independent-ts
                                    :same-for-ts-early-remap))
@@ -1251,8 +1259,10 @@ and after the local variables have been loaded."
                                  target-mode)))
         (gn-docstring1
          (format "\
-Activate %s setup, take local variables into account.
-Function created by the `pel-config-major-mode' macro."
+Activate %s setup.
+For file buffers, defer setup until local-variable processing.
+For non-file buffers, run setup once per major-mode initialization.
+-> Function created by the `pel-config-major-mode' macro."
                  target-mode))
         (gn-fct2 (intern (format "pel--setup-for-%s" target-mode)))
         (gn-docstring2 (format "Set the environment for %s buffers."
@@ -1337,13 +1347,29 @@ Function created by the `pel-config-major-mode' macro."
         (pel-check-minor-modes-in ,gn-minor-modes)
         (pel--auto-activate-fly)))
 
-    ;; 4 - Prepare the code that is invoked after the newbody
+    ;; 4 - Generate the function that schedules or runs setup.
     (pel-append-to hook-body
       `((declare-function ,gn-fct2 ,gn-fname)
         (defun ,gn-fct1 ()
           ,gn-docstring1
-          (add-hook 'hack-local-variables-hook
-                    (function ,gn-fct2) nil t))
+          ;; Schedule execution of pel--setup-for-MODE after processing
+          ;; a file's local variables:
+          ;; - Note that `run-mode-hooks' calls `hack-local-variables'
+          ;; automatically only for ;; buffers that visit files.
+          ;; For other buffers, call the function right away to ensure that
+          ;; the PEL code to setup the mode is also done in those buffers.
+          (if buffer-file-name
+              ;; File buffers: preserve file-local-variable precedence.
+              (add-hook 'hack-local-variables-hook
+                        (function ,gn-fct2) nil t)
+            ;; Non-file buffers: run setup function if not executed in that
+            ;; buffer yet (protect against multiple mode types (classic and
+            ;; tree-sitter) using the same setup logic.
+            (unless (memq (quote ,gn-fct2)
+                          pel--nonfile-mode-setups-done)
+              (,gn-fct2)
+              (push (quote ,gn-fct2)
+                    pel--nonfile-mode-setups-done))))
         (declare-function ,gn-fct1 ,gn-fname)))
 
     ;; 4.1 - Append support for classic mode if necessary
@@ -1412,9 +1438,13 @@ ARGS            A sequence of marker-introduced sections:
                 has been loaded but before the TARGET-MODE hook runs.
 
   - `when-buffer-opens:'
-                Optional.  Zero or more forms passed as the body of
-                `pel-config-major-mode'; they run inside the mode hook
-                via `hack-local-variables-hook'.
+                Optional. Zero or more forms passed as the body of
+                `pel-config-major-mode'.
+                For file buffers, run after local-variable processing,
+                in a function hooked in `hack-local-variables-hook'.
+                For non-file buffers, run from the major-mode hook,
+                with protection against duplicate setup for dual mode
+                type (classic/tree-sitter): the code is only executed once.
 
 The following values are inferred:
 

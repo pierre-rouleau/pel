@@ -326,7 +326,10 @@ internally to separate words (e.g., com.my-company.my-app).
 
 If a valid macOS bundle can generated automatically by using the basename of
 the script file and the real user ID, then the command generates a bundle ID
-this way, otherwise it prompts for a bundle ID."
+this way, otherwise it prompts for a bundle ID.
+
+KNOWN LIMITATION: If the user kills the compilation buffer during a
+ build, you may need yo recover the application from its backup."
   (interactive "P")
   (let ((fpath (buffer-file-name)))
     (if (not fpath)
