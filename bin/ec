@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-08 09:39:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-18 16:38:55 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -58,7 +58,7 @@ print_usage()
         message on stdout.
         The exit code is:
         - 0 if the daemon is running,
-        - 1 ion error on the command line (the error is printed on stderr)
+        - 1 on error on the command line (the error is printed on stderr)
         - 2 if the daemon is not running.
 
       The DAEMON-NAME identifies the socket name the Emacs daemon and the
@@ -123,10 +123,10 @@ error_printf() {
     #       arguments use backslash escapes.
     format_str="$1"
     shift
-    printf "*** %s: ERROR ***\n" "$pgm_name" >&2
+    printf -- "*** %s: ERROR ***\n" "$pgm_name" >&2
     # shellcheck disable=SC2059 # The format string *is* the first argument.
-    printf "$format_str" "$@"                >&2
-    printf "*******************\n"           >&2
+    printf -- "$format_str" "$@"                >&2
+    printf -- "*******************\n"           >&2
 }
 
 # ----------------------------------------------------------------------------
@@ -135,6 +135,7 @@ error_printf() {
 # Parse the initial command line that belongs to this script, leaving
 # the remaining as the command line passed to emacsclient
 
+op=''
 daemon_name=''
 daemon_opt="--daemon"
 socket_opt=''
@@ -144,6 +145,21 @@ while [ $# -gt 0 ]; do
         -h|--help)
             print_usage
             exit 0
+            ;;
+
+        --name=*)
+            if [ -n "$daemon_name" ]; then
+                error_printf "Multiple daemon names specified.\n"
+                exit 1
+            fi
+            daemon_name="${1#*=}"
+            if [ -z "$daemon_name" ]; then
+                error_printf "Empty daemon name in --name option.\n"
+                exit 1
+            fi
+            daemon_opt="--daemon=${daemon_name}"
+            socket_opt="--socket-name=${daemon_name}"
+            shift
             ;;
 
         -g|--gui|-d|--start-daemon|-t|--check-daemon)
@@ -160,17 +176,6 @@ while [ $# -gt 0 ]; do
                 -t|--check-daemon) op="check-daemon" ;;
             esac
             shift
-
-            # 3. Check for daemon name specified by --name=DAEMON-NAME
-            case "$1" in
-                --name=*)
-                    daemon_name="${1#*=}"
-                    daemon_opt="--daemon=${daemon_name}"
-                    socket_opt="--socket-name=${daemon_name}"
-                    shift
-            esac
-            # Do NOT break here. Let the loop continue to see if the user
-            # accidentally typed another op flag next!
             ;;
 
         --)
@@ -214,11 +219,14 @@ case "${os_name}" in
     Darwin)
         # On macOS, check for the presence of required programs
         found_valid_pgm=0
+        macos_emacs=''
         if [ -d /Applications/Emacs.app/Contents ]; then
             found_valid_pgm=1
+            macos_emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
         fi
         if [ -n "$PEL_GE_DIR" ] && [ -x "$PEL_GE_DIR/emacs" ]; then
             found_valid_pgm=1
+            macos_emacs="$PEL_GE_DIR/emacs"
         fi
         if [ "$found_valid_pgm" = "0" ]; then
             error_printf "\
@@ -230,44 +238,46 @@ Please install Emacs from https://emacsformacosx.com/\n"
         # On macOS, start the graphics-capable Emacs daemon if it is not already running.
         if [ -z "${daemon_name}" ]; then
             # shellcheck disable=SC2009
-            if ps -ax | grep Emacs.app | grep -v grep | grep -- "--bg-daemon=\\\0123,4\\\012$" > /dev/null; then
+            if ps -ax | grep -F -- "$macos_emacs" | grep -v grep | grep -- "--bg-daemon=\\\0123,4\\\012$" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
-                      echo "ec: Emacs daemon (for default socket name) is already running!"
+                      printf -- "%s: Emacs daemon (for default socket name) is already running!\n" "{pgm_name}"
                       exit 1
-                    else
-                      echo "ec: Emacs daemon (for default socket name) is running."
+                    elif [ "${check_daemon}" = "true" ]; then
+                        printf -- "%s: Emacs daemon (for default socket name) is running.\n" "{pgm_name}"
+                        exit 0
                     fi
                 fi
-            elif [ "${start_daemon}" = "true" ]; then
-                echo "ec: starting the Emacs daemon for default socket name..."
-                if ! /Applications/Emacs.app/Contents/MacOS/Emacs "${daemon_opt}"; then
-                    echo "*** ec: ERROR: failed starting Emacs daemon"
+            elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
+                printf -- "%s: starting the Emacs daemon for default socket name...\n" "{pgm_name}"
+                if ! "$macos_emacs" "${daemon_opt}"; then
+                    printf -- "*** ec: ERROR: failed starting Emacs daemon\n"
                     exit 1
                 fi
-            else
+            elif [ "${check_daemon}" = "true" ]; then
                 printf -- "%s: the Emacs daemon for default socket is NOT running yet.\n" "$pgm_name"
                 exit 2
             fi
         else
             # shellcheck disable=SC2009
-            if ps -ax | grep Emacs.app | grep -v grep | grep -- "--bg-daemon=" | grep "${daemon_name}" > /dev/null; then
+            if ps -ax | grep -F -- "$macos_emacs" | grep -v grep | grep -- "--bg-daemon=" | grep "${daemon_name}" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
                      if [ "${start_daemon}" = "true" ]; then
-                         echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
+                         printf -- "%s: Emacs daemon (for socket %s) is already running!\n" "{pgm_name}" "${daemon_name}"
                          exit 1
-                     else
-                         echo "ec: Emacs daemon (for socket ${daemon_name}) is running."
+                     elif [ "${check_daemon}" = "true" ]; then
+                         printf -- "%s: Emacs daemon (for socket %s) is running.\n" "{pgm_name}" "${daemon_name}"
+                         exit 0
                      fi
 
                 fi
-            elif [ "${start_daemon}" = "true" ]; then
-                echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
-                if ! /Applications/Emacs.app/Contents/MacOS/Emacs "${daemon_opt}"; then
+            elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
+                printf -- "%s : starting the Emacs daemon for socket=%s...\n" "{pgm_name}" "${daemon_name}"
+                if ! "$macos_emacs" "${daemon_opt}"; then
                     echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
                     exit 1
                 fi
-            else
+            elif [ "${check_daemon}" = "true" ]; then
                 printf -- "%s: the Emacs daemon for socket %s is NOT running yet.\n" "$pgm_name" "${daemon_name}"
                 exit 2
             fi
@@ -291,20 +301,21 @@ Please install Emacs from https://emacsformacosx.com/\n"
                 # emacs daemon is already running
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
-                        echo "ec: Emacs daemon (for default socket name) is already running!"
+                        printf -- "%s: Emacs daemon (for default socket name) is already running!\n" "{pgm_name}"
                         exit 1
-                    else
-                        echo "ec: Emacs daemon (for default socket name) is running."
+                    elif [ "${check_daemon}" = "true" ]; then
+                        printf -- "%s: Emacs daemon (for default socket name) is running.\n" "{pgm_name}"
+                        exit 0
                     fi
                 fi
-            elif [ "${start_daemon}" = "true" ]; then
+            elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
                 # Emacs daemon is not running
-                echo "ec: starting the Emacs daemon for default socket name..."
+                printf -- "%s: starting the Emacs daemon for default socket name...\n" "{pgm_name}"
                 if ! ${emacs_pgm} "${daemon_opt}"; then
-                    echo "*** ec: ERROR: failed starting Emacs daemon"
+                    printf -- "*** ec: ERROR: failed starting Emacs daemon\n"
                     exit 1
                 fi
-            else
+            elif [ "${check_daemon}" = "true" ]; then
                 printf -- "%s: the Emacs daemon for default socket is NOT running yet.\n" "$pgm_name"
                 exit 2
             fi
@@ -313,28 +324,27 @@ Please install Emacs from https://emacsformacosx.com/\n"
             if ps -ax | grep emacs | grep -- '--daemon' | grep -v grep | grep "${daemon_name}" > /dev/null; then
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
-                        echo "ec: Emacs daemon (for socket ${daemon_name}) is already running!"
+                        printf -- "%s: Emacs daemon (for socket %s) is already running!\n" "{pgm_name}" "${daemon_name}"
                         exit 1
                     else
-                        echo "ec: Emacs daemon (for socket ${daemon_name}) is running."
+                        printf -- "%s: Emacs daemon (for socket %s) is running.\n" "{pgm_name}" "${daemon_name}"
                     fi
-
                 fi
-            elif [ "${start_daemon}" = "true" ]; then
-                echo "ec : starting the Emacs daemon for socket=${daemon_name}..."
+            elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
+                printf -- "%s : starting the Emacs daemon for socket=%s...\n" "{pgm_name}" "${daemon_name}"
                 if ! ${emacs_pgm} "${daemon_opt}"; then
-                    echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
+                    printf -- "*** %s: ERROR: failed starting Emacs daemon %s\n" "{pgm_name}" "${daemon_name}"
                     exit 1
                 fi
-            else
+            elif [ "${check_daemon}" = "true" ]; then
                 printf -- "%s: the Emacs daemon for socket %s is NOT running yet.\n" "$pgm_name" "${daemon_name}"
                 exit 2
             fi
         fi
         ;;
     *)
-        echo "Sorry, the $(uname) Operating System is not supported yet."
-        echo "Please create a bug report in the PEL project to request it."
+        printf -- "Sorry, the %s Operating System is not supported yet.\n" "$(uname)"
+        printf -- "Please create a bug report in the PEL project to request it.\n"
         exit 1
         ;;
 esac
@@ -415,8 +425,8 @@ if [ "${start_client}" = "true" ]; then
             ;;
 
         *)
-            echo "Sorry, the $(uname) Operating System is not supported yet."
-            echo "Please create a bug report in the PEL project to request it."
+            printf -- "Sorry, the %s Operating System is not supported yet.\n" "$(uname)"
+            printf -- "Please create a bug report in the PEL project to request it.\n"
             exit 1
             ;;
     esac
