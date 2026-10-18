@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-18 11:18:19 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:46:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1150,7 +1150,7 @@ local variable."
 Automatic activation is done for a file identified inside
 `pel-files-activating-syntax-check' when the major mode is in
 `pel-fly-engine-for-modes' and identifies an fly engine."
-  (let ((filename (buffer-file-name))
+  (let ((filename buffer-file-name)
         (found nil)
         (fullpath-name nil)
         (engine nil))

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 14 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-14 14:35:21 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-18 11:51:47 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -33,6 +33,7 @@
 ;;
 (require 'pel--install)
 (require 'ert)
+(require 'cl-lib)
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -108,6 +109,160 @@
                         "/project/headerXicc"
                         "/project/Emakefile/source.txt"))
       (should-not (string-match-p regexp filename)))))
+
+;; ---------------------------------------------------------------------------
+;; Test pel--auto-activate-fly
+;; ===========================
+;;
+;; The following tests establish:
+;;
+;; - Both engines receive argument 1, not a toggle request.
+;; - An exact filename does not match a filename with an added suffix.
+;; - A directory matches nested files, but not a sibling with the same prefix.
+;; - A pathname without a trailing / remains an exact-file entry.
+;; - Overlapping matches cause only one activation call.
+;; - Both matching branches stop before a later invalid entry.
+;;
+;; The early-exit test should fail against the previous full-scan
+;; implementation. The other tests establish baseline behavior for later
+;; changes.
+;;
+;; These are unit tests for pel--auto-activate-fly. They do not test hook timing
+;; or interaction with an already active engine.
+;;
+;; The helper uses a temporary buffer. It does not create or visit files. It
+;; replaces both engine entry points, so the tests do not load Flycheck or start
+;; syntax checking.
+
+(defun pel-test--auto-activate-fly-calls
+    (filename pathnames engines &optional flycheck-enabled mode)
+  "Return engine activation calls for the specified buffer settings.
+FILENAME is relative to a synthetic `default-directory', or nil.
+PATHNAMES and ENGINES supply the activation options.
+FLYCHECK-ENABLED supplies `pel-use-flycheck'.
+MODE defaults to `emacs-lisp-mode'."
+  (with-temp-buffer
+    (let ((default-directory
+           (file-name-as-directory
+            (expand-file-name "pel-auto-activate-fly-test"
+                              temporary-file-directory)))
+          (pel-files-activating-syntax-check pathnames)
+          (pel-fly-engine-for-modes engines)
+          (pel-use-flycheck flycheck-enabled)
+          (calls nil))
+      ;; Set buffer metadata without visiting a file or running mode hooks.
+      (setq buffer-file-name
+            (when filename
+              (expand-file-name filename))
+            major-mode (or mode 'emacs-lisp-mode))
+      (cl-letf (((symbol-function 'flymake-mode)
+                 (lambda (arg)
+                   (push (list 'flymake arg) calls)))
+                ((symbol-function 'flycheck-mode)
+                 (lambda (arg)
+                   (push (list 'flycheck arg) calls))))
+        (pel--auto-activate-fly))
+      (nreverse calls))))
+
+(ert-deftest pel-auto-activate-fly-no-file ()
+  "Do not activate an engine in a buffer without a file."
+  ;; The invalid entry must not be examined.
+  (should-not
+   (pel-test--auto-activate-fly-calls
+    nil '(42) '((emacs-lisp flymake)))))
+
+(ert-deftest pel-auto-activate-fly-no-engine ()
+  "Do not activate when the mode has no selected engine."
+  (dolist (engines '(nil
+                     ((emacs-lisp nil))
+                     ((python flymake))))
+    (ert-info ((format "Engine configuration: %S" engines))
+      ;; The invalid entry must not be examined.
+      (should-not
+       (pel-test--auto-activate-fly-calls
+        "app/main.el" '(42) engines)))))
+
+(ert-deftest pel-auto-activate-fly-empty-pathnames ()
+  "Do not activate when no pathname is configured."
+  (should-not
+   (pel-test--auto-activate-fly-calls
+    "app/main.el" nil '((emacs-lisp flymake)))))
+
+(ert-deftest pel-auto-activate-fly-pathname-matching ()
+  "Preserve exact-file and recursive directory matching."
+  (dolist (case '(("app/main.el" "app/main.el" t)
+                  ("app/main.el.old" "app/main.el" nil)
+                  ("app/main.el" "app/other.el" nil)
+                  ("app/main.el" "app/" t)
+                  ("app/src/main.el" "app/" t)
+                  ("application/main.el" "app/" nil)
+                  ("app/main.el" "app" nil)))
+    (ert-info ((format "Matching case: %S" case))
+      (let ((calls
+             (pel-test--auto-activate-fly-calls
+              (nth 0 case)
+              (list (nth 1 case))
+              '((emacs-lisp flymake)))))
+        (should
+         (equal calls
+                (when (nth 2 case)
+                  '((flymake 1)))))))))
+
+(ert-deftest pel-auto-activate-fly-finds-later-match ()
+  "Continue past non-matching entries."
+  (should
+   (equal
+    (pel-test--auto-activate-fly-calls
+     "app/main.el"
+     '("elsewhere/" "app/other.el" "app/main.el")
+     '((emacs-lisp flymake)))
+    '((flymake 1)))))
+
+(ert-deftest pel-auto-activate-fly-activates-once ()
+  "Activate once when several configured entries match."
+  (should
+   (equal
+    (pel-test--auto-activate-fly-calls
+     "app/main.el"
+     '("app/" "app/main.el" "app/")
+     '((emacs-lisp flymake)))
+    '((flymake 1)))))
+
+(ert-deftest pel-auto-activate-fly-stops-after-first-match ()
+  "Do not examine entries after an exact-file or directory match."
+  (dolist (matching-path '("app/main.el" "app/"))
+    (ert-info ((format "First matching pathname: %S" matching-path))
+      ;; Expanding 42 would signal an error if scanning continued.
+      (should
+       (equal
+        (pel-test--auto-activate-fly-calls
+         "app/main.el"
+         (list "elsewhere/" matching-path 42)
+         '((emacs-lisp flymake)))
+        '((flymake 1)))))))
+
+(ert-deftest pel-auto-activate-fly-flycheck-enabled ()
+  "Activate Flycheck, and not Flymake, when Flycheck is enabled."
+  (should
+   (equal
+    (pel-test--auto-activate-fly-calls
+     "app/main.el" '("app/") '((emacs-lisp flycheck)) t)
+    '((flycheck 1)))))
+
+(ert-deftest pel-auto-activate-fly-flycheck-disabled ()
+  "Do not activate either engine when selected Flycheck is disabled."
+  (should-not
+   (pel-test--auto-activate-fly-calls
+    "app/main.el" '("app/") '((emacs-lisp flycheck)) nil)))
+
+(ert-deftest pel-auto-activate-fly-tree-sitter-mode ()
+  "Use the base mode name to select a Tree-sitter mode's engine."
+  (should
+   (equal
+    (pel-test--auto-activate-fly-calls
+     "app/main.py" '("app/") '((python flymake)) nil
+     'python-ts-mode)
+    '((flymake 1)))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel--install-test)
