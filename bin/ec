@@ -4,21 +4,25 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-18 17:09:39 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-19 11:29:35 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
 #
-# Launch an Emacs client, text by default, graphical if the --graphic or -g
-# option is specified. Also starts the Emacs daemon if it is not already
-# running.  Can also be used to only start the daemon.
-#
+# Launch an Emacs client, text by default, graphical if the --gui or -g
+# option is specified. Probe the requested server and start a daemon if the
+# probe fails. Can also start a daemon or check a server without a client.
 
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
-#  On macOS: Emacs for mac OS/X must be installed : https://emacsformacosx.com/
+# On macOS: install /Applications/Emacs.app from https://emacsformacosx.com/
+# or set PEL_GE_DIR to the directory containing the locally installed,
+# GUI-capable emacs executable and its matching emacsclient executable.
+#
+# On Linux: emacs and emacsclient must be available on PATH.
+# With --gui, use emacs-lucid instead of emacs when it is available.
 
 # ----------------------------------------------------------------------------
 # Code
@@ -36,51 +40,87 @@ print_usage()
 
         -h, --help: print this help.
 
-  ➨ %s [-g|--gui] [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+  ➨ %s [-g|--gui] [--name=DAEMON-NAME] [FILE... | -- CLIENT-ARG...]
 
-        If the Emacs daemon is not already running, start it.
-        Otherwise open an Emacs client process to the daemon.
+        Probe the requested server. If the probe fails, attempt to start
+        the daemon. Then open a client connected to the requested socket.
         -g, --gui:  start a graphical emacsclient, otherwise
                     start a terminal-based emacsclient (the default).
 
-  ➨ %s [-d|--start-daemon] [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+  ➨ %s [-d|--start-daemon] [--name=DAEMON-NAME]
 
         Use --start-daemon to only start the daemon without starting
         any client.
-        If the daemon is already running the command prints a message
-        and exit with an exit code of 1.  You can use it to check if the
-        daemon is running.
+        If the requested server responds, print a message and exit 1.
+        Otherwise attempt to start the daemon.
+        Client options and filenames are not accepted in this mode.
 
-  ➨ %s [-t|--check-daemon] [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+  ➨ %s [-t|--check-daemon] [--name=DAEMON-NAME]
 
-        The --check-daemon is used to explicitly check if the Emacs
-        daemon for the default socket is running.  It prints the
-        message on stdout.
-        The exit code is:
-        - 0 if the daemon is running,
-        - 1 on error on the command line (the error is printed on stderr)
-        - 2 if the daemon is not running.
+        Check whether the requested server responds.
+        Use socket server when no name is specified.
+        Print the probe result on stdout. The exit code is:
+        - 0 if the probe succeeds,
+        - 1 for command-line, dependency, or setup errors,
+        - 2 if the probe fails.
+        Errors are printed on stderr.
+        Client options and filenames are not accepted in this mode.
+
+        A responding server can belong to a daemon or an ordinary Emacs
+        session that enabled server-start.
+        A failed probe does not prove that no daemon process exists.
+        The probe can wait if Emacs is unresponsive.
 
       The DAEMON-NAME identifies the socket name the Emacs daemon and the
       client must use.  It's possible to create several daemons and client(s)
       attaching to that daemon by using that option.
 
-      The OPTION-or-FILENAME is the set of emacsclient options and the
-      name of the files to edit.  All emacsclient options are supported
-      when specified last.
-      See emacsclient man page for information about those.
+      Options before the first -- separator belong to %s.
+      %s consumes that separator and passes the remaining arguments to
+      emacsclient. Use the separator for all native client options.
+      Plain filenames can be specified without the separator.
+
+      Examples:
+        %s -d                         # ec daemon-start mode
+        %s -- -d :0 file.txt          # Native client display option
+        %s -t                         # ec check mode
+        %s -- -t file.txt             # Native client terminal option
+        %s --name=work -- --no-wait -d :0 file.txt
+        %s --name=work -- --eval '(emacs-version)'
+        %s -- -- --help
+      The last example opens a file named --help. The second separator
+      belongs to emacsclient and ends its option parsing.
+
+      Use --name=NAME before the separator to select the socket.
+      Native socket-name, server-file, and alternate-editor options are
+      not accepted. Environment variables cannot override that selection.
+
+      Supported native client options:
+        -n, --no-wait; -q, --quiet; -u, --suppress-output;
+        -e, --eval; -H, --help; -V, --version;
+        -t, -nw, --tty, --nw; -c, --create-frame;
+        -F, --frame-parameters; -d, --display;
+        -p, --parent-id; -T, --tramp.
+      The last four options require a value.
+      Short options take a separate value. Long options also accept =VALUE.
+      Short-option bundles and abbreviated long options are not accepted.
+      See the emacsclient manual for option meanings.
+      Native help and version requests still perform normal client-mode
+      setup, including daemon startup when the probe fails.
 
 NOTE:    Daemon names accepted by this script must not start with a dash
          character.
 
-" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name"
+" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
+  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
+  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
+
     case "${os_name}" in
         Darwin)
         printf -- "\
 
-OS NOTE: Under macOS, to be able to launch an Emacs client that is a GUI
-         Emacs the GUI supporting Emacs such as Emacs from
-         https://emacsformacosx.com/ must be installed.
+OS NOTE: Under macOS, install /Applications/Emacs.app from
+         https://emacsformacosx.com/ or select a local GUI-capable build.
 
          You can also use a locally built Emacs, built with GUI support,
          as described in the document How to build Emacs from source in
@@ -88,9 +128,10 @@ OS NOTE: Under macOS, to be able to launch an Emacs client that is a GUI
          https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
 
    ENVIRONMENT:
-       To use the locally built Emacs in graphics mode you will also need
-       to set the PEL_GE_DIR environment variable to the name of the
-       directory holding the Emacs executable file.
+       Set PEL_GE_DIR to the directory containing both the locally
+       installed emacs and its matching emacsclient.
+       A nonempty PEL_GE_DIR overrides /Applications/Emacs.app.
+       Both files must be executable. An invalid selection causes an error.
 
 "
         ;;
@@ -101,29 +142,22 @@ OS NOTE: Under macOS, to be able to launch an Emacs client that is a GUI
          option is specified and the emacs-lucid executable file is found
          on the current PATH.  Otherwise, %s defaults to emacs.
 
-" "$pgm_name"
+" "${pgm_name}"
         ;;
     esac
 }
-
-if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-    print_usage
-    exit 0
-fi
 
 # ----------------------------------------------------------------------------
 # Error printf
 # ------------
 
-# any_error=no
 error_printf() {
-    # any_error=yes
     # Forward the format string and all arguments safely
     # Note: use %b in format string instead of %s if the
     #       arguments use backslash escapes.
     format_str="$1"
     shift
-    printf -- "*** %s: ERROR ***\n" "$pgm_name" >&2
+    printf -- "*** %s: ERROR ***\n" "${pgm_name}" >&2
     # shellcheck disable=SC2059 # The format string *is* the first argument.
     printf -- "$format_str" "$@"                >&2
     printf -- "*******************\n"           >&2
@@ -132,13 +166,14 @@ error_printf() {
 # ----------------------------------------------------------------------------
 # Parse command line options
 # --------------------------
-# Parse the initial command line that belongs to this script, leaving
-# the remaining as the command line passed to emacsclient
+# Parse ec options. Consume the first -- separator.
+# Native client options require that separator; plain filenames do not.
 
 op=''
 daemon_name=''
 daemon_opt="--daemon"
-socket_opt=''
+client_options=false
+#socket_opt=''
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -148,17 +183,23 @@ while [ $# -gt 0 ]; do
             ;;
 
         --name=*)
-            if [ -n "$daemon_name" ]; then
+            if [ -n "${daemon_name}" ]; then
                 error_printf "Multiple daemon names specified.\n"
                 exit 1
             fi
             daemon_name="${1#*=}"
-            if [ -z "$daemon_name" ]; then
+            if [ -z "${daemon_name}" ]; then
                 error_printf "Empty daemon name in --name option.\n"
                 exit 1
             fi
+            case "${daemon_name}" in
+                -*)
+                    error_printf "Daemon names must not start with '-': %s\n" "${daemon_name}"
+                    exit 1
+                    ;;
+            esac
             daemon_opt="--daemon=${daemon_name}"
-            socket_opt="--socket-name=${daemon_name}"
+            #socket_opt="--socket-name=${daemon_name}"
             shift
             ;;
 
@@ -179,18 +220,97 @@ while [ $# -gt 0 ]; do
             ;;
 
         --)
-            # Stop parsing if standard end-of-options delimiter is met
+            # Consume ec's separator, not emacsclient's separator.
+            client_options=true
             shift
             break
             ;;
 
+        -*)
+            error_printf "Unknown %s option: %s. Put native client options after --.\n"  "${pgm_name}" "$1"
+            exit 1
+            ;;
+
+
         *)
-            # Anything else is passed to emacsclient
+            # Plain filenames do not require the separator.
+            # Pass them to emacsclient program.
             break
             ;;
     esac
 done
 
+# Validate before daemon startup.
+# The explicit list rejects target overrides, bundles, and abbreviations.
+validate_client_arguments()
+{
+    while [ "$#" -gt 0 ]; do
+        # Without ec's separator, accept filenames but not native options.
+        if [ "$client_options" = "false" ]; then
+            case "$1" in
+                -*)
+                    error_printf "Put native client options after %s's -- separator.\n" "${pgm_name}"
+                    return 1
+                    ;;
+                *)
+                    shift
+                    continue
+                    ;;
+            esac
+        fi
+
+        case "$1" in
+            --)
+                # emacsclient owns this second separator.
+                return 0
+                ;;
+            -n|-q|-u|-e|-H|-V|-t|-nw|-c|\
+            --no-wait|--quiet|--suppress-output|--eval|--help|--version|\
+            --tty|--nw|--create-frame)
+                shift
+                ;;
+            -F|-d|-p|-T|\
+            --frame-parameters|--display|--parent-id|--tramp)
+                if [ "$#" -lt 2 ]; then
+                    error_printf "Missing value for emacsclient option: %s\n" "$1"
+                    return 1
+                fi
+                shift 2
+                ;;
+            --frame-parameters=*|--display=*|--parent-id=*|--tramp=*)
+                shift
+                ;;
+            -*)
+                error_printf "\
+Unsupported or conflicting emacsclient option: %s
+Use ec's --name=NAME to select the socket.
+Use exact supported options, without short-option bundles.
+Use a second -- before filenames that start with '-'.\n" "$1"
+                return 1
+                ;;
+            *)
+                shift
+                ;;
+        esac
+    done
+}
+
+case "$op" in
+    start-daemon|check-daemon)
+        if [ "$#" -gt 0 ]; then
+            error_printf "This daemon-only mode does not accept client arguments.\n"
+            exit 1
+        fi
+        ;;
+    *)
+        if ! validate_client_arguments "$@"; then
+            exit 1
+        fi
+        ;;
+esac
+
+
+# ----------------------------------------------------------------------------
 # Identify which flavor (GUI or text) of Emacs Client to run
 use_gui=false
 if [ "$op" = "gui" ]; then
@@ -213,46 +333,61 @@ else
 fi
 
 # ----------------------------------------------------------------------------
-# Select the client executable before probing the requested socket.
+# Select executables before probing the requested socket.
 
 case "${os_name}" in
     Darwin)
-        # on macOS use the GUI built Emacs as client.
-        case "$(arch)" in
-            arm64)
-                app=/Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient
-            ;;
-
-            i386)
-                case "$(sw_vers -productVersion)" in
-                    10\.14\.*)
-                        app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14/emacsclient
-                        ;;
-
-                    10\.13\.* | 10\.12\.* | 10\.11\.* | 10\.10\.*)
-                        app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14/emacsclient
-                        ;;
-
-                    10\.9\.*)
-                        app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9/emacsclient
-                        ;;
-
-                    *)
-                        app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
-                        ;;
-                esac
+        if [ -n "${PEL_GE_DIR:-}" ]; then
+            macos_emacs="$PEL_GE_DIR/emacs"
+            app="$PEL_GE_DIR/emacsclient"
+        else
+            macos_emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+            # on macOS use the GUI built Emacs as client.
+            case "$(arch)" in
+                arm64)
+                    app=/Applications/Emacs.app/Contents/MacOS/bin-arm64-11/emacsclient
                 ;;
-            *)
+
+                i386)
+                    case "$(sw_vers -productVersion)" in
+                        10\.14\.*)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14/emacsclient
+                            ;;
+
+                        10\.13\.* | 10\.12\.* | 10\.11\.* | 10\.10\.*)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_14/emacsclient
+                            ;;
+
+                        10\.9\.*)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9/emacsclient
+                            ;;
+
+                        *)
+                            app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+                            ;;
+                    esac
+                    ;;
+                *)
+                    app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+                    ;;
+            esac
+            # Fail safety: use dispatcher if the selected executable does not exist
+            # in case older Emacs.app DMG is installed on the computer.
+            if [ ! -x "$app" ]; then
                 app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
-                ;;
-        esac
-        # Fail safety: use dispatcher if the selected executable does not exist
-        # in case older Emacs.app DMG is installed on the computer.
-        if [ ! -x "$app" ]; then
-            app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
+            fi
         fi
 
+        if [ ! -x "$macos_emacs" ]; then
+            error_printf "Cannot execute Emacs: %s\n" "$macos_emacs"
+            exit 1
+        fi
+        if [ ! -x "$app" ]; then
+            error_printf "Cannot execute emacsclient: %s\n" "$app"
+            exit 1
+        fi
         ;;
+
     Linux)
         app=emacsclient
         ;;
@@ -267,7 +402,12 @@ case "${os_name}" in
         ;;
 esac
 
+# ----------------------------------------------------------------------------
+
 # Return success only if the requested server completes an evaluation.
+# A normal Emacs session with server-start also qualifies.
+# Failure does not prove that no daemon process exists.
+# The probe can wait if Emacs is unresponsive.
 daemon_is_running()
 (
     # Note:
@@ -288,7 +428,6 @@ daemon_is_running()
         --eval 't' \
         >/dev/null 2>&1
 )
-
 
 # ----------------------------------------------------------------------------
 # Start the daemon if necessary
@@ -318,31 +457,33 @@ Please install Emacs from https://emacsformacosx.com/\n"
             if daemon_is_running; then
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
-                      printf -- "%s: Emacs daemon (for default socket name) is already running!\n" "${pgm_name}"
+                        printf -- "%s: an Emacs server already responds on socket server.\n" "${pgm_name}"
                       exit 1
                     elif [ "${check_daemon}" = "true" ]; then
-                        printf -- "%s: Emacs daemon (for default socket name) is running.\n" "${pgm_name}"
+                        printf -- "%s: the Emacs server on socket server responds.\n" "${pgm_name}"
                         exit 0
                     fi
                 fi
             elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
                 printf -- "%s: starting the Emacs daemon for default socket name...\n" "${pgm_name}"
                 if ! "$macos_emacs" "${daemon_opt}"; then
-                    printf -- "*** ec: ERROR: failed starting Emacs daemon\n"
+                    error_printf -- "Failed to start the Emacs daemon.\n"
                     exit 1
                 fi
             elif [ "${check_daemon}" = "true" ]; then
-                printf -- "%s: the Emacs daemon for default socket is NOT running yet.\n" "$pgm_name"
+                printf -- "%s: the Emacs server probe for socket server failed.\n" "${pgm_name}"
+                printf -- "The daemon may not be started or Emacs is unresponsive.\n"
+                printf -- "The lses command might provide more information.\n"
                 exit 2
             fi
         else
             if daemon_is_running; then
                 if [ "${start_client}" = "false" ]; then
                      if [ "${start_daemon}" = "true" ]; then
-                         printf -- "%s: Emacs daemon (for socket %s) is already running!\n" "${pgm_name}" "${daemon_name}"
+                         printf -- "%s: an Emacs server already responds on socket %s.\n" "${pgm_name}" "${daemon_name}"
                          exit 1
                      elif [ "${check_daemon}" = "true" ]; then
-                         printf -- "%s: Emacs daemon (for socket %s) is running.\n" "${pgm_name}" "${daemon_name}"
+                         printf -- "%s: the Emacs server on socket %s responds.\n" "${pgm_name}" "${daemon_name}"
                          exit 0
                      fi
 
@@ -350,11 +491,13 @@ Please install Emacs from https://emacsformacosx.com/\n"
             elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
                 printf -- "%s : starting the Emacs daemon for socket=%s...\n" "${pgm_name}" "${daemon_name}"
                 if ! "$macos_emacs" "${daemon_opt}"; then
-                    echo "*** ec: ERROR: failed starting Emacs daemon ${daemon_name}"
+                    error_printf "Failed to start the Emacs daemon for socket %s.\n" "${daemon_name}"
                     exit 1
                 fi
             elif [ "${check_daemon}" = "true" ]; then
-                printf -- "%s: the Emacs daemon for socket %s is NOT running yet.\n" "$pgm_name" "${daemon_name}"
+                printf -- "%s: the Emacs server probe for socket %s failed.\n" "${pgm_name}" "${daemon_name}"
+                printf -- "The daemon may not be started or Emacs is unresponsive.\n"
+                printf -- "The lses command might provide more information.\n"
                 exit 2
             fi
         fi
@@ -373,46 +516,46 @@ Please install Emacs from https://emacsformacosx.com/\n"
         fi
         if [ -z "${daemon_name}" ]; then
             if daemon_is_running; then
-                # emacs daemon is already running
+                # The requested server completed the probe.
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
-                        printf -- "%s: Emacs daemon (for default socket name) is already running!\n" "${pgm_name}"
+                        printf -- "%s: an Emacs server already responds on socket server.\n" "${pgm_name}"
                         exit 1
                     elif [ "${check_daemon}" = "true" ]; then
-                        printf -- "%s: Emacs daemon (for default socket name) is running.\n" "${pgm_name}"
+                        printf -- "%s: the Emacs server on socket server responds.\n" "${pgm_name}"
                         exit 0
                     fi
                 fi
             elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
-                # Emacs daemon is not running
+                # The probe failed. Attempt to start the selected daemon.
                 printf -- "%s: starting the Emacs daemon for default socket name...\n" "${pgm_name}"
-                if ! ${emacs_pgm} "${daemon_opt}"; then
-                    printf -- "*** ec: ERROR: failed starting Emacs daemon\n"
+                if ! "${emacs_pgm}" "${daemon_opt}"; then
+                    error_printf "Failed to start the Emacs daemon.\n"
                     exit 1
                 fi
             elif [ "${check_daemon}" = "true" ]; then
-                printf -- "%s: the Emacs daemon for default socket is NOT running yet.\n" "$pgm_name"
+                printf -- "%s: the Emacs server probe for socket server failed.\n" "${pgm_name}"
                 exit 2
             fi
         else
             if daemon_is_running; then
                 if [ "${start_client}" = "false" ]; then
                     if [ "${start_daemon}" = "true" ]; then
-                        printf -- "%s: Emacs daemon (for socket %s) is already running!\n" "${pgm_name}" "${daemon_name}"
+                        printf -- "%s: an Emacs server already responds on socket %s.\n" "${pgm_name}" "${daemon_name}"
                         exit 1
                     elif [ "${check_daemon}" = "true" ]; then
-                        printf -- "%s: Emacs daemon (for socket %s) is running.\n" "${pgm_name}" "${daemon_name}"
+                        printf -- "%s: the Emacs server on socket %s responds.\n" "${pgm_name}" "${daemon_name}"
                         exit 0
                     fi
                 fi
             elif [ "${start_daemon}" = "true" ] || [ "${start_client}" = "true" ]; then
                 printf -- "%s : starting the Emacs daemon for socket=%s...\n" "${pgm_name}" "${daemon_name}"
-                if ! ${emacs_pgm} "${daemon_opt}"; then
-                    printf -- "*** %s: ERROR: failed starting Emacs daemon %s\n" "${pgm_name}" "${daemon_name}"
+                if ! "${emacs_pgm}" "${daemon_opt}"; then
+                    error_printf "Failed to start the Emacs daemon for socket %s.\n" "${daemon_name}"
                     exit 1
                 fi
             elif [ "${check_daemon}" = "true" ]; then
-                printf -- "%s: the Emacs daemon for socket %s is NOT running yet.\n" "$pgm_name" "${daemon_name}"
+                printf -- "%s: the Emacs server probe for socket %s failed.\n" "$pgm_name" "${daemon_name}"
                 exit 2
             fi
         fi
@@ -427,39 +570,28 @@ esac
 # ----------------------------------------------------------------------------
 # Start the client if requested
 
+# emacsclient options for reference
+# -a "" starts emacs daemon and reattaches
+# -c creates a new frame
+# -n returns control back to the terminal
+
 if [ "${start_client}" = "true" ]; then
+    # Use the same server-selection environment as the probe.
+    unset EMACS_SERVER_FILE EMACS_SOCKET_NAME ALTERNATE_EDITOR
+
     case "${os_name}" in
-        Darwin)
+        Darwin|Linux)
+            # Daemon startup is handled above.
+            # Do not start another editor if the connection fails.
             if [ "${use_gui}" = "true" ]; then
-                # shellcheck disable=SC2086
-                "$app" -c -n ${socket_opt} "$@"
+                "$app" -c -n \
+                    --socket-name="${daemon_name:-server}" \
+                    --alternate-editor=false "$@"
 
             else
-                # shellcheck disable=SC2086
-                "$app" -nw ${socket_opt} "$@"
-            fi
-            ;;
-
-        Linux)
-            # on Linux use emacsclient command in all cases.
-            # Also start the Emacs daemon if it is not already running.
-            # Use the '-a ""' for that.
-
-            # emacsclient options for reference
-            # -a "" starts emacs daemon and reattaches
-            # -c creates a new frame
-            # -n returns control back to the terminal
-
-            if [ "${use_gui}" = "true" ]; then
-                # echo "GUI emacsclient"
-                # exec /usr/bin/env emacsclient -c -n -a "" "$@"
-                # shellcheck disable=SC2086
-                emacsclient -c -n -a "" ${socket_opt} "$@"
-            else
-                # echo "text emacsclient"
-                # exec /usr/bin/env emacsclient -nw -a "" "$@"
-                # shellcheck disable=SC2086
-                emacsclient -nw -a "" ${socket_opt} "$@"
+                "$app" -nw \
+                    --socket-name="${daemon_name:-server}" \
+                    --alternate-editor=false "$@"
             fi
             ;;
 
