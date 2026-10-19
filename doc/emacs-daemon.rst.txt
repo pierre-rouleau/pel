@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-19 13:45:27 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-19 14:31:32 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -459,20 +459,24 @@ The ec_ command:
    NOTE: Daemon names accepted by this script must not start with a dash
          character.
 
-   OS NOTE: Under macOS, install /Applications/Emacs.app from
-            https://emacsformacosx.com/ or select a local GUI-capable build.
+   OS NOTE:
+    On macOS:
+       - Under macOS, install /Applications/Emacs.app from
+         https://emacsformacosx.com/ or select a local GUI-capable build.
+       - You can also use a locally built Emacs, built with GUI support,
+         as described in the document How to build Emacs from source in
+         the PEL website on Github, at:
+         https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
+       - You can use the PEL_GE_DIR to identify the directory containing
+         specific emacs and emacsclient programs you want to use here.
+         The directory must hold the 2 executable programs (or links to them),
+         otherwise the default is used.  The default is the macOS Emacs
+         application /Applications/Emacs.app.
 
-            You can also use a locally built Emacs, built with GUI support,
-            as described in the document How to build Emacs from source in
-            the PEL website on Github, at:
-            https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
-
-   ENVIRONMENT:
-      You can use the PEL_GE_DIR to identify the directory containing
-      specific emacs and emacsclient programs you want to use here.
-      The directory must hold the 2 executable programs (or links to them),
-      otherwise the default is used.  The default is the macOS Emacs
-      application /Applications/Emacs.app.
+    On Linux:
+       Under Linux, emacs-lucid is used to start the daemon if the --gui
+       option is specified and the emacs-lucid executable file is found
+       on the current PATH.  Otherwise, ec defaults to emacs.
 
 
 List name and sockets of all running Emacs daemon with: lses
