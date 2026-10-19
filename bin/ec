@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-19 15:28:09 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-19 15:38:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -209,7 +209,6 @@ client_options=false
 ec_args_left=$#
 while [ "$ec_args_left" -gt 0 ]; do
     ec_args_left=$((ec_args_left - 1))
-    echo "Processing arg: $1"
     case "$1" in
         -h|--help)
             print_usage
@@ -280,8 +279,7 @@ while [ "$ec_args_left" -gt 0 ]; do
     esac
 done
 
-echo "client_options = $client_options"
-
+# ----------------------------------------------------------------------------
 # Validate before daemon startup.
 # The explicit list rejects target overrides, bundles, and abbreviations.
 native_help=false
