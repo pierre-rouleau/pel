@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-18 15:38:01 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-19 10:20:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -30,50 +30,20 @@
 ;; do not require a particular implementation, such as forbidding calls to
 ;; buffer-file-name.
 ;;
-;; - Test project lookup, Org archives, and reStructuredText.
-;; - Focused tests for the affected functions that lack test files.
-;; - Stub compilation, external tools, prompts, and destructive file operations.
+;; Coverage:
+;; - C3 compilation and saving.
+;;   - pel-c3-compile: save modified file buffers, use the current filename,
+;;     and signal an error for a non-file buffer without saving or compiling.
+;; - Project filename selection.
+;;   - pel-ffind-project-name and pel-ffind-project-settings: select the buffer
+;;     filename or an explicit filename, including in a non-file buffer.
+;; - Org archive detection.
+;;   - pel--org-buffer-is-archive-p: require an archive filename and org-mode.
+;; - C include-guard output.
+;;   - pel-c-include-guard: derive the symbol from the current filename,
+;;     normalize "+" in extensions, and preserve UUID and endif options.
 ;;
-;; ==================================== =========================================================
-;; Affected function 	                Assertions
-;; ==================================== =========================================================
-;; pel-applescript-compile              A non-file buffer signals user-error before compilation.
-;;                                      The analysis, script, and application branches use the
-;;                                      current filename. Stub tool checks, compilation, prompts,
-;;                                      and backup operations.
-;;
-;; pel--lkcs-maybe-activate             A non-file buffer does not search or activate the style.
-;;                                      Test Kbuild, Kconfig, a matching Linux include, and a
-;;                                      non-kernel file. Verify that point does not move.
-;;
-;; pel-cl-lint                          A configured linter rejects a non-file buffer. Test
-;;                                      filename quoting for the string, plist, and use-mallet-4emacs
-;;                                      configurations. Stub executable discovery and compilation.
-;;
-;; pel-render-commented-graphviz-dot    Capture the arguments to make-temp-file. For example.c,
-;;                                      expect prefix "pel-gdot-example-", directory flag nil,
-;;                                      and suffix ".dot". Stub preview and isolate temporary-file cleanup.
-;;
-;; pel--org-archive-original            A non-file buffer returns nil without reading archive properties.
-;;                                      A file buffer with archive metadata returns the resolved source
-;;                                      filename and outline path. Missing metadata returns nil.
-;;
-;; pel-perl-critic                      Capture both the compilation command and its default-directory.
-;;                                      Test a local filename and a TRAMP filename. For TRAMP,
-;;                                      verify remote executable lookup and the host-local filename
-;;                                      passed to perlcritic. Do not connect to a remote host.
-;;
-;; pel-rpm-spec-lint, pel-rpm-build     Verify the quoted filename and compilation arguments.
-;;                                      For builds, stub read-shell-command and pel-rpm-setuptree
-;;                                      so the test cannot modify ~/rpmbuild.
-;;
-;; pel-rst-open-target                  Verify directory selection with and without a filename.
-;;                                      Test the N >= 100 bypass. Verify directory restoration
-;;                                      after success and after an error.
-;;
-;; pel-rst-compile 	                Verify the command for a configured compiler and for
-;;                                      the pel-rst2html special case. Stub executable discovery and compilation.
-;; ==================================== =========================================================
+;; Saving and compilation are stubbed.
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -117,6 +87,25 @@
          (equal (nreverse events)
                 (append (when modified '(save))
                         (list (list 'compile expected-command t)))))))))
+
+;; Cover a modified non-file buffer
+;; --------------------------------
+(ert-deftest pel-filename/c3-non-file-buffer ()
+  "Signal a type error without saving or compiling a non-file buffer."
+  (with-temp-buffer
+    (setq-local buffer-file-name nil)
+    (insert "module example;\n")
+    (should (buffer-modified-p))
+    (cl-letf (((symbol-function 'save-buffer)
+               (lambda (&rest _)
+                 (ert-fail "Must not save a non-file buffer")))
+              ((symbol-function 'compile)
+               (lambda (&rest _)
+                 (ert-fail "Must not compile a non-file buffer"))))
+      ;; Preserve the current behavior: quoting a nil filename signals
+      ;; wrong-type-argument, rather than an explicit user-error.
+      (should-error (pel-c3-compile)
+                    :type 'wrong-type-argument))))
 
 (ert-deftest pel-filename/c3-uses-current-buffer ()
   "Build each command from the filename of the current buffer."
@@ -215,6 +204,23 @@
                "#ifndef %s\n#define %s /* include guard */\n%s"
                symbol symbol
                (if with-endif "\n#endif\n" ""))))))))))
+
+;; Verify filename-dependent include guards
+;; ----------------------------------------
+
+(ert-deftest pel-filename/include-guard-filename-selection ()
+  "Derive the guard from the current filename and normalize extensions."
+  (with-temp-buffer
+    (dolist (case '(("utils.h" "UTILS__H")
+                    ("vector.h++" "VECTOR__HPLPL")))
+      (setq-local buffer-file-name
+                  (expand-file-name (car case)
+                                    temporary-file-directory))
+      (should
+       (equal (pel-c-include-guard nil nil)
+              (format
+               "#ifndef %s\n#define %s /* include guard */\n"
+               (cadr case) (cadr case)))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-buffer-file-name-test)
