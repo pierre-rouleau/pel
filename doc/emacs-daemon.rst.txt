@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-09 08:23:25 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-19 13:45:27 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -383,52 +383,96 @@ The ec_ command:
 
           -h, --help: print this help.
 
-    ➨ ec [-g|--gui] [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+    ➨ ec [-g|--gui] [--name=DAEMON-NAME] [FILE... | -- CLIENT-ARG...]
 
-          If the Emacs daemon is not already running, start it.
+          Probe the requested server. If the probe fails, attempt to start
+          the daemon. Then open a client connected to the requested socket
+          identified by DAEMON-NAME which defaults to 'server'.
+
           -g, --gui:  start a graphical emacsclient, otherwise
                       start a terminal-based emacsclient (the default).
 
-    ➨ ec --start-daemon [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+          Options before the first -- separator belong to ec.
+          ec consumes that separator and passes the remaining CLIENT-ARG
+          arguments to emacsclient.
+          Use the separator for all native client options.
+          Plain filenames can be specified before or without the separator.
+
+    ➨ ec [-d|--start-daemon] [--name=DAEMON-NAME]
 
           Use --start-daemon to only start the daemon without starting
           any client.
-          If the daemon is already running the command prints a message
-          and exit with an exit code of 1.  You can use it to check if the
-          daemon is running.
+          If the requested server responds, print a message and exit 1.
+          Otherwise attempt to start the daemon.
+          Client options and filenames are not accepted in this mode.
 
-    ➨ ec --check-daemon [--name=DAEMON-NAME] [OPTION-or-FILENAME]...
+    ➨ ec [-t|--check-daemon] [--name=DAEMON-NAME]
 
-          The --check-daemon is used to explicitly check if the Emacs
-          daemon for the default socket is running.
+          Check whether the requested server responds.
+          Use socket server when no name is specified.
+          Print the probe result on stdout. The exit code is:
+          - 0 if the probe succeeds,
+          - 1 for command-line, dependency, or setup errors,
+          - 2 if the probe fails.
+          Errors are printed on stderr.
+          Client options and filenames are not accepted in this mode.
 
-        For the last 2 commands, if the --name option is specified,
-        DAEMON-NAME identifies the socket name the daemon and the client
-        must use.  It's possible to create several daemons and client(s)
-        attaching to that daemon by using that option.
+    A responding server can belong to a daemon or an ordinary Emacs
+    session that enabled server-start.
+    A failed probe does not prove that no daemon process exists.
+    The probe can wait if Emacs is unresponsive.
 
-        The OPTION-or-FILENAME is the set of emacsclient options and the
-        name of the files to edit.  All emacsclient options are supported
-        when specified last.
-        See emacsclient man page for information about those.
+    The DAEMON-NAME identifies the socket name the Emacs daemon and the
+    client must use.  It's possible to create several daemons and client(s)
+    attaching to that daemon by using that option.
 
-   Note: Under macOS, to be able to launch an Emacs client that is a GUI
-         Emacs the GUI supporting Emacs such as Emacs from
-         https://emacsformacosx.com/ must be installed.
+   EXAMPLES:
+       ec -d                         # ec daemon-start mode
+       ec -- -d :0 file.txt          # Native client display option
+       ec -t                         # ec check mode
+       ec -- -t file.txt             # Native client terminal option
+       ec --name=work -- --no-wait -d :0 file.txt
+       ec --name=work -- --eval '(emacs-version)'
+       ec -- -- --help
 
-         You can also use a locally built Emacs, built with GUI support,
-         as described in the document How to build Emacs from source in
-         the PEL website on Github, at:
-         https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
+      The last example opens a file named --help. The second separator
+      belongs to emacsclient and ends its option parsing.
 
-   Note: Under Linux, emacs-lucid is used to start the daemon if the --gui
-         option is specified and the emacs-lucid executable file is found
-         on the current PATH.  Otherwise, ec defaults to emacs.
+      Use --name=NAME before the separator to select the socket.
+      Native socket-name, server-file, and alternate-editor options are
+      not accepted. Environment variables cannot override that selection.
 
-     ENVIRONMENT:
-         To use the locally built Emacs in graphics mode you will also need
-         to set the PEL_GE_DIR environment variable to the name of the
-         directory holding the Emacs executable file.
+   SUPPORTED NATIVE CLIENT OPTIONS:
+      -n, --no-wait; -q, --quiet; -u, --suppress-output;
+      -e, --eval; -H, --help; -V, --version;
+      -t, -nw, --tty, --nw; -c, --create-frame;
+      -F, --frame-parameters; -d, --display;
+      -p, --parent-id; -T, --tramp.
+
+      The last four options require a value.
+      Short options take a separate value. Long options also accept =VALUE.
+      Short-option bundles and abbreviated long options are not accepted.
+      See the emacsclient manual for option meanings.
+      Native help and version requests still perform normal client-mode
+      setup, including daemon startup when the probe fails.
+
+   NOTE: Daemon names accepted by this script must not start with a dash
+         character.
+
+   OS NOTE: Under macOS, install /Applications/Emacs.app from
+            https://emacsformacosx.com/ or select a local GUI-capable build.
+
+            You can also use a locally built Emacs, built with GUI support,
+            as described in the document How to build Emacs from source in
+            the PEL website on Github, at:
+            https://github.com/pierre-rouleau/pel/blob/master/doc/build-emacs-from-source.rst.txt
+
+   ENVIRONMENT:
+      You can use the PEL_GE_DIR to identify the directory containing
+      specific emacs and emacsclient programs you want to use here.
+      The directory must hold the 2 executable programs (or links to them),
+      otherwise the default is used.  The default is the macOS Emacs
+      application /Applications/Emacs.app.
 
 
 List name and sockets of all running Emacs daemon with: lses
