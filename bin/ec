@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-19 16:36:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-19 16:48:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -102,11 +102,11 @@ print_usage()
  SUPPORTED NATIVE CLIENT OPTIONS:
     -H, --help;
       Prints emacsclient help without probing or starting a daemon.
-      It cannot be combined with file name.
+      Do not combine this request with filenames or Lisp expressions to evaluate.
 
     -V, --version;
       Prints emacsclient version without probing or starting a daemon.
-      It cannot be combined with file name.
+      Do not combine this request with filenames or Lisp expressions to evaluate.
 
     -e, --eval;
       Evaluate Emacs Lisp expressions on the requested server.
