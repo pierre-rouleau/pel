@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-19 15:38:15 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-19 16:13:39 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -100,18 +100,28 @@ print_usage()
     not accepted. Environment variables cannot override that selection.
 
  SUPPORTED NATIVE CLIENT OPTIONS:
+    -H, --help;
+      Prints emacsclient help without probing or starting a daemon.
+      It cannot be combined with file name.
+
+    -V, --version;
+      Prints emacsclient version without probing or starting a daemon.
+      It cannot be combined with file name.
+
+    -e, --eval;
+      Evaluation of Emacs Lisp code done within an Emacs server.
+      One is started if none were running.
+      It cannot be combined with file name.
+
     -n, --no-wait; -q, --quiet; -u, --suppress-output;
-    -e, --eval; -H, --help; -V, --version;
     -t, -nw, --tty, --nw; -c, --create-frame;
     -F, --frame-parameters; -d, --display;
     -p, --parent-id; -T, --tramp.
+     The last four options require a value.
+     Short options take a separate value. Long options also accept =VALUE.
+     Short-option bundles and abbreviated long options are not accepted.
+     See the emacsclient manual for option meanings.
 
-    The last four options require a value.
-    Short options take a separate value. Long options also accept =VALUE.
-    Short-option bundles and abbreviated long options are not accepted.
-    See the emacsclient manual for option meanings.
-    Native help (-H, --help) prints emacsclient help without probing
-    or starting a daemon. It cannot be combined with file name.
     Other supported client options are validated but ignored for native
     help request.
     Native version requests still perform normal client-mode setup,
@@ -283,6 +293,8 @@ done
 # Validate before daemon startup.
 # The explicit list rejects target overrides, bundles, and abbreviations.
 native_help=false
+native_version=false
+native_eval=false
 validate_client_arguments()
 {
     client_operands=false
@@ -315,8 +327,18 @@ validate_client_arguments()
                 native_help=true
                 shift
                 ;;
-            -n|-q|-u|-e|-V|-t|-nw|-c|\
-            --no-wait|--quiet|--suppress-output|--eval|--version|\
+
+            -V|--version)
+                native_version=true
+                shift
+                ;;
+
+            -e|--eval)
+                native_eval=true
+                shift
+                ;;
+            -n|-q|-u|-t|-nw|-c|\
+            --no-wait|--quiet|--suppress-output|\
             --tty|--nw|--create-frame)
                 shift
                 ;;
@@ -348,6 +370,10 @@ Use a second -- before filenames that start with '-'.\n" "$1"
 
     if [ "$native_help" = "true" ] && [ "$client_operands" = "true" ]; then
         error_printf "Native emacsclient help cannot be combined with file or expression operands.\n"
+        return 1
+    fi
+    if [ "$native_version" = "true" ] && [ "$client_operands" = "true" ]; then
+        error_printf "Native emacsclient version cannot be combined with file or expression operands.\n"
         return 1
     fi
     return 0
@@ -429,19 +455,20 @@ case "${os_name}" in
                     app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
                     ;;
             esac
-            # Fail safety: use dispatcher if the selected executable does not exist
-            # in case older Emacs.app DMG is installed on the computer.
-            if [ ! -x "$app" ]; then
-                app=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
-            fi
         fi
 
         if [ ! -x "$macos_emacs" ]; then
-            error_printf "Cannot execute Emacs: %s\n" "$macos_emacs"
+            error_printf "Cannot execute Emacs: %s
+You may need to set the PEL_GE_DIR environment variable
+to point to a directory that holds a GUI-capable Emacs
+program.n" "$macos_emacs"
             exit 1
         fi
         if [ ! -x "$app" ]; then
-            error_printf "Cannot execute emacsclient: %s\n" "$app"
+            error_printf "Cannot execute emacsclient: %s
+You may need to set the PEL_GE_DIR environment variable
+to point to a directory that holds both a GUI-capable Emacs
+and a Valid Emacs Client program (like emacsclient)\n" "$app"
             exit 1
         fi
         ;;
@@ -508,6 +535,10 @@ esac
 # Run only after argument validation and executable selection.
 if [ "$native_help" = "true" ]; then
     exec "$app" --help
+    # If the shell continues after exec fails, preserve the failure status.
+    exit "$?"
+elif [ "$native_version" = "true" ]; then
+    exec "$app" --version
     # If the shell continues after exec fails, preserve the failure status.
     exit "$?"
 else
@@ -638,7 +669,14 @@ else
 
         # Daemon startup is handled above.
         # Do not start another editor if the connection fails.
-        if [ "${use_gui}" = "true" ]; then
+        #
+        # Evaluation requests do not need implicit frame or no-wait options.
+        if [ "${native_eval}" = "true" ]; then
+            exec "$app" \
+                   --socket-name="${daemon_name:-server}" \
+                   --alternate-editor=false "$@"
+
+        elif [ "${use_gui}" = "true" ]; then
             exec "$app" -c -n \
                    --socket-name="${daemon_name:-server}" \
                    --alternate-editor=false "$@"
