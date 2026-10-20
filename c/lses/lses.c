@@ -3,7 +3,7 @@
  *  Purpose   : Print information about currently running Emacs daemons.
  *  Created   : Friday, October  9 2026.
  *  Author    : Pierre Rouleau <prouleau001@gmail.com>
- *  Time-stamp: <2026-10-20 14:34:57 EDT, updated by Pierre Rouleau>
+ *  Time-stamp: <2026-10-20 15:50:56 EDT, updated by Pierre Rouleau>
  *  Copyright © 2026, Pierre Rouleau
  *  License   : GNU GPL v3
  */
@@ -700,10 +700,10 @@ usage(const char* pgm_name)
         "Usage: %s -h | --help\n\n"
         " • Print this help information.\n\n"
         "Usage: %s [-v | --verbose]\n\n"
-        " • List Emacs daemon server process currently running:\n"
-        "   their name, socket and process ID\n"
-        "   It prints nothing if none is running unless the\n"
-        "   --verbose option is specified .\n"
+        " • Report responsive Emacs daemons with their names, sockets and PIDs.\n"
+        "   Also report responsive non-daemon servers and socket problems.\n"
+        "   With --verbose, also print a summary when no responsive daemon\n"
+        "   is confirmed.\n"
         "\n"
         "Requires emacsclient from Emacs 26.1 or later in PATH.\n"
         "Searches EMACS_SOCKET_NAME, XDG_RUNTIME_DIR/emacs,\n"

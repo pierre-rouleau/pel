@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-20 14:35:52 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 15:51:52 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -27,7 +27,8 @@ following simple commands:
 
 The commands support Linux and macOS.
 The e_, ge_ and ec_ commands are POSIX shell scripts.
-The installer builds and installs the C implementation of lses_.
+The installer normally builds and installs the C implementation of lses_.
+If the build fails, it offers the less-powerful shell implementation.
 
 PEL also provides an Emacs launcher installer script that installs these
 commands in your environment.  See the `quick installation script`_ page for
@@ -498,10 +499,18 @@ The ec_ command:
 List name and sockets of all running Emacs daemon with: lses
 ------------------------------------------------------------
 
-The installed `lses`_ program checks discovered sockets and reports responsive
+The C implementation of `lses`_ checks discovered sockets and reports responsive
 Emacs daemons, including their names, socket paths and process IDs.
 It also identifies responsive non-daemon servers and reports socket problems.
 It requires ``emacsclient`` from Emacs 26.1 or later in ``PATH``.
+
+The usage and exit statuses below describe the C implementation.
+
+The shell fallback only lists discovered socket entries.
+It does not confirm that an Emacs daemon responds or report process IDs.
+It does not support ``--verbose``.
+For the shell fallback's usage, run ``lses --help`` if this the activated
+script or issue the ``bin/lses --help`` command from the PEL root directory.
 
 **Usage**::
 
@@ -513,10 +522,10 @@ It requires ``emacsclient`` from Emacs 26.1 or later in ``PATH``.
 
   Usage: lses [-v | --verbose]
 
-   • List Emacs daemon server process currently running:
-     their name, socket and process ID
-     It prints nothing if none is running unless the
-     --verbose option is specified .
+   • Report responsive Emacs daemons with their names, sockets and PIDs.
+     Also report responsive non-daemon servers and socket problems.
+     With --verbose, also print a summary when no responsive daemon
+     is confirmed.
 
   Requires emacsclient from Emacs 26.1 or later in PATH.
   Searches EMACS_SOCKET_NAME, XDG_RUNTIME_DIR/emacs,

@@ -4,22 +4,19 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-20 15:09:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-20 15:55:03 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # Creates symbolic links from ~/bin to the PEL scripts e, ge, ec,
 # is-emacs-daemon-running and is-pel-in-fast-startup.
-# Builds lses from C source and creates a link to the compiled executable.
 #
-# Also build the executable version of lses from its single C source code.
-# for that take advantage of GNU gcc ability to build an executable file from
-# a single C source file using the same name in a directory of that name.
-# The build is controlled by the GNU Make script.
-# If the lses build fails, lses will not be available, but the build is done
-# at the end to prevent blocking the installation of the other, more
-# important, scripts.
+# Builds lses from C source and creates a link to the compiled executable.
+# GNU Make uses its implicit C compilation rule to build lses.
+# Install the launcher scripts before attempting this optional build.
+# If the build fails, offer the less-powerful bin/lses shell script.
+# If the user declines, leave the existing ~/bin/lses entry unchanged.
 #
 # Tell user to put ~/bin inside PATH if it's not already there.
 
@@ -31,8 +28,10 @@
 # - ln        (POSIX)
 # - ls        (POSIX)
 # - rm        (POSIX)
-# - GNU Make and a C99-capable compiler
-# - emacsclient from Emacs 26.1 or later in PATH (lses runtime)
+# - readlink  (available on Linux and macOS)
+# - GNU Make
+# - A C99-capable compiler (to build the C implementation of lses)
+# - emacsclient from Emacs 26.1 or later in PATH (C lses runtime)
 
 # ----------------------------------------------------------------------------
 # Code
@@ -147,7 +146,7 @@ warn_if_unexpected_target()
     # Argument 2: expected absolute symlink target.
 
     # Compare stored target text, not resolved file identity.
-    # Use function positional parameters to avoid changing global variables.
+    # current_target is global; POSIX sh does not require local variables.
     if [ -L "$1" ]; then
         # Command-substitution assignment preserves readlink's exit status.
         current_target=$(readlink "$1")
@@ -247,9 +246,12 @@ else
 fi
 
 # --
-# 3. Success listing:
+# 3. List current entries:
 
-printf -- "SUCCESS!!\nInstallation of all following scripts completed!\nThey are:\n\n"
+printf -- "====================================================\n"
+printf -- 'Installation processing completed.\n'
+printf -- 'Existing entries were retained where requested.\n'
+printf -- 'Current files and symlinks:\n\n'
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
