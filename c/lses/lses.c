@@ -3,7 +3,7 @@
  *  Purpose   : Print information about currently running Emacs daemons.
  *  Created   : Friday, October  9 2026.
  *  Author    : Pierre Rouleau <prouleau001@gmail.com>
- *  Time-stamp: <2026-10-20 07:48:04 EDT, updated by Pierre Rouleau>
+ *  Time-stamp: <2026-10-20 16:10:24 EDT, updated by Pierre Rouleau>
  *  Copyright © 2026, Pierre Rouleau
  *  License   : GNU GPL v3
  */
@@ -700,14 +700,15 @@ usage(const char* pgm_name)
         "Usage: %s -h | --help\n\n"
         " • Print this help information.\n\n"
         "Usage: %s [-v | --verbose]\n\n"
-        " • List Emacs daemon server process currently running:\n"
-        "   their name, socket and process ID\n"
-        "   It prints nothing if none is running unless the\n"
-        "   --verbose option is specified .\n"
+        " • Report responsive Emacs daemons with their names, sockets and PIDs.\n"
+        "   Also report responsive non-daemon servers and socket problems.\n"
+        "   With --verbose, also print a summary when no responsive daemon\n"
+        "   is confirmed.\n"
         "\n"
         "Requires emacsclient from Emacs 26.1 or later in PATH.\n"
         "Searches EMACS_SOCKET_NAME, XDG_RUNTIME_DIR/emacs,\n"
-        "TMPDIR/emacsUID (default /tmp), and the macOS temporary fallback.\n"
+        "TMPDIR/emacsUID (default /tmp).\n"
+        "On macOS it also searches the macOS temporary fallback.\n"
         "Searches immediate directory entries only.\n"
         "\n"
         "Connection deadline: 1 second per socket.\n"
@@ -717,7 +718,8 @@ usage(const char* pgm_name)
         "Exit status:\n"
         "  0: at least one responsive Emacs daemon confirmed.\n"
         "  1: local program error or client execution failure.\n"
-        "  2: no responsive Emacs daemon confirmed.\n", pgm_name, pgm_name, pgm_name
+        "  2: no responsive Emacs daemon confirmed.\n\n"
+        "LIMITATION: %s only supports Linux and macOS.\n", pgm_name, pgm_name, pgm_name, pgm_name
     );
 }
 

@@ -6,7 +6,7 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-08 21:44:22 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 16:06:59 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -18,17 +18,43 @@ into your Unix compliant system.
 
 
 - Open a sh-compliant shell (Bash or zsh for example).
-- Execute the `pel/bin/setup/install-emacs-launcher-scripts.sh`_ script specifying its relative
-  or absolute path.
+- Create ``~/bin`` if it does not exist.
+- Ensure GNU Make is available.
+- To build the C implementation of ``lses``, provide a C99-capable compiler.
+- Put ``emacsclient`` from Emacs 26.1 or later in your ``PATH``.
 
-  - This will create symbolic links inside your ``~/bin`` directory
-    that points to the e_, ge_,  ec_ and `lses`_ scripts located in the ``pel/bin``
-    directory.
-  - It will check if the ``~/bin`` directory exists, if everything is OK to
-    proceed and will report an error otherwise.
-  - If all is OK, it will install the symbolic links inside ``~/bin`` and will
-    check if the directory is in your PATH.  If it's not it will remind you to
-    add it.
+  - The compiled ``lses`` program requires ``emacsclient`` at runtime.
+
+- Change to the root of your PEL directory.
+- Execute one of the following equivalent commands that use the
+  `pel/bin/setup/install-emacs-launcher-scripts.sh`_ script that validates
+  your environment and creates symbolic links inside your ``~/bin`` directory
+  to the PEL executable scripts.  You can use either:
+
+  - Make driven command:   ``make install-launchers``
+  - or invoke the script directly: ``bin/setup/install-emacs-launcher-scripts.sh``
+
+- The Make command invokes the shell script.
+
+  - The script creates links in ``~/bin`` to the e_, ge_, ec_,
+    ``is-emacs-daemon-running`` and ``is-pel-in-fast-startup`` scripts
+    in ``pel/bin``.
+  - It builds `lses`_ from ``pel/c/lses/lses.c`` and creates a link
+    from ``~/bin/lses`` to ``pel/c/lses/lses``.
+    If the build fails, the script asks whether to use the less-powerful
+    `pel/bin/lses`_ shell script instead.
+    If you accept, the script validates and selects the shell script.
+    Replacing an existing ``~/bin/lses`` still requires confirmation.
+    If you decline, the installer exits with status 2 and leaves
+    ``~/bin/lses`` unchanged.
+    Launcher entries processed before the build remain in place.
+  - If a destination already exists, the script asks whether to keep
+    or replace it.
+  - If the script cannot read a response to any confirmation prompt
+    because of end-of-input or a read error, it exits with status 4.
+    Changes completed before that failure remain in place.
+  - Keep the PEL directory at its installed location. The links depend on it.
+  - Add ``~/bin`` to your ``PATH`` if it is not already present.
 
 .. ---------------------------------------------------------------------------
 .. links
@@ -37,9 +63,10 @@ into your Unix compliant system.
 .. _e:  ../bin/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
-.. _lses: ../bin/lses
+.. _lses: ../c/lses/lses.c
 .. _Using the Emacs daemon and clients:  ./emacs-daemon.rst.txt
 .. _pel/bin/setup/install-emacs-launcher-scripts.sh:    ../bin/setup/install-emacs-launcher-scripts.sh
+.. _pel/bin/lses: ../bin/lses
 
 .. ---------------------------------------------------------------------------
 
