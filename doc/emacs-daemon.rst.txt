@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-19 16:47:56 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 10:34:07 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -27,6 +27,9 @@ following simple commands:
 
 The commands are POSIX shell scripts and explicitly support Linux and macOS.
 
+PEL also provides a Emacs launcher installer script that installs the above
+scripts in your environment.  See the `quick installation script`_ page for
+more information.
 
 Start Emacs in terminal mode with: e
 ------------------------------------
@@ -366,11 +369,11 @@ The ec_ command:
 - can launch multiple Emacs daemon server when using
   the ``--name`` option:
 
-  For example, use ``ec --name=PEL`` to start and connect
-  to a Emacs daemon that uses the socket named ``PEL``.
+  - For example, use ``ec --name=PEL`` to start and connect
+    to a Emacs daemon that uses the socket named ``PEL``.
 
-  - With this option it is possible to create several
-    independent *groups* of Emacs daemon/clients.
+    - With this option it is possible to create several
+      independent *groups* of Emacs daemon/clients.
 
 - supports daemon and clients in terminal mode and graphics mode.
 
@@ -530,9 +533,6 @@ Closing and Terminating Emacs
 
 For instructions on how to close/terminate the Emacs daemon and its clients, see
 the `Closing Suspending PEL PDF`_
-
-PEL also provides a Emacs launcher that installs the above scripts in your
-environment.  See the `quick installation script`_ page for more information.
 
 Test environments
 =================

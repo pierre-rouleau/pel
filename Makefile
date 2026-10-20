@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-20 07:48:58 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-20 11:43:43 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -733,8 +733,13 @@ help:
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
 	@printf "                        missing files/packages specified by pel-use.. user-options.\n"
+	@printf "\n"
+	@printf " ** Install Emacs launcher scripts:\n"
+	@printf " * make install-launchers"
+	@printf "\n"
 	@printf " ** Tools for using Emacs:\n"
 	@printf " * make c-lses        - Build lses: a C program that prints info on Emacs daemons.\n"
+	@printf "\n"
 	@printf "\n"
 	@printf " ** Emacs Update Helper:\n"
 	@printf " * make build-after-emacs-update - Recompile ALL installed elisp files.\n"
@@ -1327,6 +1332,19 @@ LSES_SUBDIR = c/lses
 
 c-lses:
 	cd $(LSES_SUBDIR) && make lses
+
+# ----------------------------------------------------------------------------
+# Install Emacs launcher scripts
+# ------------------------------
+#
+# Install the following shells scripts by creating symlinks to their PEL
+# files into the ~/bin directory: e, ge, ec, lses, is-emacs-daemon-running
+#                            and is-pel-in-fast-startup
+
+.PHONY:	install-launchers
+
+install-launchers:
+	bin/setup/install-emacs-launcher-scripts.sh
 
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
