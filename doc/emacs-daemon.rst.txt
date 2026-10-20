@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-20 10:34:07 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 14:35:52 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -25,10 +25,12 @@ following simple commands:
 - ec_   : `start Emacs daemons and their clients`_,
 - lses_ : `list name and sockets of all running Emacs daemons`_.
 
-The commands are POSIX shell scripts and explicitly support Linux and macOS.
+The commands support Linux and macOS.
+The e_, ge_ and ec_ commands are POSIX shell scripts.
+The installer builds and installs the C implementation of lses_.
 
-PEL also provides a Emacs launcher installer script that installs the above
-scripts in your environment.  See the `quick installation script`_ page for
+PEL also provides an Emacs launcher installer script that installs these
+commands in your environment.  See the `quick installation script`_ page for
 more information.
 
 Start Emacs in terminal mode with: e
@@ -496,35 +498,40 @@ The ec_ command:
 List name and sockets of all running Emacs daemon with: lses
 ------------------------------------------------------------
 
-The lses_ command lists the names and socket path for all currently running
-Emacs daemons.  On a system with two Emacs daemon (the default one and another
-named 'work'), the output is something like the following::
-
-  zsh% lses
-  -> Daemon Running: [Name: server] [Path: /var/folders/xz/zsb6i74n5431mmmn/T/emacs501/server]
-  -> Daemon Running: [Name: work]   [Path: /var/folders/xz/zsb6i74n5431mmmn/T/emacs501/work]
+The installed `lses`_ program checks discovered sockets and reports responsive
+Emacs daemons, including their names, socket paths and process IDs.
+It also identifies responsive non-daemon servers and reports socket problems.
+It requires ``emacsclient`` from Emacs 26.1 or later in ``PATH``.
 
 **Usage**::
 
-   lses -- List currently running Emacs daemon server/sockets
+  lses -- List current Emacs daemon servers & sockets.
 
-    Usage: lses -h | --help
+  Usage: lses -h | --help
 
-     • Print this help information.
+   • Print this help information.
 
-    Usage: lses
+  Usage: lses [-v | --verbose]
 
-     • Print names and path of currently running Emacs daemon sockets
-       on stdout.
-       - Supports the EMACS_SOCKET_NAME environment variable, if defined.
+   • List Emacs daemon server process currently running:
+     their name, socket and process ID
+     It prints nothing if none is running unless the
+     --verbose option is specified .
 
-       This script returns the following exit code values:
-       - 0: one or more daemon socket is found.
-       - 2: No Emacs daemon socket found.
+  Requires emacsclient from Emacs 26.1 or later in PATH.
+  Searches EMACS_SOCKET_NAME, XDG_RUNTIME_DIR/emacs,
+  TMPDIR/emacsUID (default /tmp).
+  On macOS it also searches the macOS temporary fallback.
+  Searches immediate directory entries only.
 
+  Connection deadline: 1 second per socket.
+  Emacs response deadline: 3 seconds per socket.
+  Never starts Emacs or deletes discovered sockets.
 
-   LIMITATION:  Supports Linux and macOS.
-                No explicit check for Windows or other OS.
+  Exit status:
+    0: at least one responsive Emacs daemon confirmed.
+    1: local program error or client execution failure.
+    2: no responsive Emacs daemon confirmed.
 
 .. ---------------------------------------------------------------------------
 
@@ -784,7 +791,7 @@ install emacs`` command::
 .. _e:  ../bin/e
 .. _ge: ../bin/ge
 .. _ec: ../bin/ec
-.. _lses: ../bin/lses
+.. _lses: ../c/lses/lses.c
 .. _Closing Suspending PEL PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/closing-suspending.pdf
 .. _quick installation script: ./install_e_ge_ec.rst.txt
 .. _exec-path-from-shell: https://github.com/purcell/exec-path-from-shell

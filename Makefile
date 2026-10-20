@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-20 11:43:43 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-20 14:08:40 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -1331,15 +1331,16 @@ LSES_SUBDIR = c/lses
 .PHONY:	c-lses
 
 c-lses:
-	cd $(LSES_SUBDIR) && make lses
+	$(MAKE) -C "$(LSES_SUBDIR)" lses
 
 # ----------------------------------------------------------------------------
 # Install Emacs launcher scripts
 # ------------------------------
 #
-# Install the following shells scripts by creating symlinks to their PEL
-# files into the ~/bin directory: e, ge, ec, lses, is-emacs-daemon-running
-#                            and is-pel-in-fast-startup
+# - Create symlinks in ~/bin to the PEL scripts e, ge, ec,
+#   is-emacs-daemon-running and is-pel-in-fast-startup.
+# - Build lses from C source and create a symlink to the compiled executable.
+
 
 .PHONY:	install-launchers
 

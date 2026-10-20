@@ -3,7 +3,7 @@
  *  Purpose   : Print information about currently running Emacs daemons.
  *  Created   : Friday, October  9 2026.
  *  Author    : Pierre Rouleau <prouleau001@gmail.com>
- *  Time-stamp: <2026-10-20 07:48:04 EDT, updated by Pierre Rouleau>
+ *  Time-stamp: <2026-10-20 14:34:57 EDT, updated by Pierre Rouleau>
  *  Copyright © 2026, Pierre Rouleau
  *  License   : GNU GPL v3
  */
@@ -707,7 +707,8 @@ usage(const char* pgm_name)
         "\n"
         "Requires emacsclient from Emacs 26.1 or later in PATH.\n"
         "Searches EMACS_SOCKET_NAME, XDG_RUNTIME_DIR/emacs,\n"
-        "TMPDIR/emacsUID (default /tmp), and the macOS temporary fallback.\n"
+        "TMPDIR/emacsUID (default /tmp).\n"
+        "On macOS it also searches the macOS temporary fallback.\n"
         "Searches immediate directory entries only.\n"
         "\n"
         "Connection deadline: 1 second per socket.\n"
