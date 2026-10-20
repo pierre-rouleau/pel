@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-18 15:48:28 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-20 07:31:08 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -733,6 +733,8 @@ help:
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
 	@printf " * make stats         - Load all PEL files & compute PEL statistics.  Also installs\n"
 	@printf "                        missing files/packages specified by pel-use.. user-options.\n"
+	@printf " ** Tools for using Emacs:\n"
+	@printf " * make c-lses        - Build lses: a C program that prints info on Emacs daemons.\n"
 	@printf "\n"
 	@printf " ** Emacs Update Helper:\n"
 	@printf " * make build-after-emacs-update - Recompile ALL installed elisp files.\n"
@@ -1310,6 +1312,19 @@ lint-strict: lint
 			 --no-package-format --no-package-lint --no-fill-column $(EL_FILES) pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
 			 --no-package-lint --no-fill-column pel.el
+
+# ----------------------------------------------------------------------------
+# Tools : lses written in C
+# -------------------------
+#
+# The c/lses/lses.c file is a single file C program.
+# It can be compiled and linked by GNU Make by issuing the command `make lses`
+# from within its directory; that's a feature of GNU Make.
+
+LSES_SUBDIR = c/lses
+
+c-lses:
+	cd $(LSES_SUBDIR) && make lses
 
 # -----------------------------------------------------------------------------
 # Dependency rule to create the directory used for creating a Tar file and
