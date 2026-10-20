@@ -3,7 +3,7 @@
  *  Purpose   : Print information about currently running Emacs daemons.
  *  Created   : Friday, October  9 2026.
  *  Author    : Pierre Rouleau <prouleau001@gmail.com>
- *  Time-stamp: <2026-10-20 15:50:56 EDT, updated by Pierre Rouleau>
+ *  Time-stamp: <2026-10-20 16:10:24 EDT, updated by Pierre Rouleau>
  *  Copyright © 2026, Pierre Rouleau
  *  License   : GNU GPL v3
  */
@@ -718,7 +718,8 @@ usage(const char* pgm_name)
         "Exit status:\n"
         "  0: at least one responsive Emacs daemon confirmed.\n"
         "  1: local program error or client execution failure.\n"
-        "  2: no responsive Emacs daemon confirmed.\n", pgm_name, pgm_name, pgm_name
+        "  2: no responsive Emacs daemon confirmed.\n\n"
+        "LIMITATION: %s only supports Linux and macOS.\n", pgm_name, pgm_name, pgm_name, pgm_name
     );
 }
 

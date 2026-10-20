@@ -6,7 +6,7 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-20 15:41:06 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 16:06:59 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -50,6 +50,9 @@ into your Unix compliant system.
     Launcher entries processed before the build remain in place.
   - If a destination already exists, the script asks whether to keep
     or replace it.
+  - If the script cannot read a response to any confirmation prompt
+    because of end-of-input or a read error, it exits with status 4.
+    Changes completed before that failure remain in place.
   - Keep the PEL directory at its installed location. The links depend on it.
   - Add ``~/bin`` to your ``PATH`` if it is not already present.
 
