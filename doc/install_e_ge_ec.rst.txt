@@ -6,7 +6,7 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-20 11:49:57 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 12:22:36 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -25,7 +25,7 @@ into your Unix compliant system.
   to the PEL executable scripts.  You can use either:
 
   - Make driven command:   ``make install-launchers``
-  - or invoke the script directly: ``pel/bin/setup/install-emacs-launcher-scripts.sh``
+  - or invoke the script directly: ``bin/setup/install-emacs-launcher-scripts.sh``
 
 - The Make command invokes the shell script.
 

@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-20 11:51:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-20 12:22:14 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -133,7 +133,7 @@ install_file()
         if [ ! "$prompt_yn_return" = "y" ]; then
             prompt_yn "Delete old [$HOME/bin/$1], and install a new symlink (Ctrl-C aborts)" || exit 4
             if [ "$prompt_yn_return" = "y" ]; then
-                rm -f "$HOME/bin/$1"
+                rm -f "$HOME/bin/$1" || exit 3
                 install_symlink_for "$1"
             fi
         fi
@@ -174,7 +174,7 @@ if [ -e "$HOME/bin/lses" ] || [ -L "$HOME/bin/lses" ]; then
     if [ ! "$prompt_yn_return" = "y" ]; then
         prompt_yn "Delete that old file, and install a new symlink" || exit 4
         if [ "$prompt_yn_return" = "y" ]; then
-            rm -f "$HOME/bin/lses"
+            rm -f "$HOME/bin/lses" || exit 3
             ln -s "${pel_dirpath}/c/lses/lses" "$HOME/bin/lses"  || exit 1
         fi
     fi
