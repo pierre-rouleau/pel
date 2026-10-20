@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-20 07:31:08 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-20 07:48:58 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -1322,6 +1322,8 @@ lint-strict: lint
 # from within its directory; that's a feature of GNU Make.
 
 LSES_SUBDIR = c/lses
+
+.PHONY:	c-lses
 
 c-lses:
 	cd $(LSES_SUBDIR) && make lses

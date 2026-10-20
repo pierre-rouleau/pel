@@ -3,7 +3,7 @@
  *  Purpose   : Print information about currently running Emacs daemons.
  *  Created   : Friday, October  9 2026.
  *  Author    : Pierre Rouleau <prouleau001@gmail.com>
- *  Time-stamp: <2026-10-10 18:55:20 EDT, updated by Pierre Rouleau>
+ *  Time-stamp: <2026-10-20 07:48:04 EDT, updated by Pierre Rouleau>
  *  Copyright © 2026, Pierre Rouleau
  *  License   : GNU GPL v3
  */
@@ -57,6 +57,10 @@
 /* Control what is provided by system headers */
 #define _POSIX_C_SOURCE 200809L
 #define _XOPEN_SOURCE   700
+#ifdef __APPLE__
+#define _DARWIN_C_SOURCE       /* exposes _CS_DARWIN_USER_TEMP_DIR */
+                               /* to scan Darwin per-user temporary directory when TMPDIR is unset */
+#endif
 
 /* Include system headers */
 #include <ctype.h>
@@ -698,7 +702,7 @@ usage(const char* pgm_name)
         "Usage: %s [-v | --verbose]\n\n"
         " • List Emacs daemon server process currently running:\n"
         "   their name, socket and process ID\n"
-        "   It prints noting if none is running unless the\n"
+        "   It prints nothing if none is running unless the\n"
         "   --verbose option is specified .\n"
         "\n"
         "Requires emacsclient from Emacs 26.1 or later in PATH.\n"
@@ -763,6 +767,17 @@ main(int argc, char **argv)
              (unsigned long)getuid());
 
 
+    /* An inherited SIG_IGN would auto-reap children and break waitpid(). */
+    /* exec keeps an ignored SIGCHLD disposition. If a parent process starts
+     * lses with SIGCHLD set to SIG_IGN, the kernel reaps emacsclient
+     * automatically. waitpid(child, &status, WNOHANG) then fails with ECHILD,
+     * and the code takes goto failed. Every responsive socket then shows as
+     * "emacsclient or response capture failed", and the exit status becomes
+     * 2. Some service managers and scripts start programs this way. Restore the
+     * default disposition once.
+     */
+    signal(SIGCHLD, SIG_DFL);
+
     add_explicit_socket(selected);
     scan_directory(selected);
 
@@ -776,7 +791,7 @@ main(int argc, char **argv)
     scan_directory(path);
     free(path);
 
-    #if defined(__APPLE__) && defined(_CS_DARWIN_USER_TEMP_DIR)
+#if defined(__APPLE__) && defined(_CS_DARWIN_USER_TEMP_DIR)
     {
         size_t size = confstr(_CS_DARWIN_USER_TEMP_DIR, NULL, 0);
 
@@ -796,7 +811,7 @@ main(int argc, char **argv)
             free(base);
         }
     }
-    #endif
+#endif
 
     if (sockets.count > 1)
         qsort(sockets.items, sockets.count,
