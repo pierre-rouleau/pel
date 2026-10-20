@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-20 14:29:55 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-20 15:09:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -230,7 +230,7 @@ fi
 if [ -e "$HOME/bin/lses" ] || [ -L "$HOME/bin/lses" ]; then
     printf -- "***INFO: File [%s] already exists.\n" "$HOME/bin/lses"
     printf '   Selected target: [%s]\n' "$lses_target"
-    warn_if_unexpected_target "$HOME/bin/lses" "${pel_dirpath}/c/lses/lses"
+    warn_if_unexpected_target "$HOME/bin/lses" "$lses_target"
     printf -- "   Was this already installed?\n"
     prompt_yn "   Keep this existing entry instead of installing the selected target" || exit 4
     if [ ! "$prompt_yn_return" = "y" ]; then
@@ -265,8 +265,16 @@ fi
 
 printf -- "\nFor help on these commands use their -h or --help command line option.\n"
 printf -- "\
-   e -- --help is emacs --help.
-   e opens an independent emacs process in terminal mode.
+   e   :  opens an independent emacs process in terminal mode.
+   ge  :  opens an independent emacs process in GUI mode.
+   ec  :  open/check Emacs server and client in terminal or GUI mode.
+   lses:  list Emacs daemon sockets.
+
+Other scripts are also available:
+
+ is-emacs-daemon-running: report if Emacs daemon is running or not.
+ is-pel-in-fast-startup : check and report whether Emacs is using
+                          PEL Fast Startup Mode.
 \n\n"
 
 # ----------------------------------------------------------------------------

@@ -6,7 +6,7 @@ Install the Emacs launcher shortcut scripts
 :Project: `PEL -- Pragmatic Emacs Leverage`_
 :Created:  Wednesday, May 29 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-20 13:55:17 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-20 15:08:24 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -39,7 +39,9 @@ into your Unix compliant system.
     ``is-emacs-daemon-running`` and ``is-pel-in-fast-startup`` scripts
     in ``pel/bin``.
   - It builds `lses`_ from ``pel/c/lses/lses.c`` and creates a link
-    from ``~/bin/lses`` to ``pel/c/lses/lses``.
+    from ``~/bin/lses`` to ``pel/c/lses/lses``.  If the build fails
+    due to lack of local C compiler, the script installs symbolic link
+    to the less powerful `pel/bin/lses`_ script.
   - If a destination already exists, the script asks whether to keep
     or replace it.
   - Keep the PEL directory at its installed location. The links depend on it.
@@ -55,6 +57,7 @@ into your Unix compliant system.
 .. _lses: ../c/lses/lses.c
 .. _Using the Emacs daemon and clients:  ./emacs-daemon.rst.txt
 .. _pel/bin/setup/install-emacs-launcher-scripts.sh:    ../bin/setup/install-emacs-launcher-scripts.sh
+.. _pel/bin/lses: ../bin/lses
 
 .. ---------------------------------------------------------------------------
 
