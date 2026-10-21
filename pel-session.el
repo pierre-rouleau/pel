@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-09 08:03:38 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-20 23:15:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -27,6 +27,48 @@
 ;;
 ;; This file holds the logic to provide UI-driven customization of the
 ;; selection of easysession.
+
+;; Table of Content
+;; ================
+;;
+;; The following code hierarchy uses the following separator markers to
+;; identify the type of the functions:
+;;
+;;  - normal function,
+;;  ~ hooked function,
+;;  * interactive function
+;;
+;; The code supports the older desktop system and the newer easysession.el
+;; package.  PEL creates key bindings to dispatcher interactive functions to
+;; load and save sessions: `pel-session-load' and `pel-session-save'.
+;;
+;;
+;;
+;;   - `pel-easysession-config'
+;;     ~ `pel--easysession-only-main-saved'
+;;     ~ `pel--easysession-kill-all-buffers'
+;;     ~ `pel--easysession-relevant-buffers'
+;;
+;;   * `pel-easysession-toggle-save-on-switch'
+;;   * `pel-easysession-toggle-save-on-exit'
+;;   - `pel-easysession-name-for'
+;;   * `pel-easysession-save-session-in-catalog'
+;;   - `pel--easysession-load'
+;;   ~ `pel-easysession-load-by-env'
+;;
+;;   * `pel-easysession-reset'
+;;
+;;   * `pel-session-save'
+;;     - `pel--with-easysession-p'
+;;     - `pel-easysession-save'
+;;     * `pel-desktop-save'
+;;
+;;   * `pel-session-load'
+;;     - `pel--with-easysession-p'
+;;     - `pel-easysession-load'
+;;     * `pel-desktop-load'
+;;
+;;   * `pel-session-show'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -64,6 +106,7 @@
 (declare-function easysession-save-mode                      "easysession")
 (declare-function easysession-reset                          "easysession")
 
+(defvar easysession-scratch-mode)
 (defvar easysession-mode-line-misc-info)
 (defvar easysession-new-session-hook)
 (defvar easysession-switch-to-save-session)
@@ -80,6 +123,14 @@
 
 (defvar pel-emacs-launch-directory)
 
+;; --
+;; Variables
+
+(defvar pel-easysession-was-used-p nil
+  "Non-nil when an easysession command was used.")
+
+
+;; --
 
 (defun pel--easysession-only-main-saved ()
   "Only save the main session."
@@ -126,8 +177,6 @@ Note: this also exclude the remote Tramp-accessed file buffers.
 
 ;; --
 
-(defvar easysession-scratch-mode)
-
 ;;-pel-autoload
 (defun pel-easysession-config (cfg)
   "Configure easysession according to its CFG.
@@ -152,6 +201,7 @@ easysession is loaded."
         (setq easysession-save-interval (* 60 elm)))))
   ;; Always activate automatic session save
   (easysession-save-mode 1)
+  (setq pel-easysession-was-used-p t)
   ;; The remainder of the list is a set of options.
   (dolist (elm (cadr cfg))
     ;; (message "PEL pel-easysession-config: check %S" elm)
@@ -416,6 +466,7 @@ loop and retry up to 5 times using exponential backoff."
           (easysession-load-including-geometry session-name)
         (easysession-switch-to session-name)))))
 
+;;-pel-autoload
 (defun pel-easysession-load-by-env ()
   "Load session identified by PEL_SESSION environment variable.
 
@@ -423,9 +474,11 @@ If the environment variable does not exist, no loading is done.
 To auto-load the main session, set PEL_SESSION to \"main\".
 To auto-load the session associated with the directory that was the current
 working directory when Emacs was started, set PEL_SESSION to \".\"."
-  (require 'easysession)
-  (let* ((env-session-name (getenv "PEL_SESSION")))
-    (unless (string-empty-p env-session-name)
+  (let ((env-session-name (getenv "PEL_SESSION")))
+    (when (and env-session-name
+               (not (string-empty-p env-session-name)))
+      (require 'easysession)
+      (setq pel-easysession-was-used-p t)
       (if (string= env-session-name ".")
           ;; If PEL_SESSION is ".", extract the session name associated with
           ;; the current working directory from PEL session catalog.
@@ -439,6 +492,7 @@ working directory when Emacs was started, set PEL_SESSION to \".\"."
   "Save the easysession name, prompt for settings."
   (interactive)
   (require 'easysession)
+  (setq pel-easysession-was-used-p t)
   (let ((name (pel-prompt "Session name"
                           'pel-easysession-name
                           nil
@@ -465,6 +519,7 @@ When Emacs is running in terminal mode, all frames are in the same OS window
 and geometry does not apply; the function does not prompt."
   (interactive)
   (require 'easysession)
+  (setq pel-easysession-was-used-p t)
   (if (and (display-graphic-p)
            (y-or-n-p "Restore geometry"))
       (call-interactively #'easysession-switch-to-and-restore-geometry)
@@ -474,6 +529,7 @@ and geometry does not apply; the function does not prompt."
   "Prompt before resetting session and closing all buffers."
   (interactive)
   (when (y-or-n-p "Reset the session and close all buffers/window/tab/frames?")
+    (setq pel-easysession-was-used-p t)
     (easysession-reset)))
 
 ;; ---------------------------------------------------------------------------
@@ -488,6 +544,7 @@ and geometry does not apply; the function does not prompt."
 (declare-function desktop+-load-auto   "desktop+")
 (declare-function desktop+-load        "desktop+")
 
+;;-pel-autoload
 (defun pel-desktop-save ()
   "Save a desktop with desktop+ command is used, or with desktop."
   (interactive)
@@ -501,6 +558,7 @@ and geometry does not apply; the function does not prompt."
     ;; Using desktop command
     (call-interactively #'desktop-save)))
 
+;;-pel-autoload
 (defun pel-desktop-load ()
   "Load a desktop with desktop+ command is used, or with desktop."
   (interactive)
@@ -515,15 +573,8 @@ and geometry does not apply; the function does not prompt."
     (call-interactively #'desktop-read)))
 
 ;; ---------------------------------------------------------------------------
-;; Adaptive Commands
-;; =================
-
-(defun pel-session-show ()
-  "Display name of currently used desktop if any."
-  (interactive)
-  (if (bound-and-true-p desktop-dirname)
-      (message "Last loaded desktop: %s" desktop-dirname)
-    (user-error "No desktop currently loaded!")))
+;; Dispatching Commands
+;; ====================
 
 (defun pel--with-easysession-p ()
   "Return t to use easysession commands, nil otherwise.
@@ -535,6 +586,7 @@ Prompt if both are active."
    (pel-use-easysession t)
    (t nil)))
 
+;;-pel-autoload
 (defun pel-session-save ()
   "Save a session using the current session manager.
 Use easysession or desktop operations, depending on which is available.
@@ -544,6 +596,7 @@ Prompt if both are available."
       (pel-easysession-save)
     (pel-desktop-save)))
 
+;;-pel-autoload
 (defun pel-session-load ()
   "Load a session using the current session manager.
 Use easysession or desktop operations, depending on which is available.
@@ -552,6 +605,58 @@ Prompt if both are available."
   (if (pel--with-easysession-p)
       (pel-easysession-load)
     (pel-desktop-load)))
+
+;; ---------------------------------------------------------------------------
+;; Status
+;; ======
+
+;;-pel-autoload
+(defun pel-session-show (&optional append)
+  "Display name of currently used desktop if any."
+  (interactive "P")
+
+  (pel-print-in-buffer
+   "*pel-session-info*"
+   "PEL setup for Emacs Session Management"
+   (lambda ()
+     "Print Emacs session management status & configuration."
+     (pel-insert-bold "Overview\n")
+     (pel-insert-bold "========\n")
+     (insert (format "\
+PEL Emacs session management can be controlled by desktop packages
+or the newer and more powerful easysession.el package.
+You can activate both types and use both at the same time.
+However, automatic session loading and directory based session
+control is is only done with easysession.el.\n\n"))
+     (pel-insert-bold "Current State\n")
+     (pel-insert-bold "=============\n")
+     (insert "* Desktop session:\n")
+     (if (bound-and-true-p desktop-dirname)
+         (insert (format "   Last loaded desktop: %s\n" desktop-dirname))
+       (insert (format "   No desktop currently loaded.\n")))
+     (insert "* easysession.el session:")
+     (if pel-easysession-was-used-p
+         (let ((session-name (easysession-get-session-name)))
+           (insert "\n")
+           (if session-name
+               (insert (format "   easysession session: %s\n" session-name))
+             (insert "   No easysession session active\n")))
+       (pel-insert-bold " none loaded yet.\n"))
+     ;;
+     (insert "\n")
+     (pel-insert-bold "Configuration\n")
+     (pel-insert-bold "=============\n")
+     (insert (format "\
+Activate the desktop-based and/or easysession.el package via the following
+two user-options:"))
+     (pel-insert-symbol-content-line 'pel-use-desktop)
+     (pel-insert-list-content 'pel-use-easysession)
+     (insert (format "\n\n\
+Activate automatic session loading with the following user-options:"))
+     (pel-insert-symbol-content-line 'pel-easysession-autoload)
+     (pel-insert-symbol-content-line 'pel-easysession-catalog-filename))
+   (unless append :clear-buffer)
+   :use-help-mode))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-session)
