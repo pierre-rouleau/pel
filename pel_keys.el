@@ -11385,7 +11385,10 @@ See `flyspell-auto-correct-previous-word' for more info."
     (when (daemonp)
       (define-key pel:easysession-cfg (kbd "M-c") 'easysession-save-session-and-close-frames))
 
-    (when pel-easysession-autoload
+    (when (and pel-easysession-autoload
+               (not (daemonp)))
+      ;; Only standalone Emacs processes honor the startup session request.
+      ;; --> prevents an inherited PEL_SESSION from making ec load a session when it starts a daemon.
       ;; Auto-load session named by PEL_SESSION environment var.
       ;; Add the function at the very very end of the list (that's what 102 is for)
       (add-hook 'emacs-startup-hook 'pel-easysession-load-by-env  102))
@@ -11399,6 +11402,8 @@ See `flyspell-auto-correct-previous-word' for more info."
         ;; The first element of the set is the delay time, pass remainder of
         ;; the list.
         (pel-easysession-config pel-use-easysession)
+        (when (boundp 'easysession-setup-load-predicate)
+          (setq easysession-setup-load-predicate #'ignore))
         (easysession-setup)))))
 
 ;; -----------------------------------------------------------------------------

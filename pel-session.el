@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-20 22:55:46 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-20 23:15:48 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -123,6 +123,14 @@
 
 (defvar pel-emacs-launch-directory)
 
+;; --
+;; Variables
+
+(defvar pel-easysession-was-used-p nil
+  "Non-nil when an easysession command was used.")
+
+
+;; --
 
 (defun pel--easysession-only-main-saved ()
   "Only save the main session."
@@ -444,9 +452,6 @@ loop and retry up to 5 times using exponential backoff."
 
 ;; --
 
-(defvar pel-easysession-was-used-p nil
-  "Non-nil when an easysession command was used.")
-
 (defun pel--easysession-load (session-name)
   "Load SESSION-NAME with activated options."
   ;; (message "pel--easysession-load: name=%S" session-name)
@@ -469,9 +474,10 @@ If the environment variable does not exist, no loading is done.
 To auto-load the main session, set PEL_SESSION to \"main\".
 To auto-load the session associated with the directory that was the current
 working directory when Emacs was started, set PEL_SESSION to \".\"."
-  (require 'easysession)
-  (let* ((env-session-name (getenv "PEL_SESSION")))
-    (unless (string-empty-p env-session-name)
+  (let ((env-session-name (getenv "PEL_SESSION")))
+    (when (and env-session-name
+               (not (string-empty-p env-session-name)))
+      (require 'easysession)
       (setq pel-easysession-was-used-p t)
       (if (string= env-session-name ".")
           ;; If PEL_SESSION is ".", extract the session name associated with
@@ -628,12 +634,14 @@ control is is only done with easysession.el.\n\n"))
      (if (bound-and-true-p desktop-dirname)
          (insert (format "   Last loaded desktop: %s\n" desktop-dirname))
        (insert (format "   No desktop currently loaded.\n")))
-     (insert "* easysession.el session:\n")
-     (when pel-easysession-was-used-p
-       (let ((session-name (easysession-get-session-name)))
-         (if session-name
-             (insert (format "   easysession session: %s\n" session-name))
-           (insert "   No easysession session active\n"))))
+     (insert "* easysession.el session:")
+     (if pel-easysession-was-used-p
+         (let ((session-name (easysession-get-session-name)))
+           (insert "\n")
+           (if session-name
+               (insert (format "   easysession session: %s\n" session-name))
+             (insert "   No easysession session active\n")))
+       (pel-insert-bold " none loaded yet.\n"))
      ;;
      (insert "\n")
      (pel-insert-bold "Configuration\n")
@@ -646,13 +654,9 @@ two user-options:"))
      (insert (format "\n\n\
 Activate automatic session loading with the following user-options:"))
      (pel-insert-symbol-content-line 'pel-easysession-autoload)
-     (pel-insert-symbol-content-line 'pel-easysession-catalog-filename)
-
-     )
+     (pel-insert-symbol-content-line 'pel-easysession-catalog-filename))
    (unless append :clear-buffer)
-   :use-help-mode)
-
-  )
+   :use-help-mode))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-session)
