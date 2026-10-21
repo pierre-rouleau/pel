@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-19 16:48:14 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-21 08:55:47 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -28,7 +28,13 @@
 # Code
 # ----
 #
-pgm_name="$(basename "$0")"
+
+pgm_name="${0##*/}"
+
+# Remember how Emacs got invoked. Can be used by PEL.
+PEL_EMACS_LAUNCHER_COMMAND="$pgm_name $*"
+export PEL_EMACS_LAUNCHER_COMMAND
+
 os_name="$(uname)"
 print_usage()
 {

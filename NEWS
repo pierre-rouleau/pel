@@ -1,6 +1,16 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Improved all 3 Emacs launcher commands: *e*, *ge* and *ec*:
+  - *e* and *ge* now accept a =-s [SESSION-NAME]= argument to automatically
+    load a session by name or a session associated with the directory that was
+    the current working directory when the command is issued.  The *ec* command
+    does not support auto-loading of sessions that way, but that can be done
+    from withing Emacs using the session management commands.
+  - The 3 commands remember their launching command line inside the
+    *PEL_EMACS_LAUNCHER_COMMAND* environment variable allowing the new
+    *pel-emacs-version-info* command, bound to ~<f11> ? e V~ to display the typed
+    command line and the real Emacs command line used.
 - The *pel-set-auto-mode* macro input semantics changed: it now takes a list of
   file names or file extensions and generates an optimized regular expression for the
   provided list.  PEL now generates a shorter *auto-mode-alist* that should also be

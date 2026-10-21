@@ -317,6 +317,45 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
       (declare-function debbugs-browse-url "debugs-browse")
       (debbugs-browse-url url))))
 
+;; ---------------------------------------------------------------------------
+
+(defun pel-emacs-version-info (&optional append)
+  "Display information about currently running Emacs."
+  (interactive "P")
+  (pel-print-in-buffer
+   "*pel-session-info*"
+   "PEL setup for Emacs Session Management"
+   (lambda ()
+     "Print Emacs session management status & configuration."
+     (pel-insert-bold "Overview\n")
+     (pel-insert-bold "========\n")
+     (pel-insert-symbol-content-line 'emacs-version)
+     (pel-insert-symbol-content-line 'user-emacs-directory)
+     (pel-insert-symbol-content-line 'system-configuration)
+     (pel-insert-value-info "Emacs executable" (expand-file-name
+                                                invocation-name
+                                                invocation-directory))
+     (let ((cmdline (getenv "PEL_EMACS_LAUNCHER_COMMAND")))
+       (when (and (stringp cmdline)
+                  (not (string-empty-p cmdline)))
+         (pel-insert-value-info "PEL Emacs launch command line" (string-trim cmdline))))
+     (pel-insert-value-info "Real Emacs command line used"
+                            (car-safe
+                             (process-lines-ignore-status "ps" "-o"
+                                                          "args="
+                                                          "-p"
+                                                          (number-to-string
+                                                           (emacs-pid)))))
+     (pel-insert-value-info "Emacs daemon client?" (pel-yes-no-string (daemonp)))
+     (pel-insert-value-info "Process ID" (number-to-string (emacs-pid)))
+     (pel-insert-value-info "Configuration features"
+                            (pel-emacs-config-features-string))
+     (pel-insert-value-info "TreeSitter available" (pel-yes-no-string (treesit-available-p)))
+     (pel-insert-list-content 'treesit-extra-load-path)
+
+     )
+   (unless append :clear-buffer)
+   :use-help-mode))
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
 

@@ -8145,6 +8145,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 (define-key pel:emacs "t"  'pel-show-init-time)
 (define-key pel:emacs "u" #'emacs-uptime)
 (define-key pel:emacs "v" #'emacs-version)
+(define-key pel:emacs "V"  'pel-emacs-version-info)
 (define-key pel:emacs "x"  'pel-emacs-executable)
 (define-key pel:emacs "?"  'pel-package-info)
 (define-key pel:emacs "."  'pel-syntax-at-point)
