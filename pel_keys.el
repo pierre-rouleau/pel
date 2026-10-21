@@ -240,7 +240,7 @@
 (require 'pel-autoload)
 (if (fboundp 'pel--autoload-init)
     (pel--autoload-init)
-  (message "ERROR! pel--autoload-init is not bound!"))
+  (display-warning 'pel_keys "pel--autoload-init is not bound!" :error))
 
 ;; ---------------------------------------------------------------------------
 ;;* Control Emacs prompting
@@ -275,13 +275,17 @@
       (let ((src-subdir-name (expand-file-name "src" pel-emacs-source-directory)))
         (if (file-directory-p src-subdir-name)
             (setq source-directory pel-emacs-source-directory)
-          (message "\
+          (display-warning 'pel_keys
+                           (format "\
 Can't set Emacs source directory using %s : %s is not a directory!"
-                   pel-emacs-source-directory
-                   src-subdir-name)))
-    (message "\
+                                   pel-emacs-source-directory
+                                   src-subdir-name)
+                           :error)))
+    (display-warning 'pel_keys
+                     (format "\
 Can't set Emacs source directory using %s : it's not a directory!"
-             pel-emacs-source-directory)))
+                             pel-emacs-source-directory)
+                     :error)))
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL Modifier keys on different OS
@@ -6639,9 +6643,22 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (pel-ensure-package-elpa verilog-ts-mode from: melpa)
       ;; Once installed & loaded, use it to install its verilog grammar.
       (unless (pel-treesit-language-available-p 'systemverilog)
-        (when (fboundp 'verilog-ts-install-grammar)
-          (message "Install SystemVerilog tree-sitter grammar...")
-          (verilog-ts-install-grammar))))
+        (display-warning
+         'pel_keys
+         (format
+          "\
+Compatible Tree-Sitter grammar for systemverilog is not available.%s"
+          (if (fboundp 'treesit-library-abi-version)
+              (format "
+\tAPI version supported by Emacs       : [%s,%s]
+\tCheck the version of systemverilog grammar available."
+                      (treesit-library-abi-version :minimal)
+                      (treesit-library-abi-version))
+            ""))
+         :warning)))
+        ;; (when (fboundp 'verilog-ts-install-grammar)
+        ;;   (message "Install SystemVerilog tree-sitter grammar...")
+      ;;   (verilog-ts-install-grammar))
 
     ;; Install/use other external package when requested.
     (when pel-use-verilog-ext
@@ -8214,9 +8231,10 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 
 (when (boundp 'pel-use-helm_descbinds)
   (setq pel-use-helm-descbinds pel-use-helm_descbinds)
-  (message "\
+  (display-warning 'pel_keys "\
 PEL CUSTOMIZATION WARNING: Please rename pel-use-helm_descbinds \
-to pel-use-helm-descbinds"))
+to pel-use-helm-descbinds"
+                   :warning))
 (when pel-use-helm-descbinds
   (pel-ensure-package-elpa helm-descbinds from: melpa)
   (when (eq pel-use-helm-descbinds 'bind-to-F1-b)
