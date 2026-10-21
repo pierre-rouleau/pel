@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-09 08:22:17 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-21 08:55:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -20,7 +20,12 @@
 # ----
 #
 
+
 pgm_name="${0##*/}"
+
+# Remember how Emacs got invoked. Can be used by PEL.
+PEL_EMACS_LAUNCHER_COMMAND="$pgm_name $*"
+export PEL_EMACS_LAUNCHER_COMMAND
 
 print_usage()
 {

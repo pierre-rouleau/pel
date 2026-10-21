@@ -2973,6 +2973,12 @@ Insert the SYMBOL name as a clickable button unless NO-BUTTON is non-nil."
         (insert name)))))
 
 
+(defun pel-insert-value-info (title value)
+  "Insert -NAME : VALUE line."
+  (insert (format "\n- %s%s: %s"
+                  title
+                  (make-string (max 0 (- 40 (length title))) ?\s)
+                  value)))
 
 (defun pel-insert-symbol-content (symbol &optional
                                          buffer on-same-line

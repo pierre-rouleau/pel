@@ -401,7 +401,8 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-emacs-command-stats
     pel-emacs-buffer-stats
     pel-emacs-config-features
-    pel-emacs-bug-info)
+    pel-emacs-bug-info
+    pel-emacs-version-info)
 
   (pel-autoload "pel-emacs-analyze" for:
     pel-show-lisp-control-variables)
