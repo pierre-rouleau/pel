@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-20 22:44:04 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-20 22:55:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -193,6 +193,7 @@ easysession is loaded."
         (setq easysession-save-interval (* 60 elm)))))
   ;; Always activate automatic session save
   (easysession-save-mode 1)
+  (setq pel-easysession-was-used-p t)
   ;; The remainder of the list is a set of options.
   (dolist (elm (cadr cfg))
     ;; (message "PEL pel-easysession-config: check %S" elm)
