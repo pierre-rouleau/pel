@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-21 08:55:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-21 10:15:43 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -675,6 +675,28 @@ else
     if [ "${start_client}" = "true" ]; then
         # Use the same server-selection environment as the probe.
         unset EMACS_SERVER_FILE EMACS_SOCKET_NAME ALTERNATE_EDITOR
+
+        # Encode the invocation as an Emacs Lisp string.
+        # The closing quote preserves trailing newlines in command substitution.
+        client_command_lisp=$(
+            printf '"'
+            printf '%s' "$PEL_EMACS_LAUNCHER_COMMAND" |
+                sed 's/\\/\\\\/g; s/"/\\"/g'
+            printf '"'
+        )
+
+        # An existing daemon does not inherit this client's environment.
+        # Record the latest client invocation without changing its startup value.
+        if ! "$app" \
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false \
+                 --eval "(progn
+                           (setenv \"PEL_EMACS_LAST_CLIENT_COMMAND\" $client_command_lisp)
+                           nil)" >/dev/null; then
+            error_printf "Failed to record the client invocation on socket %s.\n" \
+                         "${daemon_name:-server}"
+            exit 1
+        fi
 
         # Daemon startup is handled above.
         # Do not start another editor if the connection fails.

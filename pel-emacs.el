@@ -327,8 +327,8 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
    "PEL setup for Emacs Session Management"
    (lambda ()
      "Print Emacs session management status & configuration."
-     (pel-insert-bold "Overview\n")
-     (pel-insert-bold "========\n")
+     (pel-insert-bold "Emacs Process\n")
+     (pel-insert-bold "=============")
      (pel-insert-symbol-content-line 'emacs-version)
      (pel-insert-symbol-content-line 'user-emacs-directory)
      (pel-insert-symbol-content-line 'system-configuration)
@@ -338,22 +338,72 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
      (let ((cmdline (getenv "PEL_EMACS_LAUNCHER_COMMAND")))
        (when (and (stringp cmdline)
                   (not (string-empty-p cmdline)))
-         (pel-insert-value-info "PEL Emacs launch command line" (string-trim cmdline))))
-     (pel-insert-value-info "Real Emacs command line used"
-                            (car-safe
-                             (process-lines-ignore-status "ps" "-o"
-                                                          "args="
-                                                          "-p"
-                                                          (number-to-string
-                                                           (emacs-pid)))))
-     (pel-insert-value-info "Emacs daemon client?" (pel-yes-no-string (daemonp)))
+         (pel-insert-value-info "PEL Emacs startup command line" (string-trim
+                                                                  cmdline))))
+     ;; Query the process command line if possible.
+
+     (let ((cmdline
+            (if pel-system-is-windows-p
+                ;; On Windows, use Powershell
+                (condition-case nil
+                    (when-let* ((powershell (executable-find "powershell.exe")))
+                      (let* ((coding-system-for-read 'utf-8)
+                             (script
+                              (format
+                               (concat
+                                "$ErrorActionPreference = 'Stop'; "
+                                "[Console]::OutputEncoding = "
+                                "[System.Text.UTF8Encoding]::new($false); "
+                                "(Get-CimInstance -ClassName Win32_Process "
+                                "-Filter 'ProcessId = %d' "
+                                "-ErrorAction Stop).CommandLine")
+                               (emacs-pid)))
+                             (output
+                              (string-trim
+                               (mapconcat
+                                #'identity
+                                (process-lines powershell
+                                               "-NoLogo" "-NoProfile" "-NonInteractive"
+                                               "-Command" script)
+                                "\n"))))
+                        (unless (string-empty-p output)
+                          output)))
+                  (error nil))
+              ;; On Darwin, Linux, Unix: use ps
+              (condition-case nil
+                  (when (executable-find "ps")
+                    (car (process-lines "ps" "-o" "args=" "-p"
+                                        (number-to-string (emacs-pid)))))
+                (error nil)))))
+       (pel-insert-value-info
+        "Real Emacs command line used"
+        (if (and cmdline
+                 (not (string-empty-p (string-trim cmdline))))
+            (string-trim cmdline)
+          "Unavailable (ps missing, failed, or returned no command line)")))
+     ;;
+     (pel-insert-value-info "Emacs daemon client?"
+                            (pel-yes-no-string (daemonp)))
+     ;;
+     (when (daemonp)
+       (let ((cmdline (getenv "PEL_EMACS_LAST_CLIENT_COMMAND")))
+         (when (and (stringp cmdline)
+                    (not (string-empty-p cmdline)))
+           (pel-insert-value-info "Latest PEL client command line"
+                                  (string-trim cmdline))
+           (pel-insert-symbol-content-line 'server-name))))
+
      (pel-insert-value-info "Process ID" (number-to-string (emacs-pid)))
      (pel-insert-value-info "Configuration features"
                             (pel-emacs-config-features-string))
-     (pel-insert-value-info "TreeSitter available" (pel-yes-no-string (treesit-available-p)))
-     (pel-insert-list-content 'treesit-extra-load-path)
-
-     )
+     (when (and (fboundp 'treesit-available-p)
+                (boundp 'treesit-extra-load-path))
+       (insert "\n\n")
+       (pel-insert-bold "Tree-Sitter\n")
+       (pel-insert-bold "===========")
+       (pel-insert-value-info "TreeSitter available" (pel-yes-no-string
+                                                      (treesit-available-p)))
+       (pel-insert-list-content 'treesit-extra-load-path)))
    (unless append :clear-buffer)
    :use-help-mode))
 ;;; --------------------------------------------------------------------------
