@@ -6650,7 +6650,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
 Compatible Tree-Sitter grammar for systemverilog is not available.%s"
           (if (fboundp 'treesit-library-abi-version)
               (format "
-\tAPI version supported by Emacs       : [%s,%s]
+\tABI version supported by Emacs       : [%s,%s]
 \tCheck the version of systemverilog grammar available."
                       (treesit-library-abi-version :minimal)
                       (treesit-library-abi-version))
