@@ -3,7 +3,7 @@
  *  Purpose   : Emacs Org Agenda Lock Manager.
  *  Created   : Wednesday, October 21 2026.
  *  Author    : Pierre Rouleau <prouleau001@gmail.com>
- *  Time-stamp: <2026-10-21 14:16:07 EDT, updated by Pierre Rouleau>
+ *  Time-stamp: <2026-10-21 22:31:14 EDT, updated by Pierre Rouleau>
  *  Copyright © 2026, Pierre Rouleau
  *  License   : MIT
  */
@@ -18,6 +18,9 @@
 /* Header Inclusion
  * ----------------
  */
+
+#define _DEFAULT_SOURCE
+#define _POSIX_C_SOURCE 200809L
 
 #include <stdio.h>
 #include <stdlib.h>

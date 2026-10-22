@@ -842,8 +842,6 @@ Your version of Emacs does not support dynamic module.")))
  'calendar-mode 'calendar-mode-hook)
 (define-pel-global-prefix pel:diary     (kbd "<f11> M-D"))
 (define-key pel:diary (kbd "M-A")  'appt-activate)
-(when pel-activate-appt-notification
-  (run-with-idle-timer 4 nil 'pel-org-setup-appt-notification))
 
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------

@@ -5268,7 +5268,7 @@ The choices are:
   - Use this when you need to keep track of time and your system
     automatically opens the main Emacs session when the desktop
     unlocks.  Other Emacs processes will start faster because they
-    wont need to activate the Org Agenda.
+    will not need to activate the Org Agenda.
 
 - `on-demand' uses the same ownership rule, but does not initialize
   Agenda until a command requests it.  Use this when using Org Agenda
@@ -5277,8 +5277,8 @@ The choices are:
 In either coordinated policy, another process can use Agenda after
 confirmation.  That override does not start PEL reminder services.
 
-Coordination a POSIX file locking, and a local
-filesystem  Restart Emacs after changing this option."
+Coordination uses a POSIX file locking, and requires a local
+file-system.  Restart Emacs after changing this option."
   :group 'pel-pkg-for-org-mode
   :type '(choice
           (const :tag "Allow every process" every-process)

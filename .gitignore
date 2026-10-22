@@ -2,7 +2,7 @@
 # Also used by fd|fdfind  to identify directories and files to ignore
 
 # generated code
-pel-unpackage-init.e
+pel-unpackage-init.el
 c/lses/lses
 c/org-agenda-lock/org-agenda-lock
 

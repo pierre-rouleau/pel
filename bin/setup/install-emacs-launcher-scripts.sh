@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-21 14:55:05 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-21 22:29:19 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -313,10 +313,12 @@ Other scripts are also available:
  is-emacs-daemon-running: report if Emacs daemon is running or not.
  is-pel-in-fast-startup : check and report whether Emacs is using
                           PEL Fast Startup Mode.
+"
 
-The %s program is used by emacs PEL internally.
+if [ -n "$org_agenda_lock_pgm" ]; then
+    printf -- "The %s program is used by emacs PEL internally.
 \n\n"   "$org_agenda_lock_pgm"
-
+fi
 
 # ----------------------------------------------------------------------------
 #  Local Variables:

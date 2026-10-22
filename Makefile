@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-21 14:27:07 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-21 22:31:42 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -739,7 +739,7 @@ help:
 	@printf "\n"
 	@printf " ** Tools for using Emacs:\n"
 	@printf " * make c-lses        - Build lses: a C program that prints info on Emacs daemons.\n"
-	@printf " * make org-agenda-lock - Build org-agenda-lock: C program keeps track of Org Agenda uses.\n"
+	@printf " * make c-org-agenda-lock - Build org-agenda-lock: C program keeps track of Org Agenda uses.\n"
 	@printf "\n"
 	@printf "\n"
 	@printf " ** Emacs Update Helper:\n"
