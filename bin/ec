@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-22 14:56:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-22 15:39:41 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -708,10 +708,44 @@ else
                  --alternate-editor=false "$@"
 
         elif [ "${use_gui}" = "true" ]; then
-            # Request GUI client: force focus to that GUI Window
+            # Request GUI client: force focus to that GUI Window.
+            #
+            # In order to force focus on the GUI client, we need to use the --eval
+            # option of emacsclient.  Unfortunately that option also evaluates all other
+            # arguments as Lisp expressions and that obviously will fail.
+            # Instead of doing that, proceed in 2 steps:
+            # - Step 1: Install an idempotent hook before creating the GUI frame.
+            #           This evaluation receives no file operands.
+            if ! "$app" \
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false \
+                 --eval '(progn
+                   (defun pel-ec--focus-client-frame (frame)
+                     (when (and
+                            (display-graphic-p frame)
+                            (frame-parameter frame (quote client))
+                            (member
+                             "PEL_EC_FOCUS_FRAME=1"
+                             (frame-parameter frame (quote environment))))
+                       (select-frame-set-input-focus frame)))
+                   (add-hook
+                    (quote after-make-frame-functions)
+                    (function pel-ec--focus-client-frame))
+                   nil)' >/dev/null; then
+                error_printf \
+                    "Failed to install the GUI focus hook on socket %s.\n" \
+                    "${daemon_name:-server}"
+                exit 1
+            fi
+
+            # Mark this frame-creation request, not the daemon environment.
+            PEL_EC_FOCUS_FRAME=1
+            export PEL_EC_FOCUS_FRAME
+
+            # - Step 2: launch the GUI client and pass it all file arguments.
+            # Keep filenames and native file-position syntax in file mode.
             exec "$app" -c -n \
                  --socket-name="${daemon_name:-server}" \
-                 --eval '(select-frame-set-input-focus (selected-frame))' \
                  --alternate-editor=false "$@"
 
         else
