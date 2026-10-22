@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-21 10:15:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-22 14:56:31 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -688,11 +688,11 @@ else
         # An existing daemon does not inherit this client's environment.
         # Record the latest client invocation without changing its startup value.
         if ! "$app" \
-                 --socket-name="${daemon_name:-server}" \
-                 --alternate-editor=false \
-                 --eval "(progn
-                           (setenv \"PEL_EMACS_LAST_CLIENT_COMMAND\" $client_command_lisp)
-                           nil)" >/dev/null; then
+             --socket-name="${daemon_name:-server}" \
+             --alternate-editor=false \
+             --eval "(progn
+                            (setenv \"PEL_EMACS_LAST_CLIENT_COMMAND\" $client_command_lisp)
+                             nil)" >/dev/null; then
             error_printf "Failed to record the client invocation on socket %s.\n" \
                          "${daemon_name:-server}"
             exit 1
@@ -704,18 +704,21 @@ else
         # Evaluation requests do not need implicit frame or no-wait options.
         if [ "${native_eval}" = "true" ]; then
             exec "$app" \
-                   --socket-name="${daemon_name:-server}" \
-                   --alternate-editor=false "$@"
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false "$@"
 
         elif [ "${use_gui}" = "true" ]; then
+            # Request GUI client: force focus to that GUI Window
             exec "$app" -c -n \
-                   --socket-name="${daemon_name:-server}" \
-                   --alternate-editor=false "$@"
+                 --socket-name="${daemon_name:-server}" \
+                 --eval '(select-frame-set-input-focus (selected-frame))' \
+                 --alternate-editor=false "$@"
 
         else
+            # Request TTY client
             exec "$app" -nw \
-                   --socket-name="${daemon_name:-server}" \
-                   --alternate-editor=false "$@"
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false "$@"
         fi
     fi
 fi

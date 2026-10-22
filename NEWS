@@ -24,6 +24,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     the current working directory when the command is issued.  The *ec* command
     does not support auto-loading of sessions that way, but that can be done
     from withing Emacs using the session management commands.
+  - Both *ge* and *ec -g* force focus on the launched OS window.
   - All 3 commands have better help and have more flexible command line parsing logic.
     They can be used to pass arguments to the Emacs and emacsclient programs used,
     including requesting their help.
