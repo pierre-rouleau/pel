@@ -50,7 +50,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   The command is bound to the ~<f12> c~ key sequence.
 - Add (preliminary) support for [[https://github.com/jamescherti/buffer-terminator.el][buffer-terminator.el]] package when
   *pel-use-buffer-terminator* user-option is turned on.
-- Add (preliminary) support for [[https://github.com/jamescherti/easysession.el][easysession.el]] package when *pel-use-easysession* user-option is turned on.
+- Add support for [[https://github.com/jamescherti/easysession.el][easysession.el]] package when *pel-use-easysession* user-option is turned on.
   - It can be activated with a set of easysession extensions; the
     customization of *pel-use-easysession*  allows you to activate one or
     several extensions.
@@ -64,6 +64,11 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   - Refactored the session support: the ~<f11> S S~ key sequence is now bound to a dispatcher function
     to save the current desktop or easysession session.
     It prompts for the package to use when several packages are used.
+  - The *e* and *ge* commands now support the =-s [SESSION-NAME]= command line option.
+    With this option and easysession.el installed, Emacs automatically loads the session
+    identified by the =SESSION-NAME= if one is given.  If none is given PEL uses the session
+    name associated with the directory from where the command is issued.
+    - See the [[https://github.com/pierre-rouleau/pel/blob/master/doc/emacs-daemon.rst.txt][documentation]] for more information on the e and ge command lines.
 - Improved support for Emacs project.el:
   - Document the project specific commands in the [[https://raw.githubusercontent.com/pierre-rouleau/pel/master/doc/pdf/project-tools.pdf][⅀ Project PDF]] including the
     ones provided by PEL.
