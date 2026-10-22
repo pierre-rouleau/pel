@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-20 15:55:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-21 14:55:05 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -12,11 +12,19 @@
 # Creates symbolic links from ~/bin to the PEL scripts e, ge, ec,
 # is-emacs-daemon-running and is-pel-in-fast-startup.
 #
-# Builds lses from C source and creates a link to the compiled executable.
-# GNU Make uses its implicit C compilation rule to build lses.
-# Install the launcher scripts before attempting this optional build.
-# If the build fails, offer the less-powerful bin/lses shell script.
+# Builds lses and org-agenda-lock from C source and creates symlinks to the
+# compiled executable.
+#
+# GNU Make uses its implicit C compilation rule to build lses and
+# org-agenda-lock.
+#
+# Install the launcher scripts before attempting the build of lses and
+# org-agenda-lock.
+# If the lses build fails, offer the less-powerful bin/lses shell script.
 # If the user declines, leave the existing ~/bin/lses entry unchanged.
+#
+# If the org-agenda-lock. build fails inform the user that process management
+# of Org Agenda is not supported.
 #
 # Tell user to put ~/bin inside PATH if it's not already there.
 
@@ -30,7 +38,7 @@
 # - rm        (POSIX)
 # - readlink  (available on Linux and macOS)
 # - GNU Make
-# - A C99-capable compiler (to build the C implementation of lses)
+# - A C99-capable compiler (to build the C implementation of lses and org-agenda-lock)
 # - emacsclient from Emacs 26.1 or later in PATH (C lses runtime)
 
 # ----------------------------------------------------------------------------
@@ -52,7 +60,7 @@ print_usage()
 %s -- Install the Emacs launchers and tools.
 
  Commands: e, ge, ec, lses, is-emacs-daemon-running,
-           is-pel-in-fast-startup.
+           is-pel-in-fast-startup and org-agenda-lock.
 
  Usage: %s -h | --help
 
@@ -63,9 +71,12 @@ print_usage()
   • Install the launchers and tools:
     - Checks the presence of a ~/bin directory.
     - Create symlinks in ~/bin to the PEL/bin scripts,
-    - Build lses executable by compiling its C source,
-    - Create a symlink in ~/bin to the PEL/c/lses/lses executable,
-    - If the build fails, offer the less-powerful PEL/bin/lses shell script.
+    - Build lses and org-agenda-lock executable files by compiling their C
+      source files with GNU Make and a C99 compatible C compiler,
+    - Create a symlink in ~/bin to the PEL/c/lses/lses file,
+    - If the lses build fails, offer the less-powerful PEL/bin/lses shell script.
+    - If the org-agenda-lock build fail, warn user that Org Agenda process
+      management is not available.
 " "${pgm_name}" "${script}" "${script}"
 }
 
@@ -174,6 +185,7 @@ install_file()
         printf -- "***INFO: File [%s] already exists.\n" "$HOME/bin/$1"
         warn_if_unexpected_target "$HOME/bin/$1" "${bin_dirpath}/$1"
         printf -- "   Was this already installed?\n"
+        ls -l "$HOME/bin/$1"
         prompt_yn "   Keep this existing entry" || exit 4
         if [ ! "$prompt_yn_return" = "y" ]; then
             prompt_yn "Delete old [$HOME/bin/$1], and install a new symlink (Ctrl-C aborts)" || exit 4
@@ -196,7 +208,7 @@ install_file "ec"
 install_file "is-emacs-daemon-running"
 install_file "is-pel-in-fast-startup"
 
-# --
+# ----------------------------------------------------------------------------
 # Build and install lses
 #  Use a subshell to change directory temporarily.
 (
@@ -231,6 +243,7 @@ if [ -e "$HOME/bin/lses" ] || [ -L "$HOME/bin/lses" ]; then
     printf '   Selected target: [%s]\n' "$lses_target"
     warn_if_unexpected_target "$HOME/bin/lses" "$lses_target"
     printf -- "   Was this already installed?\n"
+    ls -l "$HOME/bin/lses"
     prompt_yn "   Keep this existing entry instead of installing the selected target" || exit 4
     if [ ! "$prompt_yn_return" = "y" ]; then
         prompt_yn "Delete that old file, and install a new symlink" || exit 4
@@ -245,7 +258,27 @@ else
     ln -s "$lses_target" "$HOME/bin/lses" || exit 1
 fi
 
-# --
+# ----------------------------------------------------------------------------
+# Build and install org-agenda-lock
+org_agenda_lock_pgm=''
+
+#  Use a subshell to change directory temporarily.
+(
+    cd "${pel_dirpath}" || exit 2
+    pwd
+    make c-org-agenda-lock  || exit 2
+)
+status=$?
+
+if [ "$status" -ne 0 ]; then
+    printf -- '***WARNING: Failed to build the org-agenda-lock executable.\n' >&2
+    printf -- '   Without it PEL cannot manage Org Agenda across processes..\n' >&2
+else
+    org_agenda_lock_pgm="${pel_dirpath}/c/org-agenda-lock/org-agenda-lock"
+fi
+
+
+# ----------------------------------------------------------------------------
 # 3. List current entries:
 
 printf -- "====================================================\n"
@@ -258,6 +291,9 @@ ls -l "$HOME/bin/ec"
 ls -l "$HOME/bin/lses"
 ls -l "$HOME/bin/is-emacs-daemon-running"
 ls -l "$HOME/bin/is-pel-in-fast-startup"
+if [ -n "$org_agenda_lock_pgm" ]; then
+    ls -l "$org_agenda_lock_pgm"
+fi
 
 if [ "$(command -v e)" != "$HOME/bin/e" ]; then
     printf -- "***NEXT STEP:\n"
@@ -277,7 +313,10 @@ Other scripts are also available:
  is-emacs-daemon-running: report if Emacs daemon is running or not.
  is-pel-in-fast-startup : check and report whether Emacs is using
                           PEL Fast Startup Mode.
-\n\n"
+
+The %s program is used by emacs PEL internally.
+\n\n"   "$org_agenda_lock_pgm"
+
 
 # ----------------------------------------------------------------------------
 #  Local Variables:
