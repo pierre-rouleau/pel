@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-22 15:39:41 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-22 15:51:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -720,14 +720,15 @@ else
                  --socket-name="${daemon_name:-server}" \
                  --alternate-editor=false \
                  --eval '(progn
-                   (defun pel-ec--focus-client-frame (frame)
-                     (when (and
-                            (display-graphic-p frame)
-                            (frame-parameter frame (quote client))
-                            (member
-                             "PEL_EC_FOCUS_FRAME=1"
-                             (frame-parameter frame (quote environment))))
-                       (select-frame-set-input-focus frame)))
+                   (unless (fboundp (quote pel-ec--focus-client-frame))
+                     (defun pel-ec--focus-client-frame (frame)
+                       (when (and
+                              (display-graphic-p frame)
+                              (frame-parameter frame (quote client))
+                              (member
+                               "PEL_EC_FOCUS_FRAME=1"
+                               (frame-parameter frame (quote environment))))
+                         (select-frame-set-input-focus frame))))
                    (add-hook
                     (quote after-make-frame-functions)
                     (function pel-ec--focus-client-frame))
