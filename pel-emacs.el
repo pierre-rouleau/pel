@@ -386,6 +386,11 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
                             (pel-yes-no-string (daemonp)))
      ;;
      (when (daemonp)
+       (when (boundp 'server-clients)
+         (pel-insert-value-info "# of active clients" (if server-clients
+                                                          (number-to-string
+                                                           (length server-clients))
+                                                        "None")))
        (let ((cmdline (getenv "PEL_EMACS_LAST_CLIENT_COMMAND")))
          (when (and (stringp cmdline)
                     (not (string-empty-p cmdline)))
