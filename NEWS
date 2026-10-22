@@ -17,6 +17,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   - *on-demand* uses the same ownership rule, but does not initialize
     Agenda until a command requests it.  Use this when using Org Agenda
     infrequently.
+  - Note: PEL only supports the *every-process* policy on Windows.
 - Improved all 3 Emacs launcher commands: *e*, *ge* and *ec*:
   - *e* and *ge* now accept a =-s [SESSION-NAME]= argument to automatically
     load a session by name or a session associated with the directory that was
@@ -30,6 +31,12 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
     *PEL_EMACS_LAUNCHER_COMMAND* environment variable allowing the new
     *pel-emacs-version-info* command, bound to ~<f11> ? e V~ to display the typed
     command line and the real Emacs command line used.
+- Added the *lses* utility.  It lists the Emacs daemon sockets currently used.
+  PEL provides two implementations of lses.  The C99 implementation is in [[https://github.com/pierre-rouleau/pel/blob/master/c/lses/lses.c][c/lses/lses.c]].
+  PEL Makefile provides the logic to build it.  If you cannot compile it on your system,
+  PEL also provides a shell script [[https://github.com/pierre-rouleau/pel/blob/master/bin/lses][bin/lses]].  The C99 implementation is more precise and
+  can report edge cases that may occur, but the shell script can also be useful in showing
+  which Emacs daemon is running.
 - The *pel-set-auto-mode* macro input semantics changed: it now takes a list of
   file names or file extensions and generates an optimized regular expression for the
   provided list.  PEL now generates a shorter *auto-mode-alist* that should also be

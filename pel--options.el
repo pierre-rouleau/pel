@@ -5252,6 +5252,25 @@ display of hard TAB characters."
   :safe #'booleanp)
 
 
+(defun pel--org-agenda-startup-policy-setter (symbol requested-value)
+  "Validate selection.  Adjust it for Windows."
+  (let ((validated-value requested-value)
+        (replacement-value (when (and pel-system-is-windows-p
+                                      (memq requested-value
+                                            '(single-owner on-demand)))
+                             'every-process)))
+    (when replacement-value
+      (display-warning
+       'pel--options
+       (format "\
+Org Agenda policy `%s' requires a lock helper that PEL does not currently support on Windows.
+\t Forcing the use of `%s' without ownership arbitration.
+\t Note that multiple Emacs processes can issue duplicate reminders."
+               requested-value replacement-value)
+       :warning)
+      (setq validated-value replacement-value))
+    (set-default-toplevel-value symbol validated-value)))
+
 (defcustom pel-org-agenda-startup-policy 'every-process
   "Control use of Org Agenda.
 
@@ -5283,7 +5302,8 @@ file-system.  Restart Emacs after changing this option."
   :type '(choice
           (const :tag "Allow every process" every-process)
           (const :tag "Automatically select one owner" single-owner)
-          (const :tag "Select an owner on demand" on-demand)))
+          (const :tag "Select an owner on demand" on-demand))
+  :set #'pel--org-agenda-startup-policy-setter)
 
 (defcustom pel-org-clock-auto-clockout-timer nil
   "Timer for auto clocking out when Emacs is idle.
