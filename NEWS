@@ -1,12 +1,31 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Improved Org Mode Agenda handling.  PEL now provides Org Agenda Service Modes , selected by the
+  new *pel-org-agenda-startup-policy* user option.  It provides the following policies:
+  - *every-process* permits Agenda and reminders in every process.
+    The automatic startup requires appointment notifications.
+    This is the default; PEL behaves as it used to behave.
+  - *single-owner* automatically initializes Agenda in one process per
+    host, user, and *user-emacs-directory*.  Only that process starts
+    the configured appointment notifications.
+    - Use this when you need to keep track of time and your system
+      automatically opens the main Emacs session when the desktop
+      unlocks.  Other Emacs processes *will start faster* because they
+      will not need to activate the Org Agenda.
+      - Windows is currently not supported.
+  - *on-demand* uses the same ownership rule, but does not initialize
+    Agenda until a command requests it.  Use this when using Org Agenda
+    infrequently.
 - Improved all 3 Emacs launcher commands: *e*, *ge* and *ec*:
   - *e* and *ge* now accept a =-s [SESSION-NAME]= argument to automatically
     load a session by name or a session associated with the directory that was
     the current working directory when the command is issued.  The *ec* command
     does not support auto-loading of sessions that way, but that can be done
     from withing Emacs using the session management commands.
+  - All 3 commands have better help and have more flexible command line parsing logic.
+    They can be used to pass arguments to the Emacs and emacsclient programs used,
+    including requesting their help.
   - The 3 commands remember their launching command line inside the
     *PEL_EMACS_LAUNCHER_COMMAND* environment variable allowing the new
     *pel-emacs-version-info* command, bound to ~<f11> ? e V~ to display the typed
