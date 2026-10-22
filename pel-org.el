@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-21 22:04:22 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-21 22:21:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -600,7 +600,9 @@ The ignored arguments make this function compatible with `:after' advice."
    (expand-file-name
     "org-agenda-lock"
     (expand-file-name
-     "c" pel-home-dirpath-name)))
+     "c" (if (boundp 'pel-home-dirpath-name)
+             pel-home-dirpath-name
+           (or (getenv "GITHUB_WORKSPACE") "~"))))) ; for CI build system
   "Path to the installed Agenda lock program.")
 
 (defvar pel--org-agenda-process nil
