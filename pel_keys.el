@@ -842,8 +842,6 @@ Your version of Emacs does not support dynamic module.")))
  'calendar-mode 'calendar-mode-hook)
 (define-pel-global-prefix pel:diary     (kbd "<f11> M-D"))
 (define-key pel:diary (kbd "M-A")  'appt-activate)
-(when pel-activate-appt-notification
-  (run-with-idle-timer 4 nil 'pel-org-setup-appt-notification))
 
 ;;** Combobulate -- Tree Sitter Based operations
 ;;   -------------------------------------------
@@ -7086,9 +7084,36 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
                      org-mode
                      org-indent-mode
                      org-store-link
-                     org-agenda
                      org-capture
                      org-switchb)
+
+  (defvar pel--org-agenda-startup-timer nil
+    "One-shot timer for the deferred Agenda startup attempt.")
+  (defvar pel--org-agenda-startup-attempted-p nil
+    "Non-nil after startup or an explicit request attempted Agenda setup.")
+
+  (declare-function pel-org-agenda "pel-org" (&optional arg keys restriction))
+  ;; Guard the first request before org-agenda loads.
+  (unless (featurep 'org-agenda)
+    (defalias 'org-agenda #'pel-org-agenda))
+
+  (declare-function pel-org-agenda-authorize  "pel-org" (&rest args))
+  ;; Guard subsequent requests after the library replaces the shim.
+  ;; Also handles an Agenda library loaded before this setup runs.
+  (with-eval-after-load 'org-agenda
+    (unless (advice-member-p #'pel-org-agenda-authorize 'org-agenda)
+      (advice-add 'org-agenda :before #'pel-org-agenda-authorize)))
+
+  (declare-function pel-org-agenda-startup  "pel-org" ())
+  ;; Schedule one attempt.  The callback does not schedule another timer.
+  (when (and (not noninteractive)
+             (not pel--org-agenda-startup-attempted-p)
+             (not (timerp pel--org-agenda-startup-timer))
+             (or (eq pel-org-agenda-startup-policy 'single-owner)
+                 (and (eq pel-org-agenda-startup-policy 'every-process)
+                      pel-activate-appt-notification)))
+    (setq pel--org-agenda-startup-timer
+          (run-with-idle-timer 4 nil #'pel-org-agenda-startup)))
 
   (global-set-key (kbd "C-c a") 'org-agenda)
 
@@ -7118,18 +7143,6 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
       ;; Keep task hierarchy in Org archives.
       (declare-function pel-org-enhance-archiving "pel-org")
       (pel-org-enhance-archiving))
-
-    ;; Ensure that Org Agenda scheduled events are notified when
-    ;; notification support is activated.
-    (when pel-activate-appt-notification
-      ;; Automatically update notifications every time the agenda is opened.
-      (add-hook 'org-finalize-agenda-hook 'pel-org-agenda-to-appt)
-      ;; Automatically refresh the notification queue every night at 12:05 AM
-      (run-at-time "12:05am" (* 24 3600) 'pel-org-agenda-to-appt-silently)
-      ;; Also ensure that tasks status changes are taken into account
-      (add-hook 'org-after-todo-state-change-hook 'pel-org-agenda-to-appt-silently)
-      (advice-add 'org-schedule :after 'pel-org-agenda-to-appt-silently)
-      (advice-add 'org-deadline :after 'pel-org-agenda-to-appt-silently))
 
     ;; schedule
     (pel-eval-after-load org-agenda

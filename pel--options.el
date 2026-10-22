@@ -5251,6 +5251,40 @@ display of hard TAB characters."
   :type 'boolean
   :safe #'booleanp)
 
+
+(defcustom pel-org-agenda-startup-policy 'every-process
+  "Control use of Org Agenda.
+
+This controls how PEL initializes Org Mode Agenda when it starts.
+The choices are:
+
+- `every-process' permits Agenda and reminders in every process.
+  The automatic startup requires appointment notifications.
+  - This is the default.
+
+- `single-owner' automatically initializes Agenda in one process per
+  host, user, and `user-emacs-directory'.  Only that process starts
+  the configured appointment notifications.
+  - Use this when you need to keep track of time and your system
+    automatically opens the main Emacs session when the desktop
+    unlocks.  Other Emacs processes will start faster because they
+    will not need to activate the Org Agenda.
+
+- `on-demand' uses the same ownership rule, but does not initialize
+  Agenda until a command requests it.  Use this when using Org Agenda
+  infrequently.
+
+In either coordinated policy, another process can use Agenda after
+confirmation.  That override does not start PEL reminder services.
+
+Coordination uses a POSIX file locking, and requires a local
+file-system.  Restart Emacs after changing this option."
+  :group 'pel-pkg-for-org-mode
+  :type '(choice
+          (const :tag "Allow every process" every-process)
+          (const :tag "Automatically select one owner" single-owner)
+          (const :tag "Select an owner on demand" on-demand)))
+
 (defcustom pel-org-clock-auto-clockout-timer nil
   "Timer for auto clocking out when Emacs is idle.
 When set to a number, auto clock out the currently clocked in

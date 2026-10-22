@@ -3,6 +3,8 @@
 
 # generated code
 pel-unpackage-init.el
+c/lses/lses
+c/org-agenda-lock/org-agenda-lock
 
 # internal development notes
 pel_doc.org

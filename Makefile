@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-20 14:08:40 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-21 23:07:46 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -668,6 +668,12 @@ endif
 all: build/.check-init-stamp pel-top $(ALL_TEST_PASSED) pel_keys.elc pel.elc \
      build/.compile-user-init-stamp
 
+# Build the required Unix Org Agenda ownership helper.
+# Its flock/O_NOFOLLOW implementation does not support native Windows.
+ifneq ($(OS),Windows_NT)
+all: c-org-agenda-lock
+endif
+
 pel-top: build/.check-init-stamp $(ALL_TEST_PASSED) $(ELC_FILES)
 
 # Target first-build:
@@ -739,6 +745,7 @@ help:
 	@printf "\n"
 	@printf " ** Tools for using Emacs:\n"
 	@printf " * make c-lses        - Build lses: a C program that prints info on Emacs daemons.\n"
+	@printf " * make c-org-agenda-lock - Build org-agenda-lock: C program keeps track of Org Agenda uses.\n"
 	@printf "\n"
 	@printf "\n"
 	@printf " ** Emacs Update Helper:\n"
@@ -1332,6 +1339,21 @@ LSES_SUBDIR = c/lses
 
 c-lses:
 	$(MAKE) -C "$(LSES_SUBDIR)" lses
+
+# ----------------------------------------------------------------------------
+# Tools : org-agenda-lock written in C
+# ------------------------------------
+#
+# The c/org-agenda-lock/org-agenda-lock.c file is a single file C program.
+# It can be compiled and linked by GNU Make by issuing the command `make
+# org-agenda-lock` from within its directory; that's a feature of GNU Make.
+
+ORG-AGENDA-LOCK_SUBDIR = c/org-agenda-lock
+
+.PHONY:	c-org-agenda-lock
+
+c-org-agenda-lock:
+	$(MAKE) -C "$(ORG-AGENDA-LOCK_SUBDIR)" org-agenda-lock
 
 # ----------------------------------------------------------------------------
 # Install Emacs launcher scripts

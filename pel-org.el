@@ -2,7 +2,7 @@
 
 ;; Created   : Saturday, August 29 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-18 11:59:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-21 22:21:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -35,11 +35,29 @@
 ;;                           ;     `pel-call-program-if-available'
 ;;                           ;     `pel-count-string'
 (require 'pel--keys-macros)  ; use: `pel-customize-groups-from'
+(require 'pel--options)      ; use: Org options and Agenda startup policy
+
 (require 'cus-edit)          ; use: `customize-option'
-(require 'org)               ; use: `org-get-outline-path', `org-entry-get',
-;;                           ;      `org-archive-location', `org-agenda-files'
-(require 'org-macs)          ; use: `org-with-wide-buffer'
-(require 'org-agenda)        ; use: `org-agenda-to-appt'
+
+
+;; Declare used variable and function; defer loading Org.
+(defvar org-archive-location)
+(defvar org-agenda-files)
+
+(declare-function org-delete-property              "org" (property))
+(declare-function org-map-entries                  "org" (&rest args))
+(declare-function org-entry-get                    "org" (&rest args))
+(declare-function org-find-olp                     "org" (&rest args))
+(declare-function org-narrow-to-subtree            "org" ())
+(declare-function org-get-outline-path             "org" (&rest args))
+(declare-function org-end-of-subtree               "org" (&rest args))
+(declare-function org-mode                         "org" ())
+(declare-function org-refile                       "org-refile" (&rest args))
+(declare-function org-archive--compute-location    "org-archive" (&rest args))
+(declare-function org-cycle-set-startup-visibility "org-cycle" ())
+(declare-function org-agenda                       "org-agenda" (&optional arg keys restriction))
+(declare-function org-agenda-to-appt               "org-agenda" (&rest args))
+(declare-function appt-activate                    "appt" (&optional arg))
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -272,40 +290,42 @@ The advice is modular: it passes all arguments, unchanged, to
                 ;; forcing the use of Org mode.  If so, force it.
                 (unless (derived-mode-p 'org-mode)
                   (org-mode))
-                (org-with-wide-buffer
-                 (goto-char (point-min))
-                 (let
-                     ;; Track heading level and its scope.
-                     ((current-level 1)
-                      (scope-start   (point-min))
-                      (scope-end     (point-max)))
-                   (dolist (heading oldpath)
-                     (narrow-to-region scope-start scope-end)
-                     (goto-char (point-min))
-                     (let ((heading-regexp (format
-                                            "^%s %s$"
-                                            (regexp-quote (make-string current-level ?*))
-                                            (regexp-quote heading))))
-                       (if (re-search-forward heading-regexp nil t)
-                           ;; Found end of parent heading.
-                           (progn
-                             ;; Find its tree boundaries for the next iteration loop.
-                             (setq scope-start (point))
-                             (org-end-of-subtree t t)
-                             (setq scope-end (point)))
-                         ;;
-                         ;; Parent heading is missing from the archive.
-                         ;; - Insert it cleanly at the end of the current scope.
-                         (goto-char (point-max))
-                         (unless (bolp) (insert "\n"))
-                         (insert (format "%s %s\n" (make-string current-level ?*) heading))
-                         ;; - Narrow the scope to this brand-new empty parent tree
-                         (setq scope-start (point))
-                         (setq scope-end (point))))
-                     ;; Temporarily widen: allow next loop cycle to re-narrow correctly
-                     (widen)
-                     ;; and increment heading level
-                     (setq current-level (1+ current-level))))))
+                (save-excursion
+                  (save-restriction
+                    (widen)
+                    (goto-char (point-min))
+                    (let
+                        ;; Track heading level and its scope.
+                        ((current-level 1)
+                         (scope-start   (point-min))
+                         (scope-end     (point-max)))
+                      (dolist (heading oldpath)
+                        (narrow-to-region scope-start scope-end)
+                        (goto-char (point-min))
+                        (let ((heading-regexp (format
+                                               "^%s %s$"
+                                               (regexp-quote (make-string current-level ?*))
+                                               (regexp-quote heading))))
+                          (if (re-search-forward heading-regexp nil t)
+                              ;; Found end of parent heading.
+                              (progn
+                                ;; Find its tree boundaries for the next iteration loop.
+                                (setq scope-start (point))
+                                (org-end-of-subtree t t)
+                                (setq scope-end (point)))
+                            ;;
+                            ;; Parent heading is missing from the archive.
+                            ;; - Insert it cleanly at the end of the current scope.
+                            (goto-char (point-max))
+                            (unless (bolp) (insert "\n"))
+                            (insert (format "%s %s\n" (make-string current-level ?*) heading))
+                            ;; - Narrow the scope to this brand-new empty parent tree
+                            (setq scope-start (point))
+                            (setq scope-end (point))))
+                        ;; Temporarily widen: allow next loop cycle to re-narrow correctly
+                        (widen)
+                        ;; and increment heading level
+                        (setq current-level (1+ current-level)))))))
 
               ;; PHASE 2: Back in the original buffer, set up the targeted override and
               ;; execute the original archiving with `org-archive-location' set
@@ -531,6 +551,7 @@ With the default `org-agenda-to-appt' filters, scheduled and deadline
 entries must contain an `hh:mm' time.  Untimed scheduled entries do not
 create appt reminders."
   (interactive)
+  (require 'org-agenda)
   (if (boundp 'appt-time-msg-list)
       (let (appointments-before-import)
         ;; Remove all appointments that we have already imported from Org
@@ -568,6 +589,265 @@ The ignored arguments make this function compatible with `:after' advice."
     (pel-org-agenda-to-appt)))
 
 ;; ---------------------------------------------------------------------------
+;; Org Agenda Ownership
+;; --------------------
+
+(defvar pel-home-dirpath-name)     ; defined in PEL init.el
+
+(defconst pel-org-agenda-lock-program
+  (expand-file-name
+   "org-agenda-lock"
+   (expand-file-name
+    "org-agenda-lock"
+    (expand-file-name
+     "c" (if (boundp 'pel-home-dirpath-name)
+             pel-home-dirpath-name
+           (or (getenv "GITHUB_WORKSPACE") "~"))))) ; for CI build system
+  "Path to the installed Agenda lock program.")
+
+(defvar pel--org-agenda-process nil
+  "Helper process holding this Emacs process's Agenda lock.")
+
+(defvar pel--org-agenda-state nil
+  "Agenda state: nil, `starting', `owner', `override', or `unrestricted'.")
+
+(defvar pel--org-agenda-refresh-timer nil
+  "Timer that refreshes appointments, not Agenda ownership.")
+
+(defvar pel--org-agenda-services-p nil
+  "Non-nil while this process supplies automatic PEL Agenda services.")
+
+(defvar pel--org-agenda-started-appt-p nil
+  "Non-nil if PEL activated a previously inactive appointment timer.")
+
+;; Also declared in pel_keys.el, without loading this file.
+(defvar pel--org-agenda-startup-timer nil)
+(defvar pel--org-agenda-startup-attempted-p nil)
+
+(defvar appt-timer)
+(defvar appt-time-msg-list)
+
+(defun pel--org-agenda-helper-live-p ()
+  "Return non-nil if this process's Agenda lock helper is alive."
+  (and (processp pel--org-agenda-process)
+       (process-live-p pel--org-agenda-process)))
+
+(defun pel--org-agenda-stop ()
+  "Stop PEL Agenda services and release this process's ownership.
+Do not unload Org or Agenda.  Preserve non-PEL appointments."
+  (setq pel--org-agenda-state nil)
+  (dolist (timer (list pel--org-agenda-startup-timer
+                       pel--org-agenda-refresh-timer))
+    (when (timerp timer)
+      (cancel-timer timer)))
+  (setq pel--org-agenda-startup-timer nil
+        pel--org-agenda-refresh-timer nil)
+  (remove-hook 'org-finalize-agenda-hook #'pel--org-agenda-refresh)
+  (remove-hook 'org-after-todo-state-change-hook
+               #'pel--org-agenda-refresh)
+  (advice-remove 'org-schedule #'pel--org-agenda-refresh)
+  (advice-remove 'org-deadline #'pel--org-agenda-refresh)
+  (unwind-protect
+      (when pel--org-agenda-services-p
+        (when (boundp 'appt-time-msg-list)
+          (dolist (entry pel--org-appt-time-msg-list)
+            (setq appt-time-msg-list (delq entry appt-time-msg-list)))
+          (setq pel--org-appt-time-msg-list nil))
+        (when pel--org-agenda-started-appt-p
+          (appt-activate -1)))
+    (setq pel--org-agenda-services-p nil
+          pel--org-agenda-started-appt-p nil)
+    ;; Clear the reference before deletion.  The sentinel must not treat
+    ;; intentional release as an unexpected helper failure.
+    (let ((process pel--org-agenda-process))
+      (setq pel--org-agenda-process nil)
+      (when (and (processp process) (process-live-p process))
+        (delete-process process)))))
+
+(defun pel--org-agenda-sentinel (process _event)
+  "Stop owner services when lock helper PROCESS terminates."
+  (when (and (eq process pel--org-agenda-process)
+             (not (process-live-p process))
+             (eq pel--org-agenda-state 'owner))
+    (pel--org-agenda-stop)
+    (display-warning
+     'pel-org
+     "Agenda lock helper stopped; PEL stopped automatic Agenda services."
+     :warning)))
+
+(defun pel--org-agenda-claim ()
+  "Try to acquire Agenda ownership.
+Return t on success, nil if another process owns the lock.
+Signal other failures."
+  (if (pel--org-agenda-helper-live-p)
+      ;; already acquired
+      t
+    ;; Try to acquire it
+    (let* ((directory (expand-file-name user-emacs-directory))
+           ;; Do not inherit a remote default-directory from a buffer.
+           (default-directory directory)
+           (identity (secure-hash
+                      'sha256
+                      (format "%s:%s" (system-name) (user-uid))))
+           (lock-file (expand-file-name
+                       (concat "pel-org-agenda-" identity ".lock")
+                       directory))
+           (deadline (+ (float-time) 2)) ; wait 2 seconds max.
+           process
+           acquired)
+      (when (file-remote-p directory)
+        (error "Agenda coordination requires a local user-emacs-directory"))
+      (make-directory directory t)
+      (unless (executable-find pel-org-agenda-lock-program)
+        (error "Cannot find Agenda lock executable: %s"
+               pel-org-agenda-lock-program))
+      (unwind-protect
+          (progn
+            (setq process
+                  (make-process
+                   :name "pel-org-agenda-lock"
+                   :command (list pel-org-agenda-lock-program
+                                  lock-file
+                                  (number-to-string (emacs-pid)))
+                   :connection-type 'pipe
+                   :coding 'utf-8-unix
+                   :noquery t
+                   ;; Capture the first 512 bytes of org-agenda-lock output,
+                   ;; store it in the process property list in 'reply.
+                   :filter
+                   (lambda (proc text)
+                     (let ((reply (concat (process-get proc 'reply) text)))
+                       (process-put proc 'reply
+                                    (substring reply 0
+                                               (min 512 (length reply))))))
+                   :sentinel #'pel--org-agenda-sentinel))
+            ;; Synchronously wait for the org-agenda-lock program to output
+            ;; a complete line of text, waiting up to 2 seconds.
+            ;; This bounded wait occurs only during acquisition.
+            ;; It is not a background ownership check.
+            (while (and (process-live-p process)
+                        (< (float-time) deadline)
+                        (not (string-match-p
+                              "\n" (or (process-get process 'reply) ""))))
+              (accept-process-output process 0.05))
+            (let ((reply (or (process-get process 'reply) "")))
+              (cond
+               ((and (string-prefix-p "READY\n" reply)
+                     (process-live-p process))
+                (setq pel--org-agenda-process process
+                      acquired t))
+               ((string-prefix-p "BUSY\n" reply) nil)
+               (t
+                (error "Agenda lock helper failed or timed out: %s" reply)))))
+        ;; on unwinding:
+        (unless acquired
+          (when (and (processp process)
+                     (process-live-p process))
+            (delete-process process))))
+      acquired)))
+
+(defun pel--org-agenda-refresh (&rest _ignored)
+  "Refresh appointments while this process supplies PEL services."
+  (when (and pel--org-agenda-services-p
+             (or (eq pel--org-agenda-state 'unrestricted)
+                 (and (eq pel--org-agenda-state 'owner)
+                      (pel--org-agenda-helper-live-p))))
+    (pel-org-agenda-to-appt-silently)))
+
+(defun pel--org-agenda-initialize (state)
+  "Initialize Agenda in STATE.
+Do not start automatic reminder services when STATE is `override'."
+  (let (complete)
+    (setq pel--org-agenda-state 'starting)
+    (unwind-protect
+        (progn
+          (require 'org-agenda)
+          (when (and pel-activate-appt-notification
+                     (not (eq state 'override)))
+            (require 'appt)
+            (setq pel--org-agenda-services-p t
+                  pel--org-agenda-started-appt-p
+                  (not (and (boundp 'appt-timer)
+                            (timerp appt-timer))))
+            (pel-org-setup-appt-notification)
+            (add-hook 'org-finalize-agenda-hook
+                      #'pel--org-agenda-refresh)
+            (add-hook 'org-after-todo-state-change-hook
+                      #'pel--org-agenda-refresh)
+            (advice-add 'org-schedule :after #'pel--org-agenda-refresh)
+            (advice-add 'org-deadline :after #'pel--org-agenda-refresh)
+            (setq pel--org-agenda-refresh-timer
+                  (run-at-time "12:05am" (* 24 3600)
+                               #'pel--org-agenda-refresh)))
+          (when (and (eq state 'owner)
+                     (not (pel--org-agenda-helper-live-p)))
+            (error "Agenda lock helper stopped during initialization"))
+          (setq pel--org-agenda-state state
+                complete t))
+      (unless complete
+        (pel--org-agenda-stop)))))
+
+;;-pel-autoload
+(defun pel-org-agenda-authorize (&rest _ignored)
+  "Authorize an explicit Agenda request.
+Acquire ownership or ask permission to use another owner's Agenda.
+Cancel the deferred startup attempt because this request replaces it."
+  (when (timerp pel--org-agenda-startup-timer)
+    (cancel-timer pel--org-agenda-startup-timer))
+  (setq pel--org-agenda-startup-timer nil
+        pel--org-agenda-startup-attempted-p t)
+  (when (and (eq pel--org-agenda-state 'owner)
+             (not (pel--org-agenda-helper-live-p)))
+    (pel--org-agenda-stop))
+  (when (eq pel--org-agenda-state 'starting)
+    (user-error "Org Agenda initialization is already in progress"))
+  (unless pel--org-agenda-state
+    (cond
+     ((eq pel-org-agenda-startup-policy 'every-process)
+      (pel--org-agenda-initialize 'unrestricted))
+     ((pel--org-agenda-claim)
+      (pel--org-agenda-initialize 'owner))
+     ((and (not noninteractive)
+           (yes-or-no-p
+            (concat "Org Agenda is controlled by another Emacs process, "
+                    "do you still want to use it here? ")))
+      (pel--org-agenda-initialize 'override))
+     (t
+      (user-error "Org Agenda remains controlled by another Emacs process")))))
+
+;;-pel-autoload
+(defun pel-org-agenda (&optional arg keys restriction)
+  "Authorize Agenda use before loading its library.
+Pass ARG, KEYS, and RESTRICTION to `org-agenda'."
+  (interactive "P")
+  (pel-org-agenda-authorize)
+  ;; Loading org-agenda replaces the public command shim with the
+  ;; actual command.  Its before-advice protects subsequent requests.
+  (org-agenda arg keys restriction))
+
+;;-pel-autoload
+(defun pel-org-agenda-startup ()
+  "Attempt automatic Agenda initialization once, without prompting.
+Do not retry if another process owns Agenda or initialization fails."
+  (setq pel--org-agenda-startup-timer nil)
+  (unless pel--org-agenda-startup-attempted-p
+    (setq pel--org-agenda-startup-attempted-p t)
+    (unless pel--org-agenda-state
+      (condition-case err
+          (cond
+           ((and (eq pel-org-agenda-startup-policy 'every-process)
+                 pel-activate-appt-notification)
+            (pel--org-agenda-initialize 'unrestricted))
+           ((eq pel-org-agenda-startup-policy 'single-owner)
+            (when (pel--org-agenda-claim)
+              (pel--org-agenda-initialize 'owner))))
+        (error
+         (display-warning 'pel-org (error-message-string err) :warning))))))
+
+(add-hook 'kill-emacs-hook #'pel--org-agenda-stop)
+
+
+;; ---------------------------------------------------------------------------
 ;; Org Clock Table Report Support
 ;; ------------------------------
 
@@ -578,6 +858,7 @@ The ignored arguments make this function compatible with `:after' advice."
 Use this inside an Org clocktable :scope argument to generate
 a report with clocked activities from all your Org files.
 See an example inside the file example/templates/org-mode/master-org.org"
+  (require 'org)
   (if (listp (car pel-org-project-files))
       ;; Use the files identified by `org-agenda-files' plus all files
       ;; identified by the list of directories and the file regular expression

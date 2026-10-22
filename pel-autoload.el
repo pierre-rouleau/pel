@@ -813,13 +813,16 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-org-archive-restore
     pel-customize-org-agenda
     pel-org-enhance-archiving
-    pel-org-agenda-to-appt)
+    pel-org-agenda-to-appt
+    pel-org-agenda)
   (pel-autoload-function "pel-org" for:
     pel--org-clean-archive-properties-on-refile
     pel-org-notify
     pel-org-get-project-files
     pel-org-setup-appt-notification
-    pel-org-agenda-to-appt-silently)
+    pel-org-agenda-to-appt-silently
+    pel-org-agenda-authorize
+    pel-org-agenda-startup)
 
   (pel-autoload "pel-outline" for:
     pel-outline-print-vars)
