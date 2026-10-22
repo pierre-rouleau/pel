@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-21 10:15:43 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-22 15:51:49 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -688,11 +688,11 @@ else
         # An existing daemon does not inherit this client's environment.
         # Record the latest client invocation without changing its startup value.
         if ! "$app" \
-                 --socket-name="${daemon_name:-server}" \
-                 --alternate-editor=false \
-                 --eval "(progn
-                           (setenv \"PEL_EMACS_LAST_CLIENT_COMMAND\" $client_command_lisp)
-                           nil)" >/dev/null; then
+             --socket-name="${daemon_name:-server}" \
+             --alternate-editor=false \
+             --eval "(progn
+                            (setenv \"PEL_EMACS_LAST_CLIENT_COMMAND\" $client_command_lisp)
+                             nil)" >/dev/null; then
             error_printf "Failed to record the client invocation on socket %s.\n" \
                          "${daemon_name:-server}"
             exit 1
@@ -704,18 +704,56 @@ else
         # Evaluation requests do not need implicit frame or no-wait options.
         if [ "${native_eval}" = "true" ]; then
             exec "$app" \
-                   --socket-name="${daemon_name:-server}" \
-                   --alternate-editor=false "$@"
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false "$@"
 
         elif [ "${use_gui}" = "true" ]; then
+            # Request GUI client: force focus to that GUI Window.
+            #
+            # In order to force focus on the GUI client, we need to use the --eval
+            # option of emacsclient.  Unfortunately that option also evaluates all other
+            # arguments as Lisp expressions and that obviously will fail.
+            # Instead of doing that, proceed in 2 steps:
+            # - Step 1: Install an idempotent hook before creating the GUI frame.
+            #           This evaluation receives no file operands.
+            if ! "$app" \
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false \
+                 --eval '(progn
+                   (unless (fboundp (quote pel-ec--focus-client-frame))
+                     (defun pel-ec--focus-client-frame (frame)
+                       (when (and
+                              (display-graphic-p frame)
+                              (frame-parameter frame (quote client))
+                              (member
+                               "PEL_EC_FOCUS_FRAME=1"
+                               (frame-parameter frame (quote environment))))
+                         (select-frame-set-input-focus frame))))
+                   (add-hook
+                    (quote after-make-frame-functions)
+                    (function pel-ec--focus-client-frame))
+                   nil)' >/dev/null; then
+                error_printf \
+                    "Failed to install the GUI focus hook on socket %s.\n" \
+                    "${daemon_name:-server}"
+                exit 1
+            fi
+
+            # Mark this frame-creation request, not the daemon environment.
+            PEL_EC_FOCUS_FRAME=1
+            export PEL_EC_FOCUS_FRAME
+
+            # - Step 2: launch the GUI client and pass it all file arguments.
+            # Keep filenames and native file-position syntax in file mode.
             exec "$app" -c -n \
-                   --socket-name="${daemon_name:-server}" \
-                   --alternate-editor=false "$@"
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false "$@"
 
         else
+            # Request TTY client
             exec "$app" -nw \
-                   --socket-name="${daemon_name:-server}" \
-                   --alternate-editor=false "$@"
+                 --socket-name="${daemon_name:-server}" \
+                 --alternate-editor=false "$@"
         fi
     fi
 fi

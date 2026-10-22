@@ -7113,7 +7113,7 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
                  (and (eq pel-org-agenda-startup-policy 'every-process)
                       pel-activate-appt-notification)))
     (setq pel--org-agenda-startup-timer
-          (run-with-idle-timer 4 nil #'pel-org-agenda-startup)))
+          (run-with-idle-timer 1 nil #'pel-org-agenda-startup)))
 
   (global-set-key (kbd "C-c a") 'org-agenda)
 
