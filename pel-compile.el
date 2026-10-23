@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-23 17:36:32 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-23 18:03:45 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,6 +50,7 @@
 (require 'ibuffer)        ; use: `ibuffer-map-lines'
 (require 'ibuf-ext)       ; use: `ibuffer-filter-groups'
 (require 'vc)             ; use: `vc-diff-internal'
+(require 'compile)        ; use: `compilation-save-buffers-predicate'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -147,10 +148,13 @@ compilation."
   (when pel-compile--batch-callback
     ;; Disable standard ibuffer exit command; replace it with a compilation
     ;; operation abort (and also close the buffer)
-    (local-set-key (kbd "q") #'pel--compile-ibuffer-abort)
-    (local-set-key (kbd "x") #'pel--compile-ibuffer-execute-and-build)
-    (local-set-key (kbd "d") #'ibuffer-diff-with-file)
-    (local-set-key (kbd "D") #'pel--compile-ibuffer-vcs-diff)))
+    (let ((map (make-sparse-keymap)))
+      (set-keymap-parent map (current-local-map))
+      (define-key map (kbd "q") #'pel--compile-ibuffer-abort)
+      (define-key map (kbd "x") #'pel--compile-ibuffer-execute-and-build)
+      (define-key map (kbd "d") #'ibuffer-diff-with-file)
+      (define-key map (kbd "D") #'pel--compile-ibuffer-vcs-diff)
+      (use-local-map map))))
 
 (defun pel-compile-get-buffers-needing-save ()
   "Collect all file-visiting modified buffers matching the save mode criteria."
@@ -212,7 +216,9 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
 
       (if pel-compile-skip-prompt-to-save-current-buffer
           ;; save modified buffer right away; no prompt.
-          (save-buffer)
+          (progn
+            (save-buffer)
+            t)
         ;; User wants to be prompted
         (if (y-or-n-p (format "Save modified buffer '%s' before compiling? "
                               (buffer-name)))
