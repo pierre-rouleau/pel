@@ -425,7 +425,7 @@ executed by `pel-init' on startup.")
 (defmacro pel--compute-compile-time-version ()
   "Query Git at macro-expansion time to embed the build version string."
   (eval-and-compile
-    (let* ((pel-dir (file-name-directory (or (macroexp-file-name)
+    (let* ((pel-dir (file-name-directory (or  (macroexp-file-name)
                                             load-file-name
                                             (locate-library "pel")
                                             default-directory)))
