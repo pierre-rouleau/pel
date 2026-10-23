@@ -419,16 +419,40 @@ executed by `pel-init' on startup.")
   "String identifying the comment start; set by specific modes only.")
 
 ;; ---------------------------------------------------------------------------
+;;* Support for future Emacs versions
+;;  =================================
+
+(when (version< emacs-version "28")
+  ;; the following function is available in Emacs 28, as part of macroexp
+  ;; TODO: check if this file must be required in Emacs 28
+  (defun macroexp-file-name ()
+    "Return the name of the file from which the code comes.
+  Returns nil when we do not know.
+  A non-nil result is expected to be reliable when called from a macro in order
+  to find the file in which the macro's call was found, and it should be
+  reliable as well when used at the top-level of a file.
+  Other uses risk returning non-nil value that point to the wrong file."
+    ;; `eval-buffer' binds `current-load-list' but not `load-file-name',
+    ;; so prefer using it over using `load-file-name'.
+    (let ((file (car (last current-load-list))))
+      (or (if (stringp file) file)
+          (bound-and-true-p byte-compile-current-file)))))
+
+;; (declare-function macroexp-file-name (if (version< emacs-version "28")
+;;                                          "pel--base"
+;;                                        "macroexp"))
+
+;; ---------------------------------------------------------------------------
 ;;* PEL version
 ;;  ===========
 
 (defmacro pel--compute-compile-time-version ()
   "Query Git at macro-expansion time to embed the build version string."
   (eval-and-compile
-    (let* ((pel-dir (file-name-directory (or  (macroexp-file-name)
-                                            load-file-name
-                                            (locate-library "pel")
-                                            default-directory)))
+    (let* ((pel-dir (file-name-directory (or (macroexp-file-name)
+                                             load-file-name
+                                             (locate-library "pel")
+                                             default-directory)))
            (default-directory pel-dir)
            (ver-str "unknown"))
       (when (and pel-dir (file-directory-p (expand-file-name ".git" pel-dir)))
@@ -477,29 +501,6 @@ string instead."
     (message "PEL version: %s, release: 0.4.2" pel--version)
     pel--version))
 
-;; ---------------------------------------------------------------------------
-;;* Support for future Emacs versions
-;;  =================================
-
-(when (version< emacs-version "28")
-  ;; the following function is available in Emacs 28, as part of macroexp
-  ;; TODO: check if this file must be required in Emacs 28
-  (defun macroexp-file-name ()
-    "Return the name of the file from which the code comes.
-  Returns nil when we do not know.
-  A non-nil result is expected to be reliable when called from a macro in order
-  to find the file in which the macro's call was found, and it should be
-  reliable as well when used at the top-level of a file.
-  Other uses risk returning non-nil value that point to the wrong file."
-    ;; `eval-buffer' binds `current-load-list' but not `load-file-name',
-    ;; so prefer using it over using `load-file-name'.
-    (let ((file (car (last current-load-list))))
-      (or (if (stringp file) file)
-          (bound-and-true-p byte-compile-current-file)))))
-
-;; (declare-function macroexp-file-name (if (version< emacs-version "28")
-;;                                          "pel--base"
-;;                                        "macroexp"))
 
 ;; ---------------------------------------------------------------------------
 ;;* Emacs TTY/Graphics Mode Detection
