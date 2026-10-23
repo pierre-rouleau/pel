@@ -422,10 +422,11 @@ executed by `pel-init' on startup.")
 ;;* Support for future Emacs versions
 ;;  =================================
 
-(when (version< emacs-version "28")
-  ;; the following function is available in Emacs 28, as part of macroexp
-  ;; TODO: check if this file must be required in Emacs 28
-  (eval-and-compile
+;; Declare used functions that are not available in all Emacs versions
+;; supported by PEL.
+
+(eval-and-compile
+  (when (version< emacs-version "28")
     (defun macroexp-file-name ()
       "Return the name of the file from which the code comes.
   Returns nil when we do not know.
@@ -438,10 +439,6 @@ executed by `pel-init' on startup.")
       (let ((file (car (last current-load-list))))
         (or (if (stringp file) file)
             (bound-and-true-p byte-compile-current-file))))))
-
-;; (declare-function macroexp-file-name (if (version< emacs-version "28")
-;;                                          "pel--base"
-;;                                        "macroexp"))
 
 ;; ---------------------------------------------------------------------------
 ;;* PEL version
