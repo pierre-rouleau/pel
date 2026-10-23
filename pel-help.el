@@ -1,6 +1,6 @@
 ;;; pel-help.el --- PEL extra help utilities  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2020, 2023, 2024, 2025  Pierre Rouleau
+;; Copyright (C) 2020, 2023, 2024, 2025, 2026  Pierre Rouleau
 
 ;; Author: Pierre Rouleau (concat "prouleau" "001" "@" "gmail" ".com")
 
@@ -32,8 +32,34 @@
 (require 'cl-extra)           ; use `cl-some'
 (require 'help-fns)           ; use `help--symbol-completion-table'
 (require 'pel--base)
-(require 'pel-modes)          ; use `pel-mode-setup-info'
+
+(declare-function pel-mode-setup-info "pel-modes" (&optional append)) ;auto-loaded
+
+;; ---------------------------------------------------------------------------
 ;;; Code:
+
+(defun pel-git-version-string ()
+  "Query the local Git repository state for PEL dynamically.
+Returns a string formatted as: YYYYMMDD.HHMM.hash[-dirty], or nil if untracked."
+  (let* ((pel-dir (file-name-directory (locate-library "pel")))
+         (default-directory pel-dir))
+    (when (file-directory-p (expand-file-name ".git" pel-dir))
+      (let ((timestamp
+             (with-output-to-string
+               (with-current-buffer standard-output
+                 (process-file "git" nil t nil "log" "-1" "--format=%cd" "--date=format:%Y%m%d.%H%M"))))
+            (hash-state
+             (with-output-to-string
+               (with-current-buffer standard-output
+                 (process-file "git" nil t nil "describe" "--always" "--dirty")))))
+        ;; Clean trailing newlines from process strings
+        (setq timestamp (string-trim-right timestamp))
+        (setq hash-state (string-trim-right hash-state))
+        (unless (string-empty-p hash-state)
+          (format "0.4.2.%s.%s" timestamp hash-state))))))
+
+
+
 
 ;;-pel-autoload
 (defun pel-show-kill-ring ()

@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, March 24 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-14 20:50:02 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-23 09:51:51 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -162,16 +162,16 @@
 ;;; ;;* PEL version
 ;;; --------------------------------------------------------------------------
 
-(ert-deftest ert-test-pel-version ()
-  "Test `pel-version'."
+(ert-deftest ert-test-pel-version-release ()
+  "Test release `pel-version' ."
   ;; Returns a non-empty string.
-  (should (stringp (pel-version)))
-  (should (> (length (pel-version)) 0))
+  (should (stringp (pel-version 'release)))
+  (should (> (length (pel-version 'release)) 0))
   ;; Returns the same string each time.
-  (should (string= (pel-version) (pel-version))))
+  (should (string= (pel-version 'release) (pel-version 'release))))
 
-(ert-deftest pel--base-test/version/semverish ()
-  (let ((v (pel-version)))
+(ert-deftest pel--base-test/version-release/semverish ()
+  (let ((v (pel-version 'release)))
     (should (stringp v))
     (should (string-match-p "^[0-9]+\\.[0-9]+\\.[0-9]+" v))))
 

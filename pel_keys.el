@@ -8059,6 +8059,7 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
 (define-key pel:help "S"  'pel-show-symbol)
 (define-key pel:help "P"  'pel-help-pdfs-dir)
 (define-key pel:help "p"  'pel-help-pdf-select)
+(define-key pel:help "v"  'pel-version)
 
 (global-set-key (kbd "<M-f8>")   #'man)
 (global-set-key (kbd "<M-S-f8>") 'pel-man-at-point)

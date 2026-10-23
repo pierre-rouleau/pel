@@ -422,15 +422,60 @@ executed by `pel-init' on startup.")
 ;;* PEL version
 ;;  ===========
 
-(defun pel-version (&optional insert)
-  "Return PEL package version string and also echoes it.
-Optionally insert it at point if INSERT is non-nil."
+(defmacro pel--compute-compile-time-version ()
+  "Query Git at macro-expansion time to embed the build version string."
+  (eval-and-compile
+    (let* ((pel-dir (file-name-directory (or (macroexp-file-name)
+                                            load-file-name
+                                            (locate-library "pel")
+                                            default-directory)))
+           (default-directory pel-dir)
+           (ver-str "unknown"))
+      (when (and pel-dir (file-directory-p (expand-file-name ".git" pel-dir)))
+        (let ((timestamp
+               (string-trim-right
+                (shell-command-to-string "git log -1 --format=\"%cd\" --date=format:\"%Y%m%d.%H%M\"")))
+              (hash-state
+               (string-trim-right
+                (shell-command-to-string "git describe --always --dirty"))))
+          (unless (string-empty-p hash-state)
+            (setq ver-str (format "%s.%s" timestamp hash-state)))))
+      ;; Return the naked string token so it embeds statically in the bytecode
+      ver-str)))
+
+
+(defconst pel--version (pel--compute-compile-time-version)
+  "PEL version string: Git commit state of PEL captured at build-time.
+
+Format is YYYYMMDD.HHMM.hash[-dirty].
+
+This normally reflects the actual running bytecode unless you
+pel--base.el is byte compiled during this editing session.
+
+The -dirty flag indicates that the PEL code was built while the PEL
+Git repository had uncommitted changes.")
+
+(defun pel-version (&optional release)
+  "Show and return PEL version string, based on PEL Git Repository version.
+
+Also show the PEL release version, but only return the Git-based version
+string.
+
+The format of the Git-based version is:  YYYYMMDD.HHMM.hash[-dirty].
+
+The -dirty flag indicates that the PEL code was built while the PEL
+Git repository had uncommitted changes.
+
+When RELEASE is non-nil show and return PEL project release version
+string instead."
   (interactive "P")
-  (let ((version "0.4.2"))
-    (if insert
-        (insert version))
-    (message "PEL version: %s" version)
-    version))
+  (if release
+      (let ((release-version "0.4.2"))
+        (message "PEL project release version: %s" release-version)
+        release-version)
+    ;; Git-based version
+    (message "PEL version: %s, release: 0.4.2" pel--version)
+    pel--version))
 
 ;; ---------------------------------------------------------------------------
 ;;* Support for future Emacs versions
@@ -441,11 +486,11 @@ Optionally insert it at point if INSERT is non-nil."
   ;; TODO: check if this file must be required in Emacs 28
   (defun macroexp-file-name ()
     "Return the name of the file from which the code comes.
-Returns nil when we do not know.
-A non-nil result is expected to be reliable when called from a macro in order
-to find the file in which the macro's call was found, and it should be
-reliable as well when used at the top-level of a file.
-Other uses risk returning non-nil value that point to the wrong file."
+  Returns nil when we do not know.
+  A non-nil result is expected to be reliable when called from a macro in order
+  to find the file in which the macro's call was found, and it should be
+  reliable as well when used at the top-level of a file.
+  Other uses risk returning non-nil value that point to the wrong file."
     ;; `eval-buffer' binds `current-load-list' but not `load-file-name',
     ;; so prefer using it over using `load-file-name'.
     (let ((file (car (last current-load-list))))
@@ -495,14 +540,14 @@ Other uses risk returning non-nil value that point to the wrong file."
 
 (defmacro λc (fct &rest args)
   "Funcall lambda function FCT with ARGS.
-This is a short alias for `funcall'.
+  This is a short alias for `funcall'.
 
-Caution: this, so far, is the *only* PEL symbol whose name does not
-         start with the \\='pel\\=' prefix.
+  Caution: this, so far, is the *only* PEL symbol whose name does not
+  start with the \\='pel\\=' prefix.
 
-If this clashes with something you use, please accept my apologies and
-please let me know.  Hopefully the use of a Unicode symbol in the name
-will reduce this possibility."
+  If this clashes with something you use, please accept my apologies and
+  please let me know.  Hopefully the use of a Unicode symbol in the name
+  will reduce this possibility."
   `(funcall ,fct ,@args))
 
 ;; ---------------------------------------------------------------------------
@@ -514,10 +559,10 @@ will reduce this possibility."
 
 (defun pel-expression-p (val)
   "Return non-nil if VAL is an expression, nil if it is a value.
-Return nil for t and nil.
-Return t for \\='some-symbols or \\='(some expressions), nothing else.
-Meant to be used to identify code that is quoted (for delayed
-code execution)."
+  Return nil for t and nil.
+  Return t for \\='some-symbols or \\='(some expressions), nothing else.
+  Meant to be used to identify code that is quoted (for delayed
+                                                        code execution)."
   (declare (pure t) (side-effect-free error-free))
   (and (not (eq val t))
        (not (eq val nil))
@@ -538,12 +583,12 @@ code execution)."
 (defun pel-setq-user-option (user-option value)
   "Dynamically set the USER-OPTION (a symbol) to the specified VALUE.
 
-This changes the dynamic value of USER-OPTION in the current session;
-the local buffer and the global value.
-This change does not persist across Emacs session.
+  This changes the dynamic value of USER-OPTION in the current session ;
+  the local buffer and the global value.
+  This change does not persist across Emacs session.
 
-If you need to change a user-option persistently, change it through
-Emacs customization mechanism."
+  If you need to change a user-option persistently, change it through
+  Emacs customization mechanism."
   (set-default user-option value)
   (when (local-variable-p user-option)
     (set user-option value)))
@@ -555,7 +600,7 @@ Emacs customization mechanism."
 (defun pel-set-if-non-nil (symbol value)
   "Set SYMBOL to VALUE only if VALUE is non-nil.
 
-If VALUE is nil do nothing."
+  If VALUE is nil do nothing."
   (when value
     (set symbol value)))
 
@@ -607,8 +652,8 @@ If VALUE is nil do nothing."
 
 (defun pel-items-by-markers (markers items)
   "Group elements of ITEMS based on MARKERS.
-Returns an association list where each key is a marker from MARKERS
-and the value is a list of elements found between it and the next marker."
+  Returns an association list where each key is a marker from MARKERS
+  and the value is a list of elements found between it and the next marker."
   (let (alist current-marker current-group)
     (dolist (item items)
       (if (member item markers)
@@ -648,12 +693,12 @@ and the value is a list of elements found between it and the next marker."
 (defun pel-major-mode-of-file (filename &optional must-exist)
   "Return the major mode symbol Emacs would use for FILENAME.
 
-Return nil if FILENAME is a directory.
+  Return nil if FILENAME is a directory.
 
-If MUST-EXIST is non-nil, issue an error if the file does not exist.
-Otherwise, for a FILENAME that is not a buffer and is a non-existent or
-unreadable file, the mode is inferred from the filename (auto-mode-alist)
-since there is no content to inspect."
+  If MUST-EXIST is non-nil, issue an error if the file does not exist.
+  Otherwise, for a FILENAME that is not a buffer and is a non-existent or
+  unreadable file, the mode is inferred from the filename (auto-mode-alist)
+  since there is no content to inspect."
   (let ((expanded-fname (expand-file-name filename)))
     (when (and must-exist (not (file-exists-p expanded-fname)))
       (error "%s (expanded to %s) does not exist!" filename expanded-fname))
@@ -686,16 +731,16 @@ since there is no content to inspect."
 (defconst pel-lang-for-modes '((cperl . perl)
                                (lisp-interaction . emacs-lisp))
   "Alist mapping mode-name prefixes to canonical language symbols.
-Used by `pel-language-of' when `pel-file-type-for' produces a name that
-differs from the conventional language symbol.
-For example, `cperl-mode' has prefix \"cperl\" but the canonical
-language symbol is \\='perl.")
+  Used by `pel-language-of' when `pel-file-type-for' produces a name that
+  differs from the conventional language symbol.
+  For example, `cperl-mode' has prefix \"cperl\" but the canonical
+  language symbol is \\='perl.")
 
 (defun pel-language-of (&optional filename)
   "Return the programming language symbol used in buffer or specified FILENAME.
-If FILENAME is not specified use the current buffer.
-Return nil if the major mode of buffer or FILENAME is not derived from either
-`prog-mode' or `text-mode'."
+  If FILENAME is not specified use the current buffer.
+  Return nil if the major mode of buffer or FILENAME is not derived from either
+  `prog-mode' or `text-mode'."
   (let ((mmode (if filename
                    (pel-major-mode-of-file filename)
                  major-mode))
@@ -714,13 +759,13 @@ Return nil if the major mode of buffer or FILENAME is not derived from either
 
 (defun pel-major-mode-must-be (modes)
   "Check that the current buffer major mode is one of MODES.
-MODES is either a major-mode symbol or a list of major-mode symbols.
-Raise a user error if the current buffer is not using one of the MODES;
-the message states that the current command is not appropriate."
+  MODES is either a major-mode symbol or a list of major-mode symbols.
+  Raise a user error if the current buffer is not using one of the MODES ;
+  the message states that the current command is not appropriate."
   (unless (memq major-mode (pel-list-of modes))
-    (user-error "This command is not meant for %s; use it in %S"
-                major-mode
-                modes)))
+    (user-error "This command is not meant for %s ; use it in %S"
+  major-mode
+  modes)))
 
 (defun pel-derived-mode-p (buffer-or-name &rest modes)
   "Non-nil if major mode of BUFFER-OR-NAME is derived from one of MODES.

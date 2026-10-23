@@ -1,0 +1,23 @@
+# YAML FILE: config.yml
+#
+# Purpose   : Turn off blank issues and explicitly steer users away from using the issue tracker for promotion, question or general announcement.
+# Created   : Friday, October 23 2026.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-23 08:12:54 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+blank_issues_enabled: false # 🛑 Completely blocks bots from opening empty or random text forms
+
+contact_links:
+  - name: 🐛 Bug Reports & Feature Requests
+    url: https://github.com
+    about: If you found a bug in PEL or want to suggest an improvement, please use our structured templates.
+
+  - name: 💬 General Questions & Discussions
+    url: https://github.com
+    about: For usage help, installation troubleshooting, or sharing workflows, please use GitHub Discussions instead of an Issue ticket.
+
+  - name: ⚠️ Commercial & Marketing Policy
+    url: https://github.com
+    about: Solicitations, star-boosting offers, or promotions are strictly prohibited. Violators are instantly reported as spam and blocked.
+
+# ----------------------------------------------------------------------------
