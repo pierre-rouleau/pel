@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-23 21:52:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-24 10:03:39 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -29,11 +29,12 @@
 ;; @ `pel-with-controlled-save'
 ;;    - `pel--execute-smart-save-pipeline'
 ;;      - `pel--compile-handle-current-buffer-save'
-;;      - `pel--compile-prompt-save-intent'
 ;;      - `pel-compile-get-buffers-needing-save'
 ;;         - `pel--save-buffer-for-compile-p'
 ;;           - `pel--compile-mode-match-p'
+;;      - `pel--compile-prompt-save-intent'
 ;;      - `pel--compile-display-ibuffer-menu'
+;;      - `pel--save-some-buffers-for-compile'
 ;;
 ;;    ~ `pel-compile-ibuffer-setup-keys'
 ;;      - `pel--compile-ibuffer-execute-and-build'
@@ -240,6 +241,25 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
     t)) ; Buffer already saved: proceed to compilation.
 
 
+
+ (defun pel--save-some-buffers-for-compile ()
+   "Save in-scope buffers without bypassing the compilation predicate."
+   (let (automatic-save-values)
+     (dolist (buffer (buffer-list))
+       (when (buffer-live-p buffer)
+         (with-current-buffer buffer
+           (when (and buffer-save-without-query
+                      (not (pel--save-buffer-for-compile-p)))
+             (push (cons buffer buffer-save-without-query)
+                   automatic-save-values)
+             (setq-local buffer-save-without-query nil)))))
+     (unwind-protect
+         (save-some-buffers nil #'pel--save-buffer-for-compile-p)
+       (dolist (entry automatic-save-values)
+         (when (buffer-live-p (car entry))
+           (with-current-buffer (car entry)
+             (setq-local buffer-save-without-query (cdr entry))))))))
+
 (defun pel--execute-smart-save-pipeline (compile-callback)
   "Evaluates buffer save counts and executes the user's explicit interface route."
   ;; 1. Check current buffer saving policies first.
@@ -268,7 +288,7 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
           ('sequential
            ;; Proceed: prompt saving only for relevant files, then compile.
            (let ((compilation-ask-about-save nil))
-             (save-some-buffers nil #'pel--save-buffer-for-compile-p)
+             (pel--save-some-buffers-for-compile)
              (funcall compile-callback)))
 
           ('skip
@@ -284,7 +304,7 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
        (t
         (let ((compilation-ask-about-save nil))
           ;; Proceed to prompt for saving only the relevant buffers.
-          (save-some-buffers nil #'pel--save-buffer-for-compile-p)
+          (pel--save-some-buffers-for-compile)
           ;; Then compile, skip saving buffers the user decided not to save or
           ;; buffers that are not relevant.
           (let ((compilation-save-buffers-predicate #'ignore))
