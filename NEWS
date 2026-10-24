@@ -11,8 +11,8 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   policy and then PEL will only prompt for files that are of the same major
   mode or related major mode (if the ='related= policy is used).  When
   prompting you have the choice to be prompted one file at a time like Emacs
-  normally does or open a specialized Ibuffer that shows all relavant buffers
-  to save.  You can save all, some or none ad then proceed with the
+  normally does or open a specialized Ibuffer that shows all relevant buffers
+  to save.  You can save all, some or none and then proceed with the
   compilation.  Using this new macro it becomes possible to compile a C file
   without being prompted to save documentation files for example.
 - Improved *pel-version* command: it is not bound to the ~<f11> ? v~ key sequence.

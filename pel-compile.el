@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-23 18:03:45 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-23 21:52:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -51,6 +51,7 @@
 (require 'ibuf-ext)       ; use: `ibuffer-filter-groups'
 (require 'vc)             ; use: `vc-diff-internal'
 (require 'compile)        ; use: `compilation-save-buffers-predicate'
+(require 'cl-lib)         ; use: `cl-letf'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -91,8 +92,8 @@ buffer save logic."
                                       pel-compile-save-mode-scope)))))
 
 ;; ---------------------------------------------------------------------------
-(defvar pel-compile--batch-callback nil
-  "Internal variable to hold the compilation payload while ibuffer is active.")
+(defvar-local pel-compile--batch-callback nil
+  "Compilation callback pending in this save workspace, or nil.")
 
 (defun pel--compile-ibuffer-execute-and-build ()
   "Save the files explicitly marked with S in the workspace, then compile.
@@ -101,9 +102,8 @@ If no files are marked, then save nothing and proceed cleanly with the
 compilation."
   (interactive)
   (let ((callback pel-compile--batch-callback))
-    ;; 1. Deactivate our hooks immediately to prevent cleanup race conditions
+    ;; 1. Clear only this workspace's pending callback.
     (setq pel-compile--batch-callback nil)
-    (remove-hook 'ibuffer-mode-hook #'pel-compile-ibuffer-setup-keys)
 
     ;; 2. Use ibuffer's native line mapper to scan and save marked entries
     ;;    safely
@@ -119,9 +119,7 @@ compilation."
     ;; 4. Fire the compilation engine; prevent further prompts and do not save
     ;; any unsaved buffers
     (when callback
-      (let ((compilation-save-buffers-predicate #'ignore)
-            ;; (compilation-ask-about-save nil)
-            )
+      (let ((compilation-save-buffers-predicate #'ignore))
         (funcall callback)))))
 
 (defun pel--compile-ibuffer-vcs-diff ()
@@ -131,17 +129,24 @@ compilation."
     (if (and buf (buffer-file-name buf))
         (let ((backend (vc-backend (buffer-file-name buf))))
           (if backend
-              (vc-diff-internal backend (list (buffer-file-name buf)) nil nil)
+              (vc-diff-internal nil
+                                (list backend
+                                      (list (buffer-file-name buf)))
+                                nil nil)
             (message "Buffer file is not registered under version control.")))
       (message "No file associated with this buffer."))))
 
 (defun pel--compile-ibuffer-abort ()
-  "Aborts the entire compilation chain cleanly, leaving buffers unsaved."
+  "Abort this workspace's pending compilation without saving buffers."
   (interactive)
   (setq pel-compile--batch-callback nil)
-  (remove-hook 'ibuffer-mode-hook #'pel-compile-ibuffer-setup-keys)
   (kill-buffer (current-buffer))
   (message "PEL: Compilation aborted."))
+
+(defun pel--compile-ibuffer-mark-for-save (arg)
+  "Mark ARG buffers for saving, or the filter group at point."
+  (interactive "p")
+  (ibuffer-mark-interactive arg ?S))
 
 (defun pel-compile-ibuffer-setup-keys ()
   "Inject compilation control overrides into the temporary ibuffer workspace."
@@ -150,6 +155,7 @@ compilation."
     ;; operation abort (and also close the buffer)
     (let ((map (make-sparse-keymap)))
       (set-keymap-parent map (current-local-map))
+      (define-key map (kbd "m") #'pel--compile-ibuffer-mark-for-save)
       (define-key map (kbd "q") #'pel--compile-ibuffer-abort)
       (define-key map (kbd "x") #'pel--compile-ibuffer-execute-and-build)
       (define-key map (kbd "d") #'ibuffer-diff-with-file)
@@ -168,14 +174,18 @@ compilation."
     collected))
 
 (defun pel--compile-display-ibuffer-menu (buffers-to-save callback)
-  "Open restricted ibuffer workspace to batch-save BUFFERS-TO-SAVE before CALLBACK."
-  (setq pel-compile--batch-callback callback)
-  (add-hook 'ibuffer-mode-hook #'pel-compile-ibuffer-setup-keys)
+  "Open a new save workspace for BUFFERS-TO-SAVE and CALLBACK.
+
+Keep CALLBACK local to the workspace.  Each workspace has its own
+buffer-selection filter and does not replace another pending request."
   (let ((origin-mode (with-current-buffer pel--compile-origin-buffer major-mode))
-        (buf-name "*PEL Compile Save Workspace*"))
+        (buf-name (generate-new-buffer-name "*PEL Compile Save Workspace*")))
     (ibuffer t buf-name
              `((predicate . (memq (current-buffer) ',buffers-to-save))))
     (with-current-buffer (get-buffer buf-name)
+      ;; Set request state after Ibuffer initializes its major mode.
+      (setq-local pel-compile--batch-callback callback)
+      (pel-compile-ibuffer-setup-keys)
       (setq ibuffer-filter-groups
             `(("Compilation Mode Targets" (mode . ,origin-mode))
               ("Secondary Cluster Targets" (used-mode t))))
@@ -191,7 +201,7 @@ compilation."
         (forward-line 1))
       (goto-char (point-min)))
     (message "\
-PEL: [s] Mark Save | [u] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile")))
+PEL: [m] Mark Save | [u] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile")))
 
 (defun pel--compile-prompt-save-intent (count)
   "Prompt the user how to handle COUNT modified buffers before compiling.
@@ -285,6 +295,10 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
 (defmacro pel-with-controlled-save (&rest body)
   "Safely execute BODY after prompting or batching mode-relevant buffer saves.
 
+Disable `save-some-buffers' while BODY runs so compilation cannot save
+buffers skipped by the save pipeline.  This also applies when the save
+scope is `none'.
+
 Use this macro as wrapper to the `compilation' calls as in the following
 code:
 
@@ -296,15 +310,21 @@ code:
   (declare (indent 0) (debug t))
   `(let* ((original-buffer (current-buffer))
           (pel--compile-origin-buffer original-buffer)
-          (compilation-save-buffers-predicate #'ignore)
-          ;; (compilation-ask-about-save nil)
-          )
+          (compilation-save-buffers-predicate #'ignore))
      (if (eq pel-compile-save-mode-scope 'none)
-         (progn ,@body)
+         ;; When operation must not prompt and must not save any buffer:
+         ;; the predicate alone cannot suppress unconditional saves made
+         ;; for buffers with non-nil `buffer-save-without-query'.
+         (cl-letf (((symbol-function 'save-some-buffers) #'ignore))
+           ,@body)
+       ;;
        (pel--execute-smart-save-pipeline
         (lambda ()
           (with-current-buffer original-buffer
-            ,@body))))))
+            ;; Enter this binding when the callback runs, including when
+            ;; Ibuffer invokes it after the save pipeline has returned.
+            (cl-letf (((symbol-function 'save-some-buffers) #'ignore))
+              ,@body)))))))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-compile)
