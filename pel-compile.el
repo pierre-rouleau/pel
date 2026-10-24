@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-24 15:20:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-24 16:43:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -96,6 +96,9 @@ buffer save logic."
   (let ((target-buffer (current-buffer)))
     (and (buffer-file-name target-buffer)
          (buffer-live-p pel--compile-origin-buffer)
+         ;; The current-buffer handler already processed the origin.
+         ;; Do not prompt for it again or save it automatically here.
+         (not (eq target-buffer pel--compile-origin-buffer))
          (let ((origin-mode (buffer-local-value 'major-mode
                                                 pel--compile-origin-buffer))
                (target-mode major-mode))
@@ -107,29 +110,79 @@ buffer save logic."
 (defvar-local pel-compile--batch-callback nil
   "Compilation callback pending in this save workspace, or nil.")
 
+;; Ibuffer reconstructs marks from displayed rows. A hidden buffer can
+;; therefore lose its mark during a later refresh.
+;;
+;; Use a workspace-local alist as the persistent mark store. Before each
+;; refresh, copy displayed marks into that store. Then supply the stored marks
+;; when Ibuffer builds its new list.
+;;
+;; The advice below is registered globally, but its behavior is restricted to
+;; an active PEL save workspace. Normal Ibuffer buffers call the original
+;; function without changes
+
+(defvar-local pel-compile--save-marks nil
+  "Alist of original candidate buffers and their workspace marks.
+Each entry has the form (BUFFER . MARK).  Hidden buffers retain
+their last mark.  Only the S mark selects a buffer for saving.")
+
+(defun pel--compile-ibuffer-sync-save-marks ()
+  "Copy displayed candidate marks into this workspace's mark store."
+  (dolist (entry (ibuffer-current-state-list))
+    (let ((saved-entry (assq (car entry) pel-compile--save-marks)))
+      (when saved-entry
+        (setcdr saved-entry (cdr entry))))))
+
+(defun pel--compile-ibuffer-preserve-save-marks (original buffers)
+  "Call ORIGINAL for BUFFERS, preserving PEL workspace candidate marks."
+  (if (not (and (derived-mode-p 'ibuffer-mode)
+                pel-compile--batch-callback
+                pel-compile--save-marks))
+      (funcall original buffers)
+    ;; Capture edits before Ibuffer filters or regenerates its rows.
+    (pel--compile-ibuffer-sync-save-marks)
+    (mapcar
+     (lambda (entry)
+       (let ((saved-entry (assq (car entry) pel-compile--save-marks)))
+         (if saved-entry
+             (cons (car entry) (cdr saved-entry))
+           entry)))
+     (funcall original buffers))))
+
+(advice-add 'ibuffer-current-buffers-with-marks :around
+            #'pel--compile-ibuffer-preserve-save-marks)
+
+
 (defun pel--compile-ibuffer-execute-and-build ()
   "Save the files explicitly marked with S in the workspace, then compile.
 
-If no files are marked, then save nothing and proceed cleanly with the
-compilation."
+Save selected original candidates even when filters hide their rows.
+If no candidates have an S mark, save nothing and compile."
   (interactive)
   (let ((callback pel-compile--batch-callback))
-    ;; 1. Clear only this workspace's pending callback.
+    (unless callback
+      (user-error "No compilation is pending in this workspace"))
+    ;;
+    ;; Capture the latest displayed marks, including explicit unmarks.
+    (pel--compile-ibuffer-sync-save-marks)
+    ;; Keep the callback available if a save fails or the user quits.
+    ;; Use a snapshot because save hooks can update the workspace.
+    (dolist (entry (copy-tree pel-compile--save-marks))
+      (let ((buf (car entry))
+            (mark (cdr entry)))
+        (when (and (buffer-live-p buf) (eq mark ?S))
+          (with-current-buffer buf
+            (save-buffer)
+            (when (buffer-modified-p)
+              ;; If a buffer save fails warn user
+              (user-error "Buffer %s is still modified; compilation not started"
+                          (buffer-name)))))))
+    ;;
+    ;; All selected saves succeeded.  Consume this workspace's callback.
     (setq pel-compile--batch-callback nil)
-
-    ;; 2. Use ibuffer's native line mapper to scan and save marked entries
-    ;;    safely
-    (ibuffer-map-lines
-     (lambda (buf mark)
-       (when (and buf (eq mark ?S))
-         (with-current-buffer buf
-           (save-buffer)))))
-
-    ;; 3. Kill the workspace buffer cleanly to restore the original window layout
     (kill-buffer (current-buffer))
-
-    ;; 4. Fire the compilation engine; prevent further prompts and do not save
-    ;; any unsaved buffers
+    ;;
+    ;; Start compilation without further compilation save prompting.
     (when callback
       (let ((compilation-save-buffers-predicate #'ignore))
         (funcall callback)))))
@@ -252,6 +305,12 @@ workspace.  It supplements `ibuffer-mode'.
 Initially, each listed modified buffer has an S mark for saving.
 Unmark buffers that you do not want to save.
 
+Filtering changes which rows are displayed, not the save selection.
+Hidden candidates retain their marks.  The save-and-compile command
+also saves hidden candidates that retain an S mark.
+Only buffers selected when this workspace opened can be saved by
+that command.
+
 \\<pel-compile-save-workspace-mode-map>\
 \\[pel--compile-ibuffer-mark-for-save] marks buffers with S for saving.
 The standard Ibuffer key `u' removes a mark.
@@ -319,6 +378,12 @@ buffer-selection filter and does not replace another pending request."
             ;; Mark the buffer for save
             (ibuffer-set-mark ?S)))
         (forward-line 1))
+      ;; Remember all buffers initially marked:
+      ;; initialize after the first display and marking pass.  Include
+      ;; candidates hidden by Ibuffer display settings or filter groups.
+      (setq-local pel-compile--save-marks
+                  (mapcar (lambda (buf) (cons buf ?S))
+                          buffers-to-save))
       (goto-char (point-min)))
     (message "\
 PEL: [m] Mark Save | [u] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile | [?] help")))
@@ -340,7 +405,10 @@ PEL: %d modified buffers found.
 
 (defun pel--compile-handle-current-buffer-save ()
   "Process the current buffer save policy before compilation.
-Returns non-nil if it is safe to proceed with the compilation pipeline."
+
+Return non-nil after saving the current buffer or skipping its save.
+Declining the save does not cancel compilation.
+Quit and save errors propagate to the caller."
   (if (and (buffer-file-name)
            (buffer-modified-p))
 
@@ -349,14 +417,11 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
           (progn
             (save-buffer)
             t)
-        ;; User wants to be prompted
-        (if (y-or-n-p (format "Save modified buffer '%s' before compiling? "
-                              (buffer-name)))
-             (progn
-               (save-buffer)
-               t)                    ; proceed
-          (message "PEL: Compilation aborted (current buffer not saved).")
-          nil))                      ; Abort: don't compile
+        ;; A negative answer skips this save, not compilation.
+        (when (y-or-n-p (format "Save modified buffer '%s' before compiling? "
+                               (buffer-name)))
+          (save-buffer))
+        t)
     t)) ; Buffer already saved: proceed to compilation.
 
 
@@ -390,15 +455,15 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
        (dolist (entry automatic-save-values)
          (when (buffer-live-p (car entry))
            (with-current-buffer (car entry)
-             (setq-local buffer-save-without-query (cadr entry)))
-           (if (caddr entry)
-               (setq-local buffer-save-without-query (cadr entry))
-             (kill-local-variable 'buffer-save-without-query)))))))
+             (if (caddr entry)
+                 (setq-local buffer-save-without-query (cadr entry))
+               (kill-local-variable 'buffer-save-without-query))))))))
 
 (defun pel--execute-smart-save-pipeline (compile-callback)
   "Evaluates buffer save counts; executes the user's explicit interface route."
   ;; 1. Check current buffer saving policies first.
-  ;;    Halt if user declines.
+  ;;    A declined save skips the current buffer.  Quit and save errors
+  ;;    stop the pipeline.
   (when (pel--compile-handle-current-buffer-save)
     ;;
     ;; 2. Gather any OTHER modified buffers matching mode filtering rules
