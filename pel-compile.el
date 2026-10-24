@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-24 13:08:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-24 15:20:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -54,7 +54,17 @@
 (require 'vc)             ; use: `vc-diff-internal'
 (require 'compile)        ; use: `compilation-save-buffers-predicate'
 (require 'cl-lib)         ; use: `cl-letf'
+(require 'ibuffer)        ; use: `ibuffer-map-lines'
+;;                        ;      `ibuffer-current-buffer'
+;;                        ;      `ibuffer-mark-interactive'
+;;                        ;      `ibuffer-diff-with-file'
+;;                        ;      `ibuffer-filter-groups'
+;;                        ;      `ibuffer-use-header-line',
+;;                        ;      `ibuffer-header-line-format'
+;;                        ;      `ibuffer-show-empty-filter-groups'
+;;                        ;      `ibuffer-update', `ibuffer-set-mark'
 
+(defvar ibuffer-header-line-format)     ; declare to prevent Emacs 26 warnings
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
