@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-24 10:03:39 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-24 10:53:25 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -245,23 +245,38 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
  (defun pel--save-some-buffers-for-compile ()
    "Save in-scope buffers without bypassing the compilation predicate."
    (let (automatic-save-values)
+     ;; - Analyze buffers, identify buffers with auto-save needed.
+     ;;   Each entry of automatic-save-values list has:
+     ;;   - buffer
+     ;;   - `buffer-save-without-query' value
+     ;;   - `buffer-save-without-query': t if local variable, nil otherwise
+     ;; - For buffers that must absolutely be saved without query set the
+     ;;   buffer local value of their `buffer-save-without-query' to nil.
      (dolist (buffer (buffer-list))
        (when (buffer-live-p buffer)
          (with-current-buffer buffer
            (when (and buffer-save-without-query
                       (not (pel--save-buffer-for-compile-p)))
-             (push (cons buffer buffer-save-without-query)
+             (push (list buffer
+                         buffer-save-without-query
+                         (local-variable-p 'buffer-save-without-query))
                    automatic-save-values)
              (setq-local buffer-save-without-query nil)))))
+     ;; Perform the save some buffer operation
      (unwind-protect
          (save-some-buffers nil #'pel--save-buffer-for-compile-p)
+       ;; Restore the state of `buffer-save-without-query' of the affected
+       ;; buffers and for those that were not using a local value, remove the
+       ;; local copy for the buffer.
        (dolist (entry automatic-save-values)
          (when (buffer-live-p (car entry))
            (with-current-buffer (car entry)
-             (setq-local buffer-save-without-query (cdr entry))))))))
+             (setq-local buffer-save-without-query (cadr entry)))
+           (unless (caddr entry)
+             (kill-local-variable 'buffer-save-without-query)))))))
 
 (defun pel--execute-smart-save-pipeline (compile-callback)
-  "Evaluates buffer save counts and executes the user's explicit interface route."
+  "Evaluates buffer save counts; executes the user's explicit interface route."
   ;; 1. Check current buffer saving policies first.
   ;;    Halt if user declines.
   (when (pel--compile-handle-current-buffer-save)
