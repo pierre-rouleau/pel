@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-21 23:07:46 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-23 21:06:20 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -219,6 +219,7 @@ EL_FILES := pel--base.el \
 		pel-comment.el \
 		pel-commonlisp.el \
 		pel-comp.el \
+		pel-compile.el \
 		pel-completion.el \
 		pel-cpp.el \
 		pel-cua.el \
@@ -937,9 +938,10 @@ pel-cc-navigate.elc:      pel--syntax-macros.elc
 pel-cc.elc:               pel--base.elc pel--options.elc pel-ffind.elc
 pel-ccp.elc:              pel--base.elc pel--options.elc pel-navigate.elc
 pel-comint.elc:           pel--base.elc
-pel-comment-adorn.elc:    pel-rst.elc pel-comment.elc pel-mark.elc
+pel-comment-adorn.elc:    pel-rst.elc pel-comment.elc pel-mark.elc pel-compile.elc
 pel-comment.elc:          pel--base.elc pel-ccp.elc pel-prompt.elc
 pel-commonlisp.elc:       pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc pel-window.elc
+pel-compile.elc:          pel--options.elc
 pel-completion.elc:       pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-seq.elc pel-ido.elc
 pel-cpp.elc:              pel--base.elc
 pel-cursor.elc:           pel--options.elc

@@ -153,6 +153,7 @@
 (require 'pel-ccp)          ; use: `pel-delete-whole-line', `pel-duplicate-line'
 (require 'pel--macros)
 (require 'pel-file)         ; use: `pel-find-file-at-point-in-window'
+(require 'pel-compile)      ; use: `pel-with-controlled-save'
 (require 'rst)              ; rst-mode code. Use `rst-backward-section', `rst-preferred-adornments'
 (eval-when-compile
   (require 'subr-x))        ; use: split-string
@@ -1370,8 +1371,9 @@ under the table title line."
                                  pel-home-dirpath-name
                                  command-line)))
     (if (executable-find pgm)
-        (compile (format "%s %s"
-                         command-line buffer-file-name))
+        (pel-with-controlled-save
+          (compile (format "%s %s"
+                           command-line buffer-file-name)))
       (user-error "Specified command line is invalid: %s is not on PATH.\
  Update pel-rst-compiler!" pgm))))
 
