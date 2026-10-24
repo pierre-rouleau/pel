@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-24 10:53:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-24 13:08:42 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -36,9 +36,10 @@
 ;;      - `pel--compile-display-ibuffer-menu'
 ;;      - `pel--save-some-buffers-for-compile'
 ;;
-;;    ~ `pel-compile-ibuffer-setup-keys'
+;;    o `pel--compile-save-workspace-mode'
 ;;      - `pel--compile-ibuffer-execute-and-build'
 ;;      - `pel--compile-ibuffer-vcs-diff'
+;;      * `pel--compile-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -149,19 +150,121 @@ compilation."
   (interactive "p")
   (ibuffer-mark-interactive arg ?S))
 
-(defun pel-compile-ibuffer-setup-keys ()
-  "Inject compilation control overrides into the temporary ibuffer workspace."
-  (when pel-compile--batch-callback
-    ;; Disable standard ibuffer exit command; replace it with a compilation
-    ;; operation abort (and also close the buffer)
-    (let ((map (make-sparse-keymap)))
-      (set-keymap-parent map (current-local-map))
-      (define-key map (kbd "m") #'pel--compile-ibuffer-mark-for-save)
-      (define-key map (kbd "q") #'pel--compile-ibuffer-abort)
-      (define-key map (kbd "x") #'pel--compile-ibuffer-execute-and-build)
-      (define-key map (kbd "d") #'ibuffer-diff-with-file)
-      (define-key map (kbd "D") #'pel--compile-ibuffer-vcs-diff)
-      (use-local-map map))))
+;; ---------------------------------------------------------------------------
+;; pel--compile-save-workspace-mode Minor Mode
+;; ------------------------------------------
+
+(defun pel--compile-info ()
+  "Describe the specialized ibuffer prompt to save buffers before compile."
+  (interactive)
+  (pel-print-in-buffer
+   "*pel-compile-info*"
+   "Using the buffer saving specialized ibuffer"
+   (lambda ()
+     "Describe the purpose of the specialized ibuffer."
+     (insert "\n")
+     (pel-insert-bold "Identify Buffer to save before compilation\n")
+     (pel-insert-bold "==========================================\n\n")
+     (insert "\
+The specialized ibuffer allows you to quickly identify the buffers
+that must be saved before proceeding with the compilation you just requested.
+PEL has identified the buffers that may need to be saved before proceeding
+with the compilation command and shows them in this specialized ibuffer.
+You can remove some of them here or change the way PEL identifies them.
+
+Inside the specialized ibuffer, each buffer marked with a 'S' will be saved
+before proceeding with the compilation command.
+
+Inside that buffer:
+
+- unmark a buffer by typing ")
+     (pel-insert-bold "u")
+     (insert ",
+- unmark all buffers by typing ")
+     (pel-insert-bold "U")
+     (insert ",
+- proceed with the compilation by typing ")
+     (pel-insert-bold "x")
+     (insert ",
+- abort (don't compile) by typing ")
+     (pel-insert-bold "q")
+     (insert ".
+
+Before proceeding or aborting you can also quickly check for the changes
+between the buffer content and its file content by typing ")
+     (pel-insert-bold "d")
+     (insert ",
+or between the file content itself and the currently committed
+content of the file by typing ")
+     (pel-insert-bold "D")
+     (insert " if that file is under VCS control.\n
+Note that you can also use the standard iBuffer filtering commands to
+filter a long list of buffer to help you identify the buffers that
+should be unmarked or marked back.\n\n")
+     (pel-insert-bold "Customize PEL behaviour\n")
+     (pel-insert-bold "=======================\n\n")
+     (insert "\
+The way PEL identifies which buffer may need to be saved and how PEL prompts
+you is controlled by the following user-options:\n")
+     (pel-insert-symbol-content-line 'pel-compile-save-mode-scope)
+     (pel-insert-symbol-content-line 'pel-compile-batch-save-threshold)
+     (pel-insert-symbol-content-line 'pel-compile-always-use-batch-save)
+     (pel-insert-symbol-content-line 'pel-compile-skip-prompt-to-save-current-buffer)
+     (pel-insert-list-content        'pel-compile-related-modes-alist))
+   :clear-buffer
+   :use-help-mode))
+
+
+(defvar pel--compile-save-workspace-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "?") #'pel--compile-info)
+    (define-key map (kbd "D") #'pel--compile-ibuffer-vcs-diff)
+    (define-key map (kbd "d") #'ibuffer-diff-with-file)
+    (define-key map (kbd "m") #'pel--compile-ibuffer-mark-for-save)
+    (define-key map (kbd "q") #'pel--compile-ibuffer-abort)
+    (define-key map (kbd "x") #'pel--compile-ibuffer-execute-and-build)
+    map)
+  "Keymap for `pel--compile-save-workspace-mode'.")
+
+(defconst pel--compile-save-workspace-mode-help
+  (concat "Save before compile? | "
+          "m: save | u: no save| "
+          "d: Δbuf/file | D: Δfile/VC | "
+          "x: compile | q: abort | ?: help | (FILTERS active)")
+  "A single help line shown at the top of the specialized ibuffer.")
+
+(define-minor-mode pel--compile-save-workspace-mode
+  "Review buffer saves before compilation in a PEL Ibuffer workspace.
+
+PEL enables this buffer-local minor mode in each compilation save
+workspace.  It supplements `ibuffer-mode'.
+
+Initially, each listed modified buffer has an S mark for saving.
+Unmark buffers that you do not want to save.
+
+\\<pel-compile-save-workspace-mode-map>\
+\\[pel--compile-ibuffer-mark-for-save] marks buffers with S for saving.
+The standard Ibuffer key `u' removes a mark.
+\\[ibuffer-diff-with-file] compares the buffer with its saved file.
+\\[pel--compile-ibuffer-vcs-diff] compares the saved file with its VC revision.
+The VC comparison does not include unsaved buffer edits.
+
+\\[pel--compile-ibuffer-execute-and-build] saves S-marked buffers, closes this
+workspace, and starts compilation.  With no S marks, it saves nothing.
+\\[pel--compile-ibuffer-abort] aborts this workspace's compilation and closes
+the workspace without saving buffers.
+\\[describe-mode] displays mode help, including these instructions.
+
+Disabling this minor mode removes its key bindings.  It does not
+abort the pending compilation or remove the workspace header.
+
+\\{pel-compile-save-workspace-mode-map}"
+  :init-value nil
+  :lighter " PEL-Save"
+  :keymap pel--compile-save-workspace-mode-map
+  :group 'pel-compile)
+
+;; ---------------------------------------------------------------------------
 
 (defun pel-compile-get-buffers-needing-save ()
   "Collect all file-visiting modified buffers matching the save mode criteria."
@@ -186,7 +289,13 @@ buffer-selection filter and does not replace another pending request."
     (with-current-buffer (get-buffer buf-name)
       ;; Set request state after Ibuffer initializes its major mode.
       (setq-local pel-compile--batch-callback callback)
-      (pel-compile-ibuffer-setup-keys)
+      (pel--compile-save-workspace-mode 1)
+      ;; Install this once per workspace.  Ibuffer refreshes copy this
+      ;; format into `header-line-format' while filters are active.
+      ;; Keep the standard filter information after the workspace help.
+      (setq-local ibuffer-use-header-line t)
+      (setq-local ibuffer-header-line-format
+                  pel--compile-save-workspace-mode-help)
       (setq ibuffer-filter-groups
             `(("Compilation Mode Targets" (mode . ,origin-mode))
               ("Secondary Cluster Targets" (used-mode t))))
@@ -202,7 +311,7 @@ buffer-selection filter and does not replace another pending request."
         (forward-line 1))
       (goto-char (point-min)))
     (message "\
-PEL: [m] Mark Save | [u] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile")))
+PEL: [m] Mark Save | [u] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile | [?] help")))
 
 (defun pel--compile-prompt-save-intent (count)
   "Prompt the user how to handle COUNT modified buffers before compiling.
@@ -272,7 +381,8 @@ Returns non-nil if it is safe to proceed with the compilation pipeline."
          (when (buffer-live-p (car entry))
            (with-current-buffer (car entry)
              (setq-local buffer-save-without-query (cadr entry)))
-           (unless (caddr entry)
+           (if (caddr entry)
+               (setq-local buffer-save-without-query (cadr entry))
              (kill-local-variable 'buffer-save-without-query)))))))
 
 (defun pel--execute-smart-save-pipeline (compile-callback)
