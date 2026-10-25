@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-23 21:06:20 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-25 11:30:49 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -203,6 +203,7 @@ EL_FILES := pel--base.el \
 		pel-autocomplete.el \
 		pel-autoload.el \
 		pel-benchmark.el \
+		pel-benchmark-macros.el \
 		pel-bookmark.el \
 		pel-browse.el \
 		pel-buffer.el \
