@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 17:18:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 18:37:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -37,6 +37,43 @@
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
+
+(defun pel-b-print-command (program &rest arguments)
+  "Print output from PROGRAM with ARGUMENTS.
+Report missing programs and failures; don't stop execution."
+  (let ((executable (executable-find program)))
+    (if (not executable)
+        (princ (format "\n%s: unavailable\n" program))
+      (princ (format "\n--- %s %s ---\n"
+                     program (mapconcat #'identity arguments " ")))
+      (condition-case err
+          (with-temp-buffer
+            (let ((status
+                   (apply #'call-process
+                          executable nil t nil arguments)))
+              (princ (buffer-string))
+              (unless (equal status 0)
+                (princ (format "\nCommand status: %S\n" status)))))
+        (error
+         (princ (format "Could not run command: %s\n"
+                        (error-message-string err))))))))
+
+(defun pel-b-report-system ()
+  "Print information about the system running the benchmark."
+  (cond
+   ((eq system-type 'gnu/linux)
+    (pel-b-print-command "uname" "-sr")
+    (pel-b-print-command "lscpu")
+    (pel-b-print-command "free" "-h"))
+   ((eq system-type 'darwin)
+    (pel-b-print-command "sw_vers")
+    (pel-b-print-command "sysctl"
+                         "hw.model" "hw.machine"
+                         "hw.physicalcpu" "hw.logicalcpu"
+                         "hw.memsize")
+    (pel-b-print-command "sysctl" "machdep.cpu.brand_string"))))
+
+;; ---------------------------------------------------------------------------
 
 (eval-and-compile
   (defconst pel-b-basic-count 100000
@@ -104,6 +141,7 @@ Signal an error if MODE-SYMBOL has neither suffix."
 Use this function as the entry point for batch execution.
 Compile and load the benchmark functions and candidate implementations
 before calling this function to measure compiled code."
+  (pel-b-report-system)
   (princ (format "Emacs %s | %s\n"
                  emacs-version system-configuration))
   (princ "\nMode-name construction\n")
