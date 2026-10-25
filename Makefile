@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-25 16:13:43 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-25 16:17:23 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -1343,6 +1343,8 @@ benchmark: benchmark/pel-b-basic.elc
 	$(EMACS) -Q --batch -L . -L benchmark \
 	  --eval "(require 'pel-b-basic)" \
 	  -f pel-b-basic-run
+
+all: benchmark
 
 # ----------------------------------------------------------------------------
 # Tools : lses written in C
