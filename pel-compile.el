@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-24 16:43:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-24 23:24:28 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -365,10 +365,10 @@ buffer-selection filter and does not replace another pending request."
       (setq-local ibuffer-use-header-line t)
       (setq-local ibuffer-header-line-format
                   pel--compile-save-workspace-mode-help)
-      (setq ibuffer-filter-groups
+      (setq-local ibuffer-filter-groups
             `(("Compilation Mode Targets" (mode . ,origin-mode))
               ("Secondary Cluster Targets" (used-mode t))))
-      (setq ibuffer-show-empty-filter-groups nil)
+      (setq-local ibuffer-show-empty-filter-groups nil)
       (ibuffer-update nil t)
       ;; Pre-mark every buffer for saving automatically
       (goto-char (point-min))
@@ -522,7 +522,7 @@ scope is `none'.
 Use this macro as wrapper to the `compilation' calls as in the following
 code:
 
- (pel-with-mode-isolated-save
+ (pel-with-controlled-save
     ;; Your existing command execution code here
     (compile \"sphinx-build -b html ...\"))
 
