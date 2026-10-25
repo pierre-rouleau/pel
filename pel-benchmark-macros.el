@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 15:49:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 16:52:59 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -40,15 +40,45 @@
 ;;; Code:
 ;;
 
+(eval-and-compile
+  (defun pel-benchmark--repetition-argument (count)
+    "Return a repetition argument suitable for `benchmark-run'.
+
+COUNT must be a nonnegative integer or a non-nil symbol.
+
+Before Emacs 27, resolve a symbol through its global value during
+macro expansion.  Use only a shared constant for this case.
+Its value must be available during macro expansion and must be a
+nonnegative integer.
+
+On Emacs 27 and later, return COUNT unchanged."
+    (unless (or (natnump count)
+                (and count (symbolp count)))
+      (error "Benchmark count must be an integer or symbol: %S" count))
+    (if (>= emacs-major-version 27)
+        count
+      (let ((value
+             (if (symbolp count)
+                 (if (boundp count)
+                     (symbol-value count)
+                   (error "Benchmark count is unavailable at macro expansion: %S"
+                          count))
+               count)))
+        (unless (natnump value)
+          (error "Benchmark count must be a nonnegative integer: %S"
+                 value))
+        value))))
+
 (defmacro pel-benchmark (count form)
   "Garbage collect, then evaluate FORM COUNT times and return timing data.
 
 Compile the enclosing function before calling it to measure compiled code.
 This macro does not compile FORM at run time."
   (declare (indent 1))
-  `(progn
-     (garbage-collect)
-     (benchmark-run ,count ,form)))
+  (let ((count (pel-benchmark--repetition-argument count)))
+    `(progn
+       (garbage-collect)
+       (benchmark-run ,count ,form))))
 
 (defmacro pel-benchmark-compare (count &rest implementations)
   "Evaluate each implementation COUNT times and print a timing table.
@@ -68,7 +98,8 @@ by this macro."
   (unless (and implementations
                (zerop (% (length implementations) 2)))
     (error "Expected one or more benchmark label/form pairs"))
-  (let ((results-alist (make-symbol "results-alist"))
+  (let ((count (pel-benchmark--repetition-argument count))
+        (results-alist (make-symbol "results-alist"))
         (res (make-symbol "res"))
         body-forms)
     (while implementations
@@ -79,7 +110,8 @@ by this macro."
         (push
          `(let (,res)
             (garbage-collect)
-            (setq ,res (benchmark-run ,count ,form))
+            (setq ,res
+                  (benchmark-run ,count ,form))
             (princ (format "%-35s | Total: %7.4fs | GCs: %3d | GC Time: %7.4fs\n"
                            ,label (nth 0 ,res) (nth 1 ,res) (nth 2 ,res)))
             ;; Store the label and the total execution time (nth 0 res)
