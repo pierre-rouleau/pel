@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 16:55:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 17:18:58 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -57,11 +57,9 @@ Examples:
 
 (defun pel-b-major-modes-for ()
   "Benchmark different implementations of the `pel-major-modes-for'."
-
-  (let ((count pel-b-basic-count))
-    (princ (pel-benchmark-compare-auto count
-             (pel-major-modes-for "c")
-             (pel-major-modes-for-2 "c"))))
+  (princ (pel-benchmark-compare-auto pel-b-basic-count
+           (pel-major-modes-for "c")
+           (pel-major-modes-for-2 "c")))
   nil)
 
 ;; ---------------------------------------------------------------------------
@@ -81,23 +79,21 @@ Signal an error if MODE-SYMBOL has neither suffix."
 
 (defun pel-b-mode-name-for ()
   "Benchmark different implementations of the `pel-mode-name-for'."
-
-  (let ((count pel-b-basic-count))
-    (princ  (pel-benchmark-compare-auto count
-              (pel-mode-name-for 'c-mode)
-              (pel-mode-name-for-2 'c-mode)))
-    (princ "\n")
-    (princ (pel-benchmark-compare-auto count
-             (pel-mode-name-for 'c-ts-mode)
-             (pel-mode-name-for-2 'c-ts-mode)))
-    (princ "\n")
-    (princ (pel-benchmark-compare-auto count
-             (pel-mode-name-for 'c++-mode)
-             (pel-mode-name-for-2 'c++-mode)))
-    (princ "\n")
-    (princ (pel-benchmark-compare-auto count
-             (pel-mode-name-for 'c++-ts-mode)
-             (pel-mode-name-for-2 'c++-ts-mode))))
+  (princ (pel-benchmark-compare-auto pel-b-basic-count
+           (pel-mode-name-for 'c-mode)
+           (pel-mode-name-for-2 'c-mode)))
+  (princ "\n")
+  (princ (pel-benchmark-compare-auto pel-b-basic-count
+           (pel-mode-name-for 'c-ts-mode)
+           (pel-mode-name-for-2 'c-ts-mode)))
+  (princ "\n")
+  (princ (pel-benchmark-compare-auto pel-b-basic-count
+           (pel-mode-name-for 'c++-mode)
+           (pel-mode-name-for-2 'c++-mode)))
+  (princ "\n")
+  (princ (pel-benchmark-compare-auto pel-b-basic-count
+           (pel-mode-name-for 'c++-ts-mode)
+           (pel-mode-name-for-2 'c++-ts-mode)))
   nil)
 
 ;; ---------------------------------------------------------------------------
