@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-24 23:24:28 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 00:01:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -229,9 +229,12 @@ If no candidates have an S mark, save nothing and compile."
      (pel-insert-bold "Identify Buffer to save before compilation\n")
      (pel-insert-bold "==========================================\n\n")
      (insert "\
-The specialized ibuffer allows you to quickly identify the buffers
-that must be saved before proceeding with the compilation you just requested.
-PEL has identified the buffers that may need to be saved before proceeding
+The specialized ibuffer uses the following minor mode:\n- ")
+     (pel-insert-symbol 'pel--compile-save-workspace-mode)
+     (insert "\n\n\
+This buffer allows you to quickly identify the buffers that must be
+saved before proceeding with the compilation you just requested.  PEL
+has identified the buffers that may need to be saved before proceeding
 with the compilation command and shows them in this specialized ibuffer.
 You can remove some of them here or change the way PEL identifies them.
 
@@ -311,7 +314,7 @@ also saves hidden candidates that retain an S mark.
 Only buffers selected when this workspace opened can be saved by
 that command.
 
-\\<pel-compile-save-workspace-mode-map>\
+\\<pel--compile-save-workspace-mode-map>\
 \\[pel--compile-ibuffer-mark-for-save] marks buffers with S for saving.
 The standard Ibuffer key `u' removes a mark.
 \\[ibuffer-diff-with-file] compares the buffer with its saved file.
@@ -327,7 +330,7 @@ the workspace without saving buffers.
 Disabling this minor mode removes its key bindings.  It does not
 abort the pending compilation or remove the workspace header.
 
-\\{pel-compile-save-workspace-mode-map}"
+\\{pel--compile-save-workspace-mode-map}"
   :init-value nil
   :lighter " PEL-Save"
   :keymap pel--compile-save-workspace-mode-map
