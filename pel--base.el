@@ -2073,6 +2073,18 @@ Skipping rebuild of utils file: utils directory does not exist: %s"
 ;;* Tree-sitter major mode support
 ;;  ==============================
 
+(defun pel-mode-name-for (mode-symbol)
+  "Transform a major-mode symbol into the mode name string.
+
+Examples:
+ (pel-mode-name-for \\='c-mode)       ; => \"c\"
+ (pel-mode-name-for \\='c-ts-mode)    ; => \"c\"
+ (pel-mode-name-for \\='python-mode)  ; => \"python\""
+  (let ((name-str (symbol-name mode-symbol)))
+    (if (pel-string-ends-with-p name-str "-ts-mode")
+        (substring name-str 0 -8)
+      (substring name-str 0 -5))))
+
 (defun pel-major-mode-use-tree-sitter (mode ts-mode)
   "Activate replacement of a MODE by a TS-MODE when tree-sitter is used.
 
