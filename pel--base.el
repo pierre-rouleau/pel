@@ -119,8 +119,8 @@
 ;;  - `pel-whitespace-in-str-p'
 ;;  - `pel-ends-with-space-p'
 ;;  - `pel-starts-with-space-p'
-;;  - `pel-string-ends-with-p'
-;;  - `pel-string-starts-with-p'
+;;  @ `pel-string-ends-with-p'
+;;  @ `pel-string-starts-with-p'
 ;;  - `pel-lowercase-p'
 ;;  - `pel-uppercase-p'
 ;;  - `pel-alnum-p'
@@ -1190,28 +1190,15 @@ The index of the first whitespace character is returned when one is present."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
-;; [:todo 2026-05-16, by Pierre Rouleau: string-suffix-p should be used
-;; instead of pel-string-ends-with-p]
-(defun pel-string-ends-with-p (text suffix &optional ignore-case)
+(defmacro pel-string-ends-with-p (text suffix &optional ignore-case)
   "Return t if TEXT string does end with SUFFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
-  (declare (side-effect-free t))
-  (let ((text-len (length text))
-        (suffix-len (length suffix)))
-    (and (>= text-len suffix-len)
-         (eq t (compare-strings suffix nil nil
-                                text (- text-len suffix-len) nil
-                                ignore-case)))))
+  `(string-suffix-p ,suffix ,text ,ignore-case))
 
-;; [:todo 2026-05-16, by Pierre Rouleau: string-prefix-p should be used
-;;                                       instead of pel-string-starts-with-p]
-(defun pel-string-starts-with-p (text prefix &optional ignore-case)
+(defmacro pel-string-starts-with-p (text prefix &optional ignore-case)
   "Return t if TEXT string does start with PREFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
-  (declare (side-effect-free t))
-  (eq t (compare-strings prefix nil nil
-                         text nil (length prefix)
-                         ignore-case)))
+  `(string-prefix-p ,prefix ,text ,ignore-case))
 
 (defun pel-lowercase-p (string)
   "Return t if all characters in STRING are lowercase, nil otherwise."
@@ -2081,9 +2068,9 @@ Examples:
  (pel-mode-name-for \\='c-ts-mode)    ; => \"c\"
  (pel-mode-name-for \\='python-mode)  ; => \"python\""
   (let ((name-str (symbol-name mode-symbol)))
-    (if (pel-string-ends-with-p name-str "-ts-mode")
-        (substring name-str 0 -8)
-      (substring name-str 0 -5))))
+    (substring name-str 0 (if (pel-string-ends-with-p name-str "-ts-mode")
+                              -8
+                            -5))))
 
 (defun pel-major-mode-use-tree-sitter (mode ts-mode)
   "Activate replacement of a MODE by a TS-MODE when tree-sitter is used.
