@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 12:16:42 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 15:49:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -34,65 +34,76 @@
 ;;; Dependencies:
 ;;
 ;;
-(require 'benchmark)     ; use: `benchmark-run-compiled'
+(require 'benchmark)     ; use: `benchmark-run'
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
 
 (defmacro pel-benchmark (count form)
-  "Garbage collect, then benchmark FORM evaluated COUNT times.
-The FORM is automatically compiled to eliminate interpreter overhead."
+  "Garbage collect, then evaluate FORM COUNT times and return timing data.
+
+Compile the enclosing function before calling it to measure compiled code.
+This macro does not compile FORM at run time."
   (declare (indent 1))
   `(progn
      (garbage-collect)
      (benchmark-run ,count ,form)))
 
-
-;; (defmacro pel-benchmark-compare (count &rest implementations)
-;;   (let (body-forms)
-;;     (while implementations
-;;       (let ((label (pop implementations)) (form (pop implementations)))
-;;         (push `(let (res) (garbage-collect) (setq res (benchmark-run-compiled ,count ,form))
-;;                     (princ (format "%-35s | Total: %7.4fs | GCs: %3d | GC Time: %7.4fs\n" ,label (nth 0 res) (nth 1 res) (nth 2 res)))) body-forms)))
-;;     `(progn (princ "---------------A--------------------------------------------------\n")
-;;             (princ (format "%-35s | %-15s | %-8s | %-12s\n" "Implementation" "Total Time" "GCs" "GC Time"))
-;;             (princ "---------------B--------------------------------------------------\n")
-;;             ,@(nreverse body-forms)
-;;             (princ "---------------CC--------------------------------------------------\n")
-;;             nil)))
 (defmacro pel-benchmark-compare (count &rest implementations)
-  "Compare implementations COUNT times. Print table and return the fastest label."
+  "Evaluate each implementation COUNT times and print a timing table.
+
+IMPLEMENTATIONS must contain one or more alternating literal string
+labels and forms.  For example:
+
+  (pel-benchmark-compare 1000
+    \"concat\" (concat \"c\" \"-mode\")
+    \"format\" (format \"%s-mode\" \"c\"))
+
+Return a formatted report string identifying the implementation with
+the shortest measured total time.  The returned report is not printed
+by this macro."
   (declare (indent 1))
-  (let (body-forms)
+  ;; Validate list of implementations
+  (unless (and implementations
+               (zerop (% (length implementations) 2)))
+    (error "Expected one or more benchmark label/form pairs"))
+  (let ((results-alist (make-symbol "results-alist"))
+        (res (make-symbol "res"))
+        body-forms)
     (while implementations
       (let ((label (pop implementations))
             (form (pop implementations)))
+        (unless (stringp label)
+          (error "Benchmark label must be a literal string: %S" label))
         (push
-         `(let (res)
+         `(let (,res)
             (garbage-collect)
-            (setq res (benchmark-run-compiled ,count ,form))
+            (setq ,res (benchmark-run ,count ,form))
             (princ (format "%-35s | Total: %7.4fs | GCs: %3d | GC Time: %7.4fs\n"
-                           ,label (nth 0 res) (nth 1 res) (nth 2 res)))
+                           ,label (nth 0 ,res) (nth 1 ,res) (nth 2 ,res)))
             ;; Store the label and the total execution time (nth 0 res)
-            (push (cons ,label (nth 0 res)) results-alist))
+            (push (cons ,label (nth 0 ,res)) ,results-alist))
          body-forms)))
-    `(let (results-alist)
+    `(let (,results-alist)
        (princ "-----------------------------------------------------------------\n")
        (princ (format "%-35s | %-13s | %-4s | %-12s\n" "Implementation" "Total Time" "GCs" "GC Time"))
        (princ "-----------------------------------------------------------------\n")
        ,@(nreverse body-forms)
        (princ "-----------------------------------------------------------------\n")
-       ;; Sort by execution time ascending (fastest first) and return the car of the first element
+       ;; Sort otal time, then return a report for the first (fastest) entry.
        (format "Fastest implementation: %s\n"
-               (car (car (sort results-alist (lambda (a b) (< (cdr a) (cdr b))))))))))
+               (car (car (sort ,results-alist (lambda (a b) (< (cdr a) (cdr b))))))))))
 
 (defmacro pel-benchmark-compare-auto (count &rest implementations)
   "Compare multiple code implementations side-by-side COUNT times.
 
-Labels are automatically generated from the string representation of the
-code forms.
-Returns the string name of the fastest implementation."
+IMPLEMENTATIONS must contain one or more forms.
+Generate each label from the printed representation of its form.
+
+Return a formatted report string identifying the implementation with
+the shortest measured total time.  The returned report is not printed
+by this macro."
   (declare (indent 1))
   (let (expanded-implementations)
     ;; Loop through each code block provided in the arguments

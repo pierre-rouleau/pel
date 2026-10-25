@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-25 11:30:49 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-25 16:13:43 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -736,6 +736,8 @@ help:
 	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
+	@printf "\n"
+	@printf " * make benchmark     - Run implementation bechmark tests.\n"
 	@printf " * make lint          - Run PEL specialized logic checkers (key-prefixes, mode fixer, autoloads).\n"
 	@printf " * make lint-strict   - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
@@ -1327,6 +1329,20 @@ lint-strict: lint
 			 --no-package-format --no-package-lint --no-fill-column $(EL_FILES) pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
 			 --no-package-lint --no-fill-column pel.el
+
+# ----------------------------------------------------------------------------
+# Implementations Benchmarks
+# --------------------------
+
+# Direct dependencies of the benchmark suite.
+benchmark/pel-b-basic.elc: pel--base.elc pel-benchmark-macros.elc
+
+.PHONY: benchmark
+
+benchmark: benchmark/pel-b-basic.elc
+	$(EMACS) -Q --batch -L . -L benchmark \
+	  --eval "(require 'pel-b-basic)" \
+	  -f pel-b-basic-run
 
 # ----------------------------------------------------------------------------
 # Tools : lses written in C

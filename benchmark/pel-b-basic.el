@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 12:19:47 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 16:01:08 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,25 +38,34 @@
 ;;; Code:
 ;;
 
+(defun pel-major-modes-for-2 (modename)
+  "Return a list of major mode symbols associated with a MODENAME string.
+
+The major mode symbols are created by appending \"-mode\" and \"-ts-mode\" to
+the MODENAME string.
+
+Examples:
+ (pel-major-modes-for \"c\")  ; => \\='(c-mode c-ts-mode)"
+  (list (intern (format "%s-mode"    modename))
+        (intern (format "%s-ts-mode" modename))))
+
 (defun pel-b-major-modes-for ()
   "Benchmark different implementations of the `pel-major-modes-for'."
 
-  (pel-benchmark-compare 2000000
-  "Native Concat"      (concat "c++-ts" "-mode")
-  "Template Format"    (format "%s-mode" "c++-ts")
-  "Substring Slicing"  (substring "c++-ts-mode" 0 -5)))
+  (let ((count 100000))
+    (princ (pel-benchmark-compare-auto count
+             (pel-major-modes-for "c")
+             (pel-major-modes-for-2 "c"))))
+  nil)
 
+
+;; ---------------------------------------------------------------------------
 
 (defun pel-mode-name-for-2 (mode-symbol)
   "Return the base mode name of MODE-SYMBOL as a string.
 
 Remove the trailing \"-mode\" or \"-ts-mode\" suffix.
-Signal an error if MODE-SYMBOL has neither suffix.
-
-Examples:
- (pel-mode-name-for \\='c-mode)       ; => \"c\"
- (pel-mode-name-for \\='c-ts-mode)    ; => \"c\"
- (pel-mode-name-for \\='python-mode)  ; => \"python\""
+Signal an error if MODE-SYMBOL has neither suffix."
   (let* ((name-str (symbol-name mode-symbol))
          (case-fold-search nil)
          (suffix-start
@@ -66,7 +75,7 @@ Examples:
     (substring name-str 0 suffix-start)))
 
 (defun pel-b-mode-name-for ()
-  "Benchmark different implementations of the `pel-major-modes-for'."
+  "Benchmark different implementations of the `pel-mode-name-for'."
 
   (let ((count 100000))
     (princ  (pel-benchmark-compare-auto count
@@ -85,6 +94,21 @@ Examples:
              (pel-mode-name-for 'c++-ts-mode)
              (pel-mode-name-for-2 'c++-ts-mode))))
   nil)
+
+;; ---------------------------------------------------------------------------
+
+(defun pel-b-basic-run ()
+  "Run the basic benchmarks and print their reports.
+
+Use this function as the entry point for batch execution.
+Compile and load the benchmark functions and candidate implementations
+before calling this function to measure compiled code."
+  (princ (format "Emacs %s | %s\n"
+                 emacs-version system-configuration))
+  (princ "\nMode-name construction\n")
+  (princ (pel-b-major-modes-for))
+  (princ "\nMode-name extraction\n")
+  (pel-b-mode-name-for))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-b-basic)
