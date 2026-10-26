@@ -74,6 +74,7 @@
 (require 'pel-browse)                   ; use: `pel-browse-url'
 (require 'pel-prompt)                   ; use: `pel-prompt'
 (require 'pel-window)                   ; use: `pel-switch-to-window'
+(require 'pel-compile)                  ; use: `pel-with-controlled-save'
 ;;;---------------------------------------------------------------------------
 ;;; Code:
 
@@ -195,7 +196,7 @@ Use the linter program specified by `pel-clisp-linter'."
                      (process-environment
                       (cons (format "PEL_DIR_BIN=%s" pel-dir-bin)
                             process-environment)))
-                (compile cmd))
+                (pel-with-controlled-save (compile cmd)))
             (user-error "Program identified by pel-clisp-linter not found: %s"
                         pgm-name))))
     ;; pel-clisp-linter is not initialized: prompt user to initialize it

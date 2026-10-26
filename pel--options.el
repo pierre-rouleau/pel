@@ -16230,7 +16230,8 @@ Valid values are:
     ("js"         . ("javascript")))
   "Alist mapping a major mode name to a list of other related mode names.
 All unsaved buffers with major mode names of the key and the related modes
-are considered candidates for saving.
+are considered candidates for saving.  Identify the mode name: the name before
+the -mode or -ts-mode part.
 
 For example, when compiling the C++ file visited by a buffer, you may want to
 consider all C++ and C buffers as candidates for saving. Create an association

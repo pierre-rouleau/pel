@@ -55,6 +55,7 @@
 (require 'pel--base)                ; use: `pel-system-is-macos-p'
 (require 'pel--options)
 (require 'pel-read)                 ; use: `pel-mac-voice-name'
+(require 'pel-compile)              ; use: `pel-with-controlled-save'
 (require 'compile)
 
 ;; ---------------------------------------------------------------------------
@@ -408,7 +409,7 @@ KNOWN LIMITATION: If the user kills the compilation buffer during a
                                       nil t))
                                    (when previous-setup
                                      (funcall previous-setup)))))
-                            (compile compilation-command))
+                            (pel-with-controlled-save (compile compilation-command)))
                           ;; Normal startup: the finish hook owns cleanup.
                           (setq startup-complete t))
 
@@ -446,9 +447,10 @@ KNOWN LIMITATION: If the user kills the compilation buffer during a
                      ((equal arg '(4)) (shell-quote-argument
                                         (concat no-ext-fname ".scpt")))
                      (t (user-error "Invalid argument: %S" arg)))))
-              (compile (format "osacompile -o %s %s"
-                               output-fname
-                               (shell-quote-argument fpath))))))))))
+              (pel-with-controlled-save
+                (compile (format "osacompile -o %s %s"
+                                 output-fname
+                                 (shell-quote-argument fpath)))))))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-applescript)
