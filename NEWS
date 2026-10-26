@@ -1,6 +1,20 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Improved compilation control.  PEL now includes the pel-compile.el file that provides the
+  *pel-with-controlled-save* macro that PEL uses to wrap the calls to Emacs *compile* function.
+  This provides the ability to select various policies when compiling a file.
+  The policy used is identified by the new *pel-compile-save-mode-scope*
+  user-option and other user options in the new PEL *pel-compile*
+  customization group.  The default behaviour is to prompt for all unsaved
+  buffers like Emacs does by default. Its possible to select the ='same-mode=
+  policy and then PEL will only prompt for files that are of the same major
+  mode or related major mode (if the ='related= policy is used).  When
+  prompting you have the choice to be prompted one file at a time like Emacs
+  normally does or open a specialized Ibuffer that shows all relevant buffers
+  to save.  You can save all, some or none and then proceed with the
+  compilation.  Using this new macro it becomes possible to compile a C file
+  without being prompted to save documentation files for example.
 - Improved *pel-version* command: it is not bound to the ~<f11> ? v~ key sequence.
   The new version prints a Git-repo-based version that identifies the state of Git version of the PEL
   repo when PEL was compiled.  This can also show that PEL was built with uncommitted files.

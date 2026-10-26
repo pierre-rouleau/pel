@@ -193,6 +193,7 @@
 ;;  - `pel-rebuild-utils'
 ;;
 ;; Tree-sitter major mode support
+;;  - `pel-mode-name-for'
 ;;  - `pel-major-mode-use-tree-sitter'
 ;;  - `pel-major-ts-mode-supported-p'
 ;;  - `pel-ts-language-grammar-status-for'
@@ -1190,28 +1191,17 @@ The index of the first whitespace character is returned when one is present."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
-;; [:todo 2026-05-16, by Pierre Rouleau: string-suffix-p should be used
-;; instead of pel-string-ends-with-p]
-(defun pel-string-ends-with-p (text suffix &optional ignore-case)
+(defsubst pel-string-ends-with-p (text suffix &optional ignore-case)
   "Return t if TEXT string does end with SUFFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
   (declare (side-effect-free t))
-  (let ((text-len (length text))
-        (suffix-len (length suffix)))
-    (and (>= text-len suffix-len)
-         (eq t (compare-strings suffix nil nil
-                                text (- text-len suffix-len) nil
-                                ignore-case)))))
+ (string-suffix-p suffix text ignore-case))
 
-;; [:todo 2026-05-16, by Pierre Rouleau: string-prefix-p should be used
-;;                                       instead of pel-string-starts-with-p]
-(defun pel-string-starts-with-p (text prefix &optional ignore-case)
+(defsubst pel-string-starts-with-p (text prefix &optional ignore-case)
   "Return t if TEXT string does start with PREFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
   (declare (side-effect-free t))
-  (eq t (compare-strings prefix nil nil
-                         text nil (length prefix)
-                         ignore-case)))
+  (string-prefix-p prefix text ignore-case))
 
 (defun pel-lowercase-p (string)
   "Return t if all characters in STRING are lowercase, nil otherwise."
@@ -2072,6 +2062,33 @@ Skipping rebuild of utils file: utils directory does not exist: %s"
 ;; ---------------------------------------------------------------------------
 ;;* Tree-sitter major mode support
 ;;  ==============================
+
+(defun pel-mode-name-for (mode-symbol)
+  "Transform a major-mode symbol into the mode name string.
+
+MODE-SYMBOL must name a major mode ending in \"-mode\".
+Remove the trailing \"-ts-mode\" when present; otherwise,
+remove the trailing \"-mode\".
+
+Examples:
+ (pel-mode-name-for \\='c-mode)       ; => \"c\"
+ (pel-mode-name-for \\='c-ts-mode)    ; => \"c\"
+ (pel-mode-name-for \\='python-mode)  ; => \"python\""
+  (let ((name-str (symbol-name mode-symbol)))
+    (substring name-str 0 (if (pel-string-ends-with-p name-str "-ts-mode")
+                              -8
+                            -5))))
+
+(defun pel-major-modes-for (modename)
+  "Return a list of major mode symbols associated with a MODENAME string.
+
+The major mode symbols are created by appending \"-mode\" and \"-ts-mode\" to
+the MODENAME string.
+
+Examples:
+ (pel-major-modes-for \"c\")  ; => \\='(c-mode c-ts-mode)"
+  (list (intern (concat modename "-mode"))
+        (intern (concat modename "-ts-mode"))))
 
 (defun pel-major-mode-use-tree-sitter (mode ts-mode)
   "Activate replacement of a MODE by a TS-MODE when tree-sitter is used.

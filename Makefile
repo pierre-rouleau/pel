@@ -3,7 +3,7 @@
 # Copyright (C) 2020-2026 by Pierre Rouleau
 
 # Author: Pierre Rouleau <prouleau001@gmail.com>
-# Last Modified Time-stamp: <2026-10-21 23:07:46 EDT, updated by Pierre Rouleau>
+# Last Modified Time-stamp: <2026-10-25 23:08:10 EDT, updated by Pierre Rouleau>
 # Keywords: packaging, build-control
 
 # This file is part of the PEL package
@@ -203,6 +203,7 @@ EL_FILES := pel--base.el \
 		pel-autocomplete.el \
 		pel-autoload.el \
 		pel-benchmark.el \
+		pel-benchmark-macros.el \
 		pel-bookmark.el \
 		pel-browse.el \
 		pel-buffer.el \
@@ -219,6 +220,7 @@ EL_FILES := pel--base.el \
 		pel-comment.el \
 		pel-commonlisp.el \
 		pel-comp.el \
+		pel-compile.el \
 		pel-completion.el \
 		pel-cpp.el \
 		pel-cua.el \
@@ -734,6 +736,8 @@ help:
 	@printf " * make clean-tar     - Remove the $(OUT_DIR)/$(PEL_TAR_FILE)\n"
 	@printf " * make clean-mypelpa - Remove the directory $(PELPA_DIR)\n"
 	@printf " * make clean-test    - Remove test tag file to allow running all tests again.\n"
+	@printf "\n"
+	@printf " * make benchmark     - Run implementation bechmark tests.\n"
 	@printf " * make lint          - Run PEL specialized logic checkers (key-prefixes, mode fixer, autoloads).\n"
 	@printf " * make lint-strict   - Check .el files with elisp-lint (it must be installed).\n"
 	@printf " * make timeit        - Check startup time of Emacs with and without packages.\n"
@@ -937,9 +941,10 @@ pel-cc-navigate.elc:      pel--syntax-macros.elc
 pel-cc.elc:               pel--base.elc pel--options.elc pel-ffind.elc
 pel-ccp.elc:              pel--base.elc pel--options.elc pel-navigate.elc
 pel-comint.elc:           pel--base.elc
-pel-comment-adorn.elc:    pel-rst.elc pel-comment.elc pel-mark.elc
+pel-comment-adorn.elc:    pel-rst.elc pel-comment.elc pel-mark.elc pel-compile.elc
 pel-comment.elc:          pel--base.elc pel-ccp.elc pel-prompt.elc
 pel-commonlisp.elc:       pel--base.elc pel--options.elc pel-browse.elc pel-prompt.elc pel-window.elc
+pel-compile.elc:          pel--base.elc pel--options.elc
 pel-completion.elc:       pel--base.elc pel--macros.elc pel--options.elc pel-prompt.elc pel-seq.elc pel-ido.elc
 pel-cpp.elc:              pel--base.elc
 pel-cursor.elc:           pel--options.elc
@@ -1324,6 +1329,20 @@ lint-strict: lint
 			 --no-package-format --no-package-lint --no-fill-column $(EL_FILES) pel_keys.el
 	$(EMACS) -Q --batch -L . -l $(EMACS_INIT) -l elisp-lint.el -f elisp-lint-files-batch \
 			 --no-package-lint --no-fill-column pel.el
+
+# ----------------------------------------------------------------------------
+# Implementations Benchmarks
+# --------------------------
+
+# Direct dependencies of the benchmark suite.
+benchmark/pel-b-basic.elc: pel--base.elc pel-benchmark-macros.elc
+
+.PHONY: benchmark
+
+benchmark: benchmark/pel-b-basic.elc
+	$(EMACS) -Q --batch -L . -L benchmark \
+	  --eval "(require 'pel-b-basic)" \
+	  -f pel-b-basic-run
 
 # ----------------------------------------------------------------------------
 # Tools : lses written in C

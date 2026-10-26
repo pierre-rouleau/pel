@@ -239,6 +239,8 @@
 ;;       - pel-pkg-for-session
 ;;       - pel-pkg-for-speedbar
 ;;     - pel-pkg-for-writing
+;;   - pel-tools
+;;     - pel-compile
 ;;
 
 ;; Naming conventions:
@@ -16191,6 +16193,68 @@ This requires vale to be installed separately for the Operating System."
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-flycheck-vale :package-is :in-utils)
+
+;; ---------------------------------------------------------------------------
+(defgroup pel-tools nil
+  "PEL specific user-experience enhancing tools."
+  :group 'pel)
+
+(defgroup pel-compile nil
+  "PEL specific user-experience enhancing tools."
+  :group 'pel-tools
+  :group 'compilation)
+
+
+(defcustom pel-compile-save-mode-scope nil
+  "How to identify candidate modified buffers to save prior to `pel-compile'.
+
+Valid values are:
+- nil         - Default Emacs behaviour (prompt for all modified file buffers).
+                Similar to Emacs default behaviour.
+- \\='same-mode  - Prompt only for buffers with the exact same major mode or
+                derived mode.
+- \\='related    - Prompt for the same mode AND modes explicitly linked
+                in `pel-compile-related-modes-alist`.
+- \\='none       - Do not prompt to save any buffers."
+  :type '(choice (const :tag "All modified buffers" nil)
+                 (const :tag "same-mode: Strictly same or derived major mode"
+                        same-mode)
+                 (const :tag "related:   Include related major modes" related)
+                 (const :tag "none:      Don't save anything" none))
+  :group 'pel-compile)
+
+(defcustom pel-compile-related-modes-alist
+  '(("c++"        . ("c"))
+    ("html"       . ("css" "javascript" "js"))
+    ("javascript" . ("js"))
+    ("js"         . ("javascript")))
+  "Alist mapping a major mode name to a list of other related mode names.
+All unsaved buffers with major mode names of the key and the related modes
+are considered candidates for saving.
+
+For example, when compiling the C++ file visited by a buffer, you may want to
+consider all C++ and C buffers as candidates for saving. Create an association
+with \"c++\" as the key and \"c\" as the related mode name.   This identifies
+all buffers for C and C++ in both classic and Tree-Sitter major modes."
+  :type '(alist :key-type string :value-type (repeat string))
+  :group 'pel-compile)
+
+(defcustom pel-compile-batch-save-threshold 3
+  "Number of modified buffers above which PEL uses an interactive save menu."
+  :type 'integer
+  :group 'pel-compile)
+
+(defcustom pel-compile-always-use-batch-save nil
+  "If non-nil, PEL always use the batch menu interface for compilation saves."
+  :group 'pel-compile
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-compile-skip-prompt-to-save-current-buffer nil
+  "If non-nil always save modified buffer without prompting before `compile'."
+  :group 'pel-compile
+  :type 'boolean
+  :safe #'booleanp)
 
 ;; ---------------------------------------------------------------------------
 ;; Incompatible selection Management
