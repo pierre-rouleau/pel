@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-26 06:54:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-26 13:25:57 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -317,7 +317,15 @@ you is controlled by the following user-options:\n")
      (pel-insert-symbol-content-line 'pel-compile-batch-save-threshold)
      (pel-insert-symbol-content-line 'pel-compile-always-use-batch-save)
      (pel-insert-symbol-content-line 'pel-compile-skip-prompt-to-save-current-buffer)
-     (pel-insert-list-content        'pel-compile-related-modes-alist))
+     (insert "\n\n\
+With pel-compile-save-mode-scope set to 'related, PEL checks if unsaved buffers
+using related major modes may also need to be saved.  PEL uses the mode association
+identified in the following association list to do that:\n ")
+     (pel-insert-list-content        'pel-compile-related-modes-alist)
+     (insert "\n\n\
+In the above, the first element of the list is the mode base name of a buffer
+to compile, and the others are the base name of major modes of buffers that are
+identified as relevant."))
    :clear-buffer
    :use-help-mode))
 
