@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 25 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 18:37:08 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 22:20:46 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -63,7 +63,7 @@ Report missing programs and failures; don't stop execution."
   (cond
    ((eq system-type 'gnu/linux)
     (pel-b-print-command "uname" "-sr")
-    (pel-b-print-command "lscpu")
+    ;; (pel-b-print-command "lscpu")
     (pel-b-print-command "free" "-h"))
    ((eq system-type 'darwin)
     (pel-b-print-command "sw_vers")
