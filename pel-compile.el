@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 00:01:34 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-25 22:48:23 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -45,6 +45,8 @@
 ;;; Dependencies:
 ;;
 ;;
+(require 'pel--base)      ; use: `pel-mode-name-for',
+;;                        ;      `pel-major-modes-for'
 (require 'pel--options)   ; use: `pel-compile-save-mode-scope',
 ;;                        ;      `pel-compile-related-modes-alist',
 ;;                        ;      `pel-compile-batch-save-threshold',
@@ -73,20 +75,43 @@
   "Internal variable to track the buffer that initiated a PEL compilation.")
 
 (defun pel--compile-mode-match-p (origin-mode target-mode scope)
-  "Return non-nil if TARGET-MODE matches ORIGIN-MODE according to SCOPE rule."
+  "Return non-nil if TARGET-MODE matches ORIGIN-MODE under SCOPE.
+
+ORIGIN-MODE and TARGET-MODE are major mode symbols ending in
+\"-mode\".
+
+If SCOPE is nil or `all', match every mode.
+If SCOPE is `none', match no mode.
+
+If SCOPE is `same-mode', match modes with the same base name.
+Also match TARGET-MODE when it derives from either the classic
+or Tree-sitter variant of ORIGIN-MODE's base name.
+
+If SCOPE is `related', also match TARGET-MODE when its base name
+appears in the entry for ORIGIN-MODE's base name in
+`pel-compile-related-modes-alist'.  These explicit relationships
+are directional.
+
+Signal an error for any other SCOPE."
   (cond
-   ((not scope)      t)
-   ((eq scope 'all)  t)
+   ((or (null scope) (eq scope 'all)) t)
    ((eq scope 'none) nil)
-   ((eq scope 'same-mode)
-    (provided-mode-derived-p target-mode origin-mode))
-   ((eq scope 'related)
-    (or (provided-mode-derived-p target-mode origin-mode)
-        (let ((related (cdr (assq origin-mode pel-compile-related-modes-alist))))
-          (memq target-mode related))
-        (let ((related (cdr (assq target-mode pel-compile-related-modes-alist))))
-          (memq origin-mode related))))
-   (t (error "Invalid scope: %s" scope))))
+   ((memq scope '(same-mode related))
+    (let* ((origin-name (pel-mode-name-for origin-mode))
+           (target-name (pel-mode-name-for target-mode))
+           (same-mode-p
+            (or (equal origin-name target-name)
+                (cl-some
+                 (lambda (mode)
+                   (provided-mode-derived-p target-mode mode))
+                 (pel-major-modes-for origin-name)))))
+      (or same-mode-p
+          (and (eq scope 'related)
+               (member target-name
+                       (cdr (assoc origin-name
+                                   pel-compile-related-modes-alist)))))))
+   (t
+    (error "Invalid scope: %S" scope))))
 
 (defun pel--save-buffer-for-compile-p ()
   "Return non-nil if current buffer must  be saved before `compile'.

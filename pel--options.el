@@ -16224,11 +16224,19 @@ Valid values are:
   :group 'pel-compile)
 
 (defcustom pel-compile-related-modes-alist
-  '((c-mode . (c-ts-mode c++-mode c++-ts-mode))
-    (rst-mode . (markdown-mode text-mode))
-    (html-mode . (css-mode javascript-mode)))
-  "Alist mapping a major mode to a list of other modes related for saving."
-  :type '(alist :key-type symbol :value-type (repeat symbol))
+  '(("c++"        . ("c"))
+    ("html"       . ("css" "javascript" "js"))
+    ("javascript" . ("js"))
+    ("js"         . ("javascript")))
+  "Alist mapping a major mode name to a list of other related mode names.
+All unsaved buffers with major mode names of the key and the related modes
+are considered candidates for saving.
+
+For example, when compiling the C++ file visited by a buffer, you may want to
+consider all C++ and C buffers as candidates for saving. Create an association
+with \"c++\" as the key and \"c\" as the related mode name.   This identifies
+all buffers for C and C++ in both classic and Tree-Sitter major modes."
+  :type '(alist :key-type string :value-type (repeat string))
   :group 'pel-compile)
 
 (defcustom pel-compile-batch-save-threshold 3
