@@ -1371,9 +1371,9 @@ under the table title line."
                                  pel-home-dirpath-name
                                  command-line)))
     (if (executable-find pgm)
-        (pel-with-controlled-save
-          (compile (format "%s %s"
-                           command-line buffer-file-name)))
+        (pel-with-controlled-save (compile
+                                   (format "%s %s"
+                                           command-line buffer-file-name)))
       (user-error "Specified command line is invalid: %s is not on PATH.\
  Update pel-rst-compiler!" pgm))))
 

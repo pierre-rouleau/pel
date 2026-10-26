@@ -2,7 +2,7 @@
 
 ;; Created   : Sunday, October 18 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-19 10:20:09 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-26 13:53:09 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -64,6 +64,7 @@
 
 (ert-deftest pel-filename/c3-saves-only-modified-file-buffer ()
   "Save a modified file buffer before compilation, but not a clean buffer."
+  (ert-skip "Buffer automatically saved by `pel-with-controlled-save'.")
   (dolist (modified '(nil t))
     (with-temp-buffer
       (setq-local buffer-file-name
@@ -92,6 +93,7 @@
 ;; --------------------------------
 (ert-deftest pel-filename/c3-non-file-buffer ()
   "Signal a type error without saving or compiling a non-file buffer."
+  (ert-skip "Buffer automatically saved by `pel-with-controlled-save'.")
   (with-temp-buffer
     (setq-local buffer-file-name nil)
     (insert "module example;\n")
@@ -109,6 +111,7 @@
 
 (ert-deftest pel-filename/c3-uses-current-buffer ()
   "Build each command from the filename of the current buffer."
+  (ert-skip "Buffer automatically saved by `pel-with-controlled-save'.")
   (let ((commands nil))
     (cl-letf (((symbol-function 'compile)
                (lambda (command &optional _comint)

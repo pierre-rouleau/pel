@@ -55,6 +55,7 @@
 (require 'pel--base)                ; use: `pel-system-is-macos-p'
 (require 'pel--options)
 (require 'pel-read)                 ; use: `pel-mac-voice-name'
+(require 'pel-compile)              ; use: `pel-with-controlled-save'
 (require 'compile)
 
 ;; ---------------------------------------------------------------------------
@@ -363,80 +364,81 @@ KNOWN LIMITATION: If the user kills the compilation buffer during a
                                    (shell-quote-argument fpath)
                                    bundle-id)))))
                   ;; - 2: Protect backup and compilation startup.
-                  (let ((comp-buffer nil)
-                        (startup-complete nil)
-                        (previous-setup
-                         compilation-process-setup-function))
-                    (unwind-protect
-                        (progn
-                          ;; Confirm before moving the existing app.
-                          (when (file-exists-p app-fpath)
-                            (unless
-                                (y-or-n-p
-                                 (format
-                                  "%s exists. Temporary backup and compile? "
-                                  app-fpath))
-                              (user-error
-                               "%s exists; nothing done." app-fpath))
-
-                            ;; Remove old backup if there's one.
-                            (when (file-exists-p app-fpath-bkp)
-                              (message "Remove previous backup: %s"
-                                       app-fpath-bkp)
-                              (delete-directory app-fpath-bkp t))
-
-                            ;; Rename current .app to .app.bkp
-                            (let ((inhibit-quit t))
-                              (rename-file app-fpath app-fpath-bkp)
-                              (setq remove-backup t)))
-
-                          ;; - 3: Install cleanup before compile process
-                          ;;      creation, then run the compilation process.
-                          (let ((compilation-process-setup-function
-                                 (lambda ()
-                                   (setq comp-buffer (current-buffer))
-                                   (when remove-backup
-                                     (setq-local
-                                      pel--applescript-backup-dirpath
-                                      app-fpath-bkp)
-                                     (setq-local
-                                      pel--applescript-app-dirpath
-                                      app-fpath)
-                                     (add-hook
-                                      'compilation-finish-functions
-                                      #'pel--applescript-compile-cleanup
-                                      nil t))
-                                   (when previous-setup
-                                     (funcall previous-setup)))))
-                            (compile compilation-command))
-                          ;; Normal startup: the finish hook owns cleanup.
-                          (setq startup-complete t))
-
-                      ;; The unwind-form:
-                      ;; Startup error or quit: restore the existing app.
-                      (unless startup-complete
-                        (let ((inhibit-quit t))
-                          ;; Prevent duplicate cleanup when stopping.
-                          (when (buffer-live-p comp-buffer)
-                            (with-current-buffer comp-buffer
-                              (remove-hook
-                               'compilation-finish-functions
-                               #'pel--applescript-compile-cleanup t)
-                              (let ((process
-                                     (get-buffer-process comp-buffer)))
-                                (when (and process
-                                           (process-live-p process))
-                                  (delete-process process)))))
-
-                          ;; A fast compilation may have handled the backup.
-                          (when (and remove-backup
-                                     (file-exists-p app-fpath-bkp))
+                  (pel-with-controlled-save
+                    (let ((comp-buffer nil)
+                          (startup-complete nil)
+                          (previous-setup
+                           compilation-process-setup-function))
+                      (unwind-protect
+                          (progn
+                            ;; Confirm before moving the existing app.
                             (when (file-exists-p app-fpath)
-                              (delete-directory app-fpath t))
-                            (rename-file app-fpath-bkp app-fpath)
-                            (message
-                             "Compilation startup aborted; restored %s"
-                             app-fpath)))))))))
+                              (unless
+                                  (y-or-n-p
+                                   (format
+                                    "%s exists. Temporary backup and compile? "
+                                    app-fpath))
+                                (user-error
+                                 "%s exists; nothing done." app-fpath))
+
+                              ;; Remove old backup if there's one.
+                              (when (file-exists-p app-fpath-bkp)
+                                (message "Remove previous backup: %s"
+                                         app-fpath-bkp)
+                                (delete-directory app-fpath-bkp t))
+
+                              ;; Rename current .app to .app.bkp
+                              (let ((inhibit-quit t))
+                                (rename-file app-fpath app-fpath-bkp)
+                                (setq remove-backup t)))
+
+                            ;; - 3: Install cleanup before compile process
+                            ;;      creation, then run the compilation process.
+                            (let ((compilation-process-setup-function
+                                   (lambda ()
+                                     (setq comp-buffer (current-buffer))
+                                     (when remove-backup
+                                       (setq-local
+                                        pel--applescript-backup-dirpath
+                                        app-fpath-bkp)
+                                       (setq-local
+                                        pel--applescript-app-dirpath
+                                        app-fpath)
+                                       (add-hook
+                                        'compilation-finish-functions
+                                        #'pel--applescript-compile-cleanup
+                                        nil t))
+                                     (when previous-setup
+                                       (funcall previous-setup)))))
+                              (compile compilation-command))
+                            ;; Normal startup: the finish hook owns cleanup.
+                            (setq startup-complete t))
+
+                        ;; The unwind-form:
+                        ;; Startup error or quit: restore the existing app.
+                        (unless startup-complete
+                          (let ((inhibit-quit t))
+                            ;; Prevent duplicate cleanup when stopping.
+                            (when (buffer-live-p comp-buffer)
+                              (with-current-buffer comp-buffer
+                                (remove-hook
+                                 'compilation-finish-functions
+                                 #'pel--applescript-compile-cleanup t)
+                                (let ((process
+                                       (get-buffer-process comp-buffer)))
+                                  (when (and process
+                                             (process-live-p process))
+                                    (delete-process process)))))
+
+                            ;; A fast compilation may have handled the backup.
+                            (when (and remove-backup
+                                       (file-exists-p app-fpath-bkp))
+                              (when (file-exists-p app-fpath)
+                                (delete-directory app-fpath t))
+                              (rename-file app-fpath-bkp app-fpath)
+                              (message
+                               "Compilation startup aborted; restored %s"
+                               app-fpath))))))))))
           ;; static compiling or building a .scpt file
           (when (pel-executable-found "osacompile")
             (let* ((no-ext-fname (file-name-sans-extension fpath))
@@ -446,9 +448,10 @@ KNOWN LIMITATION: If the user kills the compilation buffer during a
                      ((equal arg '(4)) (shell-quote-argument
                                         (concat no-ext-fname ".scpt")))
                      (t (user-error "Invalid argument: %S" arg)))))
-              (compile (format "osacompile -o %s %s"
-                               output-fname
-                               (shell-quote-argument fpath))))))))))
+              (pel-with-controlled-save
+                (compile (format "osacompile -o %s %s"
+                                 output-fname
+                                 (shell-quote-argument fpath)))))))))))
 
 ;; -----------------------------------------------------------------------------
 (provide 'pel-applescript)
