@@ -192,11 +192,12 @@ Use the linter program specified by `pel-clisp-linter'."
                               "")))))))
           (if (or (not check-pgm)
                   (executable-find pgm-name))
-              (let* ((pel-dir-bin (format "%s/bin" pel-home-dirpath-name))
-                     (process-environment
-                      (cons (format "PEL_DIR_BIN=%s" pel-dir-bin)
-                            process-environment)))
-                (pel-with-controlled-save (compile cmd)))
+              (pel-with-controlled-save
+                (let* ((pel-dir-bin (format "%s/bin" pel-home-dirpath-name))
+                       (process-environment
+                        (cons (format "PEL_DIR_BIN=%s" pel-dir-bin)
+                              process-environment)))
+                  (compile cmd)))
             (user-error "Program identified by pel-clisp-linter not found: %s"
                         pgm-name))))
     ;; pel-clisp-linter is not initialized: prompt user to initialize it
