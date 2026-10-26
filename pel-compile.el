@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-26 13:25:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-26 14:11:07 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -581,7 +581,10 @@ code:
     ;; Your existing command execution code here
     (compile \"sphinx-build -b html ...\"))
 
-"
+CAUTION: Enclose all code that sets or modify logic or the environment
+         necessary for the compile process execution as the macro defers
+         BODY execution when `pel-compile-save-mode-scope' is set to anything
+         by \\='none."
   (declare (indent 0) (debug t))
   `(let* ((original-buffer (current-buffer))
           (pel--compile-origin-buffer original-buffer)
