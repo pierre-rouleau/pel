@@ -119,8 +119,8 @@
 ;;  - `pel-whitespace-in-str-p'
 ;;  - `pel-ends-with-space-p'
 ;;  - `pel-starts-with-space-p'
-;;  @ `pel-string-ends-with-p'
-;;  @ `pel-string-starts-with-p'
+;;  - `pel-string-ends-with-p'
+;;  - `pel-string-starts-with-p'
 ;;  - `pel-lowercase-p'
 ;;  - `pel-uppercase-p'
 ;;  - `pel-alnum-p'
@@ -1191,15 +1191,17 @@ The index of the first whitespace character is returned when one is present."
   (when (> (length text) 0)
     (string= (substring text 0 1) " ")))
 
-(defmacro pel-string-ends-with-p (text suffix &optional ignore-case)
+(defsubst pel-string-ends-with-p (text suffix &optional ignore-case)
   "Return t if TEXT string does end with SUFFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
-  `(string-suffix-p ,suffix ,text ,ignore-case))
+  (declare (side-effect-free t))
+ (string-suffix-p suffix text ignore-case))
 
-(defmacro pel-string-starts-with-p (text prefix &optional ignore-case)
+(defsubst pel-string-starts-with-p (text prefix &optional ignore-case)
   "Return t if TEXT string does start with PREFIX string, nil otherwise.
 Ignore case differences if IGNORE-CASE is non-nil."
-  `(string-prefix-p ,prefix ,text ,ignore-case))
+  (declare (side-effect-free t))
+  (string-prefix-p prefix text ignore-case))
 
 (defun pel-lowercase-p (string)
   "Return t if all characters in STRING are lowercase, nil otherwise."
