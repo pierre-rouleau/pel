@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-25 22:48:23 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-26 06:54:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -178,6 +178,22 @@ their last mark.  Only the S mark selects a buffer for saving.")
             #'pel--compile-ibuffer-preserve-save-marks)
 
 
+(defun pel--compile-ibuffer-unmark-all ()
+  "Clear all marks in this compilation save workspace.
+
+Clear displayed Ibuffer marks and stored marks for all original
+candidates, including candidates hidden by filters or collapsed
+filter groups.  Do not save buffers or start compilation."
+  (interactive)
+  ;; Clear displayed marks first.  This command also redisplays Ibuffer,
+  ;; which can synchronize displayed marks into the persistent store.
+  (ibuffer-unmark-all-marks)
+  ;; Clear the store after redisplay so hidden marks cannot survive.
+  ;; Retain each entry: it identifies an original save candidate.
+  (dolist (entry pel-compile--save-marks)
+    (setcdr entry ?\s))
+  (message "PEL: All save selections cleared, including hidden buffers."))
+
 (defun pel--compile-ibuffer-execute-and-build ()
   "Save the files explicitly marked with S in the workspace, then compile.
 
@@ -271,7 +287,7 @@ Inside that buffer:
 - unmark a buffer by typing ")
      (pel-insert-bold "u")
      (insert ",
-- unmark all buffers by typing ")
+- unmark all buffers, including hidden candidates, by typing ")
      (pel-insert-bold "U")
      (insert ",
 - proceed with the compilation by typing ")
@@ -313,13 +329,14 @@ you is controlled by the following user-options:\n")
     (define-key map (kbd "d") #'ibuffer-diff-with-file)
     (define-key map (kbd "m") #'pel--compile-ibuffer-mark-for-save)
     (define-key map (kbd "q") #'pel--compile-ibuffer-abort)
+    (define-key map (kbd "U") #'pel--compile-ibuffer-unmark-all)
     (define-key map (kbd "x") #'pel--compile-ibuffer-execute-and-build)
     map)
   "Keymap for `pel--compile-save-workspace-mode'.")
 
 (defconst pel--compile-save-workspace-mode-help
   (concat "Save before compile? | "
-          "m: save | u: no save| "
+          "m: save | u/U: no save/all| "
           "d: Δbuf/file | D: Δfile/VC | "
           "x: compile | q: abort | ?: help | (FILTERS active)")
   "A single help line shown at the top of the specialized ibuffer.")
@@ -342,6 +359,8 @@ that command.
 \\<pel--compile-save-workspace-mode-map>\
 \\[pel--compile-ibuffer-mark-for-save] marks buffers with S for saving.
 The standard Ibuffer key `u' removes a mark.
+\\[pel--compile-ibuffer-unmark-all] removes all marks, including marks on
+hidden candidates.
 \\[ibuffer-diff-with-file] compares the buffer with its saved file.
 \\[pel--compile-ibuffer-vcs-diff] compares the saved file with its VC revision.
 The VC comparison does not include unsaved buffer edits.
