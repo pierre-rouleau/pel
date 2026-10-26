@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-26 14:11:07 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-26 16:01:44 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -581,10 +581,15 @@ code:
     ;; Your existing command execution code here
     (compile \"sphinx-build -b html ...\"))
 
-CAUTION: Enclose all code that sets or modify logic or the environment
-         necessary for the compile process execution as the macro defers
-         BODY execution when `pel-compile-save-mode-scope' is set to anything
-         by \\='none."
+CAUTION: When the save pipeline opens an Ibuffer save workspace, BODY
+execution is deferred until the user completes the workspace save
+operation.  Other save paths can execute BODY during this macro call.
+A non-`none' value of `pel-compile-save-mode-scope' does not by itself
+cause deferral.
+
+Place all setup needed to start compilation inside BODY.  This includes
+temporary bindings and cleanup handlers that must remain active when
+compilation starts."
   (declare (indent 0) (debug t))
   `(let* ((original-buffer (current-buffer))
           (pel--compile-origin-buffer original-buffer)
