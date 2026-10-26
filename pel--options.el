@@ -16236,7 +16236,8 @@ For example, when compiling the C++ file visited by a buffer, you may want to
 consider all C++ and C buffers as candidates for saving. Create an association
 with \"c++\" as the key and \"c\" as the related mode name.   This identifies
 all buffers for C and C++ in both classic and Tree-Sitter major modes."
-  :type '(alist :key-type string :value-type (repeat string))
+  :type '(alist :key-type (string :tag "Mode of buffer to compile")
+                :value-type (repeat (string :tag "Mode of related buffer")))
   :group 'pel-compile)
 
 (defcustom pel-compile-batch-save-threshold 3
