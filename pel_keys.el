@@ -262,9 +262,8 @@
 (when (and pel-emacs-is-graphic-p
            (or pel-support-dual-environment
                (bound-and-true-p pel-init-support-dual-environment-p)
-               (bound-and-true-p pel-early-init-support-dual-environment-p))
-           (require 'pel-setup nil 'noerror)
-           (fboundp 'pel-setup-check-dual-environment))
+               (bound-and-true-p pel-early-init-support-dual-environment-p)))
+  (declare-function pel-setup-check-dual-environment "pel-setup" ())
   (run-at-time "3 sec" nil (function pel-setup-check-dual-environment)))
 
 ;; ---------------------------------------------------------------------------
