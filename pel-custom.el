@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-27 11:34:26 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 11:37:27 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -70,15 +70,10 @@ Open the buffer in the current window unless OTHER-WINDOW is non-nil."
         (setq group 'emacs)
       (setq group (intern group)))
     (if other-window
-        ;; In other window
-        (if (fboundp 'other-window-prefix)
-            (progn
-              (other-window-prefix)
-              (customize-browse group))
-          ;; For Emacs < 28
-          (let ((display-buffer-overriding-action
-                 '(display-buffer-pop-up-window (inhibit-same-window . t))))
-            (customize-browse group)))
+        ;; In other window, using a method available in Emacs < 28
+        (let ((display-buffer-overriding-action
+               '(display-buffer-pop-up-window (inhibit-same-window . t))))
+          (customize-browse group))
       ;; In same window
       (customize-browse group)))
 
