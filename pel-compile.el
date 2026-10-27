@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-26 16:01:44 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 09:02:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -39,7 +39,7 @@
 ;;    o `pel--compile-save-workspace-mode'
 ;;      - `pel--compile-ibuffer-execute-and-build'
 ;;      - `pel--compile-ibuffer-vcs-diff'
-;;      * `pel--compile-info'
+;;      * `pel-compile-info'
 
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
@@ -50,7 +50,6 @@
 (require 'pel--options)   ; use: `pel-compile-save-mode-scope',
 ;;                        ;      `pel-compile-related-modes-alist',
 ;;                        ;      `pel-compile-batch-save-threshold',
-;;                        ;      `pel-compile-always-use-batch-save'
 (require 'ibuffer)        ; use: `ibuffer-map-lines'
 (require 'ibuf-ext)       ; use: `ibuffer-filter-groups'
 (require 'vc)             ; use: `vc-diff-internal'
@@ -258,7 +257,7 @@ If no candidates have an S mark, save nothing and compile."
 ;; pel--compile-save-workspace-mode Minor Mode
 ;; ------------------------------------------
 
-(defun pel--compile-info ()
+(defun pel-compile-info ()
   "Describe the specialized ibuffer prompt to save buffers before compile."
   (interactive)
   (pel-print-in-buffer
@@ -315,7 +314,6 @@ The way PEL identifies which buffer may need to be saved and how PEL prompts
 you is controlled by the following user-options:\n")
      (pel-insert-symbol-content-line 'pel-compile-save-mode-scope)
      (pel-insert-symbol-content-line 'pel-compile-batch-save-threshold)
-     (pel-insert-symbol-content-line 'pel-compile-always-use-batch-save)
      (pel-insert-symbol-content-line 'pel-compile-skip-prompt-to-save-current-buffer)
      (insert "\n\n\
 With pel-compile-save-mode-scope set to 'related, PEL checks if unsaved buffers
@@ -332,7 +330,7 @@ identified as relevant."))
 
 (defvar pel--compile-save-workspace-mode-map
   (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "?") #'pel--compile-info)
+    (define-key map (kbd "?") #'pel-compile-info)
     (define-key map (kbd "D") #'pel--compile-ibuffer-vcs-diff)
     (define-key map (kbd "d") #'ibuffer-diff-with-file)
     (define-key map (kbd "m") #'pel--compile-ibuffer-mark-for-save)
@@ -441,7 +439,7 @@ buffer-selection filter and does not replace another pending request."
                           buffers-to-save))
       (goto-char (point-min)))
     (message "\
-PEL: [m] Mark Save | [u] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile | [?] help")))
+PEL: [m] Mark Save | [u/U] Unmark | [d] Diff | [D] VCS Diff | [x] Save & Compile | [?] help")))
 
 (defun pel--compile-prompt-save-intent (count)
   "Prompt the user how to handle COUNT modified buffers before compiling.
@@ -533,8 +531,7 @@ Quit and save errors propagate to the caller."
         (funcall compile-callback))
 
        ;; Case 1: Sibling threshold reached -> deploy intent choices menu
-       ((or pel-compile-always-use-batch-save
-            (>= count pel-compile-batch-save-threshold))
+       ((>= count pel-compile-batch-save-threshold)
         (pcase (pel--compile-prompt-save-intent count)
           ('ibuffer
            (pel--compile-display-ibuffer-menu buffers-to-save
