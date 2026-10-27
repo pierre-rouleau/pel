@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, May 25 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-06-04 07:14:58 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 15:10:56 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -52,8 +52,10 @@
 ;;; --------------------------------------------------------------------------
 ;;; Dependencies:
 ;;
-(require 'pel-navigate)   ; use: `pel-forward-word-start'
 (require 'thingatpt)      ; use: `bounds-of-thing-at-point'
+
+(declare-function pel-forward-word-start "pel-navigate" ()) ; for ; `pel-forward-word-start'
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
