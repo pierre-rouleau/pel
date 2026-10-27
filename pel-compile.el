@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 23 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-27 09:02:56 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 11:14:22 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -65,7 +65,12 @@
 ;;                        ;      `ibuffer-show-empty-filter-groups'
 ;;                        ;      `ibuffer-update', `ibuffer-set-mark'
 
+;; Declare functions that are pel-autoloaded
+(declare-function pel-browse-group "pel-custom" (group &optional other-window))
+
+;; Declare variables defined in other files
 (defvar ibuffer-header-line-format)     ; declare to prevent Emacs 26 warnings
+
 ;;; --------------------------------------------------------------------------
 ;;; Code:
 ;;
@@ -257,6 +262,7 @@ If no candidates have an S mark, save nothing and compile."
 ;; pel--compile-save-workspace-mode Minor Mode
 ;; ------------------------------------------
 
+;;-pel-autoload
 (defun pel-compile-info ()
   "Describe the specialized ibuffer prompt to save buffers before compile."
   (interactive)
@@ -605,6 +611,13 @@ compilation starts."
             ;; Ibuffer invokes it after the save pipeline has returned.
             (cl-letf (((symbol-function 'save-some-buffers) #'ignore))
               ,@body)))))))
+
+;; ---------------------------------------------------------------------------
+;;-pel-autoload
+(defun pel-compile-customize ()
+ "Open Emacs compile customization buffer."
+ (interactive)
+ (pel-browse-group "compilation" 'in-other-window))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-compile)

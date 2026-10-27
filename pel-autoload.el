@@ -311,6 +311,12 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-move-up-to-class-visibility
     pel-move-down-to-class-visibility)
 
+  ;; --
+  (pel-autoload "pel-compile" for:
+    pel-compile-info
+    pel-compile-customize)
+
+  ;; --
   (pel-autoload "pel-cua" for:
     pel-cua-rectangle-mark
     pel-cua-move-rectangle-left

@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-03-12 14:23:55 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 11:08:16 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -50,19 +50,26 @@
 ;;
 
 ;;-pel-autoload
-(defun pel-browse-pel ()
+(defun pel-browse-pel (&optional other-window)
   "Browse the PEL customization group."
-  (interactive)
+  (interactive "P")
+  (when other-window
+        (other-window-prefix))
   (customize-browse 'pel))
 
 ;;-pel-autoload
-(defun pel-browse-group (group)
-  "Browse the customization tree from a specific GROUP node."
-  (interactive (list (customize-read-group)))
+(defun pel-browse-group (group &optional other-window)
+  "Browse the customization tree from a specific GROUP node.
+
+Open the buffer in the current window unless OTHER-WINDOW is non-nil."
+  (interactive (list (customize-read-group)
+                     current-prefix-arg))
   (when (stringp group)
     (if (string-equal "" group)
         (setq group 'emacs)
       (setq group (intern group)))
+    (when other-window
+        (other-window-prefix))
     (customize-browse group)))
 
 ;;-pel-autoload
