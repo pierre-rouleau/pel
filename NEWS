@@ -15,6 +15,12 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   to save.  You can save all, some or none and then proceed with the
   compilation.  Using this new macro it becomes possible to compile a C file
   without being prompted to save documentation files for example.
+  - The compilation-mode and comint-mode buffers provide the following ~<f12>`~ key sequences:
+    - ~<f12> <f1>~: open the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/compilation-mode.pdf][PEL ⅀ Compilation Mode PDF]].
+    - ~<f12> <f2>~: open a help-mode buffer describing how to use the specialized ibuffer mode
+      to select which modified buffer to save before executing the compilation or analysis command
+      invoked by the *compile* command.
+    - ~<f12> <f3>~: open a window to browse the Emacs compilation customization group.
 - Improved *pel-version* command: it is not bound to the ~<f11> ? v~ key sequence.
   The new version prints a Git-repo-based version that identifies the state of Git version of the PEL
   repo when PEL was compiled.  This can also show that PEL was built with uncommitted files.

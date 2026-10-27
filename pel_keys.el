@@ -262,9 +262,8 @@
 (when (and pel-emacs-is-graphic-p
            (or pel-support-dual-environment
                (bound-and-true-p pel-init-support-dual-environment-p)
-               (bound-and-true-p pel-early-init-support-dual-environment-p))
-           (require 'pel-setup nil 'noerror)
-           (fboundp 'pel-setup-check-dual-environment))
+               (bound-and-true-p pel-early-init-support-dual-environment-p)))
+  (declare-function pel-setup-check-dual-environment "pel-setup" ())
   (run-at-time "3 sec" nil (function pel-setup-check-dual-environment)))
 
 ;; ---------------------------------------------------------------------------
@@ -437,14 +436,25 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
   (interactive "P")
   (pel-help-open-pdf "compilation-mode" open-github-page-p))
 
+(declare-function pel-compile-info      "pel-compile" ())
+(declare-function pel-compile-customize "pel-compile" ())
+
 (pel-eval-after-load compile
   (when (boundp 'compilation-mode-map)
     (define-key compilation-mode-map
-                (kbd "<f12> <f1>") #'pel-help-compilation-mode)))
+                (kbd "<f12> <f1>") #'pel-help-compilation-mode)
+    (define-key compilation-mode-map
+                (kbd "<f12> <f2>") #'pel-compile-info)
+    (define-key compilation-mode-map
+                (kbd "<f12> <f3>") #'pel-compile-customize)))
 (pel-eval-after-load comint
   (when (boundp 'comint-mode-map)
     (define-key comint-mode-map
-                (kbd "<f12> <f1>") #'pel-help-compilation-mode)))
+                (kbd "<f12> <f1>") #'pel-help-compilation-mode)
+    (define-key comint-mode-map
+                (kbd "<f12> <f2>") #'pel-compile-info)
+    (define-key comint-mode-map
+                (kbd "<f12> <f3>") #'pel-compile-customize)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Binding for Greek Letters
