@@ -312,6 +312,10 @@ Argument FOR: just a required separator keyword to make code look better."
     pel-move-down-to-class-visibility)
 
   ;; --
+  (pel-autoload-function "pel-check" for:
+    pel-check-dual-environment)
+
+  ;; --
   (pel-autoload "pel-compile" for:
     pel-compile-info
     pel-compile-customize)
