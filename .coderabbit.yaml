@@ -1,13 +1,44 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 language: "en-US"
 early_access: false
+
+# ----------------------------------------------------------------------------
+# Configure Manual reviews only
+# - enabled: false disables automatic reviews.
+# - auto_incremental_review: false disables automatic follow-up reviews on each push.
+# - The empty keyword and label list prevent those settings from triggering
+#   reviews when automatic reviews are disabled. Your current configuration
+#   already has these empty values.
+
 reviews:
-  profile: "chill"
-  request_changes_workflow: false
-  high_level_summary: true
-  poem: false
-  review_status: true
-  collapse_walkthrough: false
   auto_review:
-    enabled: true
-    drafts: false
+    enabled: false
+    auto_incremental_review: false
+    description_keyword: ""
+    labels: []
+
+# To request reviews, issue the following commands:
+#
+# After you finish pushing your commits, post one of these as a top-level PR comment:
+#
+#     @coderabbitai review — review changes since the previous review.
+#     @coderabbitai full review — review the entire PR again.
+#
+# Manual reviews remain subject to review limits. This configuration prevents
+# automatic reviews between your requests; it does not remove the limits.
+#
+# For a temporary, per-PR alternative, post @coderabbitai pause while you
+# work. You can still request a manual review when ready.
+# ----------------------------------------------------------------------------
+
+
+# reviews:
+#   profile: "chill"
+#   request_changes_workflow: false
+#   high_level_summary: true
+#   poem: false
+#   review_status: true
+#   collapse_walkthrough: false
+#   auto_review:
+#     enabled: true
+#     drafts: false
