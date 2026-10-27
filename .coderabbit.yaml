@@ -11,6 +11,13 @@ early_access: false
 #   already has these empty values.
 
 reviews:
+  profile: "chill"
+  auto_approvals:
+    enabled: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
   auto_review:
     enabled: false
     auto_incremental_review: false
