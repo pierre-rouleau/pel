@@ -2,7 +2,7 @@
 
 ;; Created   : Wednesday, October 21 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-27 11:37:27 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 11:44:34 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -53,9 +53,13 @@
 (defun pel-browse-pel (&optional other-window)
   "Browse the PEL customization group."
   (interactive "P")
-  (when other-window
-        (other-window-prefix))
-  (customize-browse 'pel))
+  (if other-window
+      ;; In other window, using a method available in Emacs < 28
+      (let ((display-buffer-overriding-action
+             '(display-buffer-pop-up-window (inhibit-same-window . t))))
+        (customize-browse 'pel))
+    ;; In same window
+    (customize-browse 'pel)))
 
 ;;-pel-autoload
 (defun pel-browse-group (group &optional other-window)
