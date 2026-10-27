@@ -259,7 +259,7 @@
 ;; because the terminal mode always uses the same files as Emacs usually does.
 ;; Schedule this check for some time after the initialization to prevent
 ;; slowing down Emacs startup.
-(declare-function pel-check-dual-environment "pel-setup" ())
+(declare-function pel-check-dual-environment "pel-check" ())
 
 ;; In graphical Emacs, check when any dual-environment flag is enabled.
 ;; Delay the check by three seconds.  Consistent flags do not require
