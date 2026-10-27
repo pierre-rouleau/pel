@@ -16242,15 +16242,9 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
   :group 'pel-compile)
 
 (defcustom pel-compile-batch-save-threshold 3
-  "Number of modified buffers above which PEL uses an interactive save menu."
+  "PEL use interactive save menu when # of modified buffers ≥ this value."
   :type 'integer
   :group 'pel-compile)
-
-(defcustom pel-compile-always-use-batch-save nil
-  "If non-nil, PEL always use the batch menu interface for compilation saves."
-  :group 'pel-compile
-  :type 'boolean
-  :safe #'booleanp)
 
 (defcustom pel-compile-skip-prompt-to-save-current-buffer nil
   "If non-nil always save modified buffer without prompting before `compile'."
