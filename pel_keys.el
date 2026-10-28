@@ -10189,14 +10189,15 @@ See `flyspell-auto-correct-previous-word' for more info."
 
 ;; If the user wants to get the latest project.el from Gnu Elpa then install
 ;; it.  It will override Emacs project.el builtin.  That's a good way to get
-;; the latest project.el when not using the latest version of Emacs.
+;; the latest project.el when not using the latest version of Emacs ≥ 29.1.
 ;; You must, however, disable the other project.el[cn]
 (when pel-use-project-from-elpa
   (unless (pel-in-fast-startup-p)
-    (unless (package-installed-p 'project)
-      (defvar package-install-upgrade-built-in)
-      (let ((package-install-upgrade-built-in t))
-        (package-install 'project)))))
+    (when (fboundp 'package-installed-p)
+      (unless (package-installed-p 'project)
+        (defvar package-install-upgrade-built-in)
+        (let ((package-install-upgrade-built-in t))
+          (package-install 'project))))))
 
 (pel-eval-after-load project
   (when (boundp 'project-prefix-map)
