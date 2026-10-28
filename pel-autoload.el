@@ -84,7 +84,8 @@ Argument FOR: just a required separator keyword to make code look better."
 
   (pel-autoload "pel-ada" for:
     pel-ada-mode
-    pel-ada-setup-info)
+    pel-ada-setup-info
+    pel-ada-check)
   (pel-autoload-function "pel-ada" for:
     pel--ada-ts-mode-fixer
     pel-ada-mode-used-text

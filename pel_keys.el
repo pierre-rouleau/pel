@@ -3216,7 +3216,8 @@ MODE must be a symbol."
     ;; 4- Define Buffer keymap for Ada
     (define-pel-global-prefix pel:for-ada (kbd "<f11> SPC A"))
     (define-key pel:for-ada "?" 'pel-ada-setup-info)
-    (define-key pel:for-ada (kbd "M-f") 'pel-open-file-alternate)))
+    (define-key pel:for-ada (kbd "M-f") 'pel-open-file-alternate)
+    (define-key pel:for-ada (kbd "c")   'pel-ada-check)))
 
 ;; ---------------------------------------------------------------------------
 ;;** Algol programming language

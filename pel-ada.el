@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-04-13 23:26:37 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 23:08:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -38,6 +38,7 @@
 ;;                          ;      `pel-tab-insert-control-info',
 ;;                          ;      `pel-tab-control-context'
 (require 'pel-modes)        ; use: `pel-insert-minor-mode-activation-info'
+(require 'pel-compile)      ; use:
 
 ;;; --------------------------------------------------------------------------
 ;;; Code:
@@ -201,6 +202,23 @@ following user-options:")
        (pel-tab-insert-control-info tab-control-context))
      (unless append :clear-buffer)
      :use-help-mode)))
+
+;; ---------------------------------------------------------------------------
+;; Compilation Support
+;; -------------------
+
+(declare-function ada-build-check "ada-build" (&optional confirm))
+
+;;-pel-autoload
+(defun pel-ada-check (&optional confirm)
+  "Run the Ada compilation check in a PEL save buffer control environment.
+By default, this checks the current file for syntax errors.
+If CONFIRM is non-nil, prompt for user confirmation of the command."
+  (interactive "P")
+  (unless (require 'ada-build nil 'noerror)
+    (user-error "Requires classic ada-mode."))
+  (pel-with-controlled-save
+    (ada-build-check confirm)))
 
 ;;; --------------------------------------------------------------------------
 (provide 'pel-ada)
