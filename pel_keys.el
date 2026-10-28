@@ -6889,6 +6889,14 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
     ;; [:todo 2026-10-28, by Pierre Rouleau: Add iMenu/Speedbar support]
 
     ;; ----
+    when-buffer-opens:
+    ;; dbml-mode does not define anything for indentation but derives
+    ;; from prog-mode: `standard-indent' is therefore used for the indentation
+    ;; control.
+    (when (boundp 'standard-indent)
+      (setq-local standard-indent pel-dbml-indent-width))
+
+    ;; ----
     after-feature-load:
     ;; dbml-mode does not yet support comments: add comment
     ;; support inside it until it accepts my modifications.
