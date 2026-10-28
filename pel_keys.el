@@ -10193,6 +10193,7 @@ See `flyspell-auto-correct-previous-word' for more info."
 ;; You must, however, disable the other project.el[cn]
 (when pel-use-project-from-elpa
   (unless (pel-in-fast-startup-p)
+    (require 'package)
     (when (fboundp 'package-installed-p)
       (unless (package-installed-p 'project)
         (defvar package-install-upgrade-built-in)

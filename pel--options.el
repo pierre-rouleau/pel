@@ -6076,7 +6076,10 @@ DEV-PROJECT.SETTING."
   :group 'pel-pkg-for-database-description-languages)
 
 (defcustom pel-use-dbml-mode nil
-  "Whether PEL provides support for DBML."
+  "Whether PEL provides support for DBML.
+
+Requires Emacs 27.1 or later.
+Automatically de-activated on earlier Emacs versions."
   :group 'pel-pkg-for-dbml
   :link '(url-link :tag "dbml-mode on GitHub"
                    "https://github.com/KeyWeeUsr/dbml-mode")
@@ -16495,7 +16498,8 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
   (setq pel-use-vterm nil))
 (when (version< emacs-version "27.1")
   (setq pel-use-tzc nil)
-  (setq pel-use-csv nil))
+  (setq pel-use-csv nil)
+  (setq pel-use-dbml-mode nil))
 (when (version< emacs-version "28.1")
   (setq pel-use-go-translate nil)
   (setq pel-use-simple-undo nil)
