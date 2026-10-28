@@ -2,7 +2,7 @@
 
 ;; Created   : Friday, October 17 2025.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-27 22:53:35 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-27 23:08:29 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -209,6 +209,7 @@ following user-options:")
 
 (declare-function ada-build-check "ada-build" (&optional confirm))
 
+;;-pel-autoload
 (defun pel-ada-check (&optional confirm)
   "Run the Ada compilation check in a PEL save buffer control environment.
 By default, this checks the current file for syntax errors.
