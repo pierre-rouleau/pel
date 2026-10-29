@@ -432,11 +432,12 @@ and child frames.  This is not a client-process count."
                               (pel-daemon-client-count t))
        (pel-insert-value-info "Active graphical client frame count"
                               (pel-daemon-graphical-frame-count))
-       (pel-insert-value-info "\
+       (when (boundp 'server-name)
+         (pel-insert-value-info "\
 Notes:
   - A GUI client normally does not create a persisting client process.
     It will, however, create a GUI frame.
-  - The counts refer to the currently used Emacs daemon socket" server-name)
+  - The counts refer to the currently used Emacs daemon socket" server-name))
        (let ((cmdline (getenv "PEL_EMACS_LAST_CLIENT_COMMAND")))
          (when (and (stringp cmdline)
                     (not (string-empty-p cmdline)))
@@ -457,6 +458,7 @@ Notes:
        (pel-insert-list-content 'treesit-extra-load-path)))
    (unless append :clear-buffer)
    :use-help-mode))
+
 ;;; --------------------------------------------------------------------------
 (provide 'pel-emacs)
 
