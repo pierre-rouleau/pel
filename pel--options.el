@@ -6100,25 +6100,25 @@ Do not enter lambda expressions."
   :type 'integer
   :safe 'pel-indent-valid-p)
 
-(defcustom pel-dbml-tab-width 2
-  "Column width display rendering of hard tab for dbml buffers.
+;; (defcustom pel-dbml-tab-width 2
+;;   "Column width display rendering of hard tab for dbml buffers.
+;;
+;; PEL stores this in `tab-width' when opening dbml buffers.
+;;
+;; This does *NOT* control the indentation in dbml files, it only controls
+;; the column width display rendering of hard tabs in buffers and tab stop
+;; positions for commands such as `tab-to-tab-stop'."
+;;   :group 'pel-pkg-for-dbml
+;;   :type 'integer
+;;   :safe 'pel-indent-valid-p)
 
-PEL stores this in `tab-width' when opening dbml buffers.
-
-This does *NOT* control the indentation in dbml files, it only controls
-the column width display rendering of hard tabs in buffers and tab stop
-positions for commands such as `tab-to-tab-stop'."
-  :group 'pel-pkg-for-dbml
-  :type 'integer
-  :safe 'pel-indent-valid-p)
-
-(defcustom pel-dbml-use-tabs nil
-  "Value of `indent-tabs-mode' for editing dbml files.
-- If set to nil: only spaces are used for indentation.
-- If set to t: hard tabs are used when possible."
-  :group 'pel-pkg-for-dbml
-  :type 'boolean
-  :safe #'booleanp)
+;; (defcustom pel-dbml-use-tabs nil
+;;   "Value of `indent-tabs-mode' for editing dbml files.
+;; - If set to nil: only spaces are used for indentation.
+;; - If set to t: hard tabs are used when possible."
+;;   :group 'pel-pkg-for-dbml
+;;   :type 'boolean
+;;   :safe #'booleanp)
 
 ;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
 ;; SQL Language Support

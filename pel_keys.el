@@ -6891,10 +6891,12 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
     ;; ----
     when-buffer-opens:
     ;; dbml-mode does not define anything for indentation but derives
-    ;; from prog-mode: `standard-indent' is therefore used for the indentation
-    ;; control.
+    ;; from prog-mode.  It uses a poor indentation mechanism without
+    ;; electric behaviour based on `tab-to-tab-stop' and `tab-width'.
+    ;; [:todo 2026-10-28, by Pierre Rouleau: Add a better indentation
+    ;; mechanism to dbml-mode or a fork of it. That mode is too basic.]
     (when (boundp 'standard-indent)
-      (setq-local standard-indent pel-dbml-indent-width))
+      (setq-local tab-width pel-dbml-indent-width))
 
     ;; ----
     after-feature-load:
