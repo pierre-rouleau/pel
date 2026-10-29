@@ -6895,7 +6895,7 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
     ;; electric behaviour based on `tab-to-tab-stop' and `tab-width'.
     ;; [:todo 2026-10-28, by Pierre Rouleau: Add a better indentation
     ;; mechanism to dbml-mode or a fork of it. That mode is too basic.]
-    (setq-local tab-width pel-dbml-indent-width)
+    (pel-setq-local-unless-filevar tab-width pel-dbml-indent-width)
 
     ;; ----
     after-feature-load:
