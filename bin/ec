@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-29 16:18:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-29 17:03:42 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -103,6 +103,9 @@ print_usage()
         Hung or orphaned clients are also possible, but a discrepancy
         alone does not establish either condition.
         Matching counts do not establish that all clients work correctly.
+
+        When PEL is available, the command prints more information about
+        the client processes and frames.
 
   A responding server can belong to a daemon or an ordinary Emacs
   session that enabled server-start.

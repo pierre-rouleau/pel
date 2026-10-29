@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-29 11:44:27 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-29 17:01:22 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -460,6 +460,9 @@ The ec_ command:
           Hung or orphaned clients are also possible, but a discrepancy
           alone does not establish either condition.
           Matching counts do not establish that all clients work correctly.
+
+          When PEL is available, the command prints more information about
+          the client processes and frames.
 
     A responding server can belong to a daemon or an ordinary Emacs
     session that enabled server-start.
