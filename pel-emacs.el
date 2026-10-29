@@ -430,7 +430,7 @@ and child frames.  This is not a client-process count."
                               (pel-daemon-client-count nil))
        (pel-insert-value-info "Active graphical client process count"
                               (pel-daemon-client-count t))
-       (pel-insert-value-info "Active graphical client frame count"
+       (pel-insert-value-info "All active graphical client frame count"
                               (pel-daemon-graphical-frame-count))
        (when (boundp 'server-name)
          (pel-insert-value-info "\

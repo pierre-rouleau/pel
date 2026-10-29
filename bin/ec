@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-29 15:22:31 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-29 16:18:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -587,30 +587,32 @@ The Emacs server on the socket [%s] did not respond successfully.\n" "${daemon_n
         exit 1
     fi
 
-    if ! terminal_client_count="$(list_server_eval '(progn (require '\''pel-emacs) (pel-daemon-client-count nil))')"; then
-        error_printf "Could not read terminal client process count from socket [%s].\n" "${daemon_name:-server}"
-        exit 1
-    fi
-    if ! gui_client_count="$(list_server_eval '(progn (require '\''pel-emacs) (pel-daemon-client-count t))')"; then
-        error_printf "Could not read GUI client process count from socket [%s].\n" "${daemon_name:-server}"
-        exit 1
-    fi
-    if ! gui_frame_count="$(list_server_eval '(progn (require '\''pel-emacs) (pel-daemon-graphical-frame-count))')"; then
-        error_printf "Could not read frame counts from socket [%s].\n" "${daemon_name:-server}"
-        exit 1
-    fi
-
     if ! connection_count="$(list_server_eval '(- (length server-clients) 1)')"; then
-        error_printf "Could not read connection counts from socket %s.\n" \
-            "${daemon_name:-server}"
+        error_printf "Could not read connection counts from socket %s.\n" "${daemon_name:-server}"
         exit 1
     fi
-
     printf -- "Emacs server socket     : %s\n" "${daemon_name:-server}"
     printf -- "Server connections      : %s\n" "${connection_count}"
-    printf -- "Emacs terminal  client process count: %s\n" "${terminal_client_count}"
-    printf -- "Emacs graphical client process count: %s\n" "${gui_client_count}"
-    printf -- "Emacs graphical client frame count  : %s\n" "${gui_frame_count}"
+
+    pel_available="$(list_server_eval '(and (require (quote pel-emacs) nil t) (fboundp (quote pel-daemon-client-count)) (fboundp (quote pel-daemon-graphical-frame-count)) t)')"
+    if [ "$pel_available" = "t" ]; then
+        if ! terminal_client_count="$(list_server_eval '(progn (require '\''pel-emacs) (pel-daemon-client-count nil))')"; then
+            error_printf "Could not read terminal client process count from socket [%s].\n" "${daemon_name:-server}"
+            exit 1
+        fi
+        if ! gui_client_count="$(list_server_eval '(progn (require '\''pel-emacs) (pel-daemon-client-count t))')"; then
+            error_printf "Could not read GUI client process count from socket [%s].\n" "${daemon_name:-server}"
+            exit 1
+        fi
+        if ! gui_frame_count="$(list_server_eval '(progn (require '\''pel-emacs) (pel-daemon-graphical-frame-count))')"; then
+            error_printf "Could not read frame counts from socket [%s].\n" "${daemon_name:-server}"
+            exit 1
+        fi
+
+        printf -- "Emacs terminal  client process count: %s\n" "${terminal_client_count}"
+        printf -- "Emacs graphical client process count: %s\n" "${gui_client_count}"
+        printf -- "Emacs graphical client frame count  : %s\n" "${gui_frame_count}"
+    fi
 
     # grep with an expression that will not match the grep command line such
     # that the grep process won't show up in the output.
