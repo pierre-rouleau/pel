@@ -317,6 +317,18 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
       (declare-function debbugs-browse-url "debugs-browse")
       (debbugs-browse-url url))))
 
+(defun pel-daemon-client-frame-count ()
+  "Return the number of Emacs daemon client frames."
+  (require 'cl-seq)    ; use `cl-remove-if-not'
+  (length
+   (cl-remove-if-not
+    (lambda (f)
+      (and (not (eq f (selected-frame)))
+           (not (string-prefix-p "terminal"
+                                 (or (frame-parameter f 'display)
+                                     "")))))
+    (frame-list))))
+
 ;; ---------------------------------------------------------------------------
 
 (defun pel-emacs-version-info (&optional append)
@@ -387,10 +399,17 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
      ;;
      (when (daemonp)
        (when (boundp 'server-clients)
-         (pel-insert-value-info "# of active clients" (if server-clients
-                                                          (number-to-string
-                                                           (length server-clients))
-                                                        "None")))
+         (pel-insert-value-info "# of active clients process" (if server-clients
+                                                                  (number-to-string
+                                                                   (length server-clients))
+                                                                "None"))
+         (pel-insert-value-info "# of Daemon client frames"
+                                (pel-daemon-client-frame-count))
+         (insert "\n\
+- Notes:
+  - A GUI client normally does not create a persisting client process.
+    It will, however, create a GUI frame.
+  - The counts refer to the currently used Emacs daemon socket.\n"))
        (let ((cmdline (getenv "PEL_EMACS_LAST_CLIENT_COMMAND")))
          (when (and (stringp cmdline)
                     (not (string-empty-p cmdline)))

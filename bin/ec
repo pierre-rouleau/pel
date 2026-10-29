@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-29 11:44:33 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-29 13:49:15 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -324,31 +324,6 @@ while [ "$ec_args_left" -gt 0 ]; do
 done
 
 # ----------------------------------------------------------------------------
-# Process the --list command and exit
-# -----------------------------------
-
-if [ "$op" = "list-clients" ]; then
-    # First print the number of active clients
-    if emacsclient --eval '(- (length server-clients) 1)' >/dev/null 2>&1; then
-        client_count="$(emacsclient --eval '(length (cl-remove-if-not (lambda (f) (and (not (eq f (selected-frame))) (not (string-prefix-p "terminal" (or (frame-parameter f '\''display) ""))))) (frame-list)))')"
-        terminal_client_count="$(emacsclient --eval '(- (length server-clients) 1)')"
-        printf -- "Total number of active Emacs client frames(s): %s\n" "${client_count}"
-        printf -- "Number of terminal clients frame(s)          : %s\n" "${terminal_client_count}"
-        printf -- "Note: The GUI clients processes are transient;\n"
-        printf -- "      They close right after sending a request to open a new frame.\n"
-
-        if ps aux | grep '[e]macsclient' >/dev/null 2>&1; then
-            printf -- "List of emacsclient processes:\n"
-            ps aux | grep '[e]macsclient'
-        fi
-        exit 0
-    else
-        printf -- "No Emacs Daemon appear be running.\n"
-        exit 1
-    fi
-fi
-
-# ----------------------------------------------------------------------------
 # Validate before daemon startup.
 # The explicit list rejects target overrides, bundles, and abbreviations.
 native_help=false
@@ -439,9 +414,9 @@ Use a second -- before filenames that start with '-'.\n" "$1"
 }
 
 case "$op" in
-    start-daemon|check-daemon)
+    start-daemon|check-daemon|list-clients)
         if [ "$#" -gt 0 ]; then
-            error_printf "This daemon-only mode does not accept client arguments.\n"
+            error_printf "This mode does not accept client arguments.\n"
             exit 1
         fi
         ;;
@@ -589,6 +564,53 @@ esac
 
 # ----------------------------------------------------------------------------
 # Execute command
+
+# If --list command is requested: process it and exit
+# ---------------------------------------------------
+
+if [ "$op" = "list-clients" ]; then
+    # Process --list only after executable selection and the OS support check.
+    # Use a subshell so environment changes do not affect other operations.
+    list_server_eval()
+    (
+        unset EMACS_SERVER_FILE EMACS_SOCKET_NAME ALTERNATE_EDITOR
+        "$app" \
+            --socket-name="${daemon_name:-server}" \
+            --alternate-editor=false \
+            --eval "$1"
+    )
+
+    if ! daemon_is_running; then
+        error_printf "\
+The Emacs server on the socket [%s] did not respond successfully.
+No Emacs daemon for it appear to run.\n" "${daemon_name:-server}"
+        exit 1
+    fi
+
+    if ! client_count="$(list_server_eval '(length (cl-remove-if-not (lambda (f) (and (not (eq f (selected-frame))) (not (string-prefix-p "terminal" (or (frame-parameter f '\''display) ""))))) (frame-list)))')"; then
+        error_printf "Could not read frame counts from socket [%s].\n" "${daemon_name:-server}"
+        exit 1
+    fi
+
+    if ! connection_count="$(list_server_eval '(- (length server-clients) 1)')"; then
+        error_printf "Could not read connection counts from socket %s.\n" \
+            "${daemon_name:-server}"
+        exit 1
+    fi
+
+    printf -- "Emacs server socket     : %s\n" "${daemon_name:-server}"
+    printf -- "Emacs client frame count: %s\n" "${client_count}"
+    printf -- "Server connections      : %s\n" "${connection_count}"
+
+    # grep with an expression that will not match the grep command line such
+    # that the grep process won't show up in the output.
+    if ps aux | grep '[e]macsclient' >/dev/null 2>&1; then
+        printf -- "Matching emacsclient processes (not filtered by socket):\n"
+        ps aux | grep '[e]macsclient'
+    fi
+    exit 0
+fi
+
 
 # Native help does not need a server or frame options.
 # Run only after argument validation and executable selection.
