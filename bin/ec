@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-29 11:11:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-29 11:44:33 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -82,11 +82,27 @@ print_usage()
 
   ➨ %s -l|--list [--name=DAEMON-NAME]
 
-        Show a count of the emacsclients currently active and then
-        a list of all existing emacsclient processes.
-        If there is a discrepancy between the count and the list,
-        then some of the emacsclients are not active, either hung
-        or orphaned.
+        Show frame and connection counts from the queried Emacs server.
+        Then list processes whose command lines contain \"emacsclient\".
+
+        These counts and the process list measure different things.
+        They do not have a one-to-one relationship:
+
+        - A frame can remain after its emacsclient process exits, for
+          example when the client uses --no-wait.
+        - An emacsclient process can wait for file editing to finish
+          without creating a new frame.
+        - A server connection is not necessarily a terminal frame.
+        - The process list can include clients for other Emacs servers
+          or users, subject to process visibility and permissions.
+        - Command-line matching can include unrelated processes whose
+          arguments contain \"emacsclient\".
+        - Frames, connections, and processes can change between queries.
+
+        A discrepancy can therefore occur during normal operation.
+        Hung or orphaned clients are also possible, but a discrepancy
+        alone does not establish either condition.
+        Matching counts do not establish that all clients work correctly.
 
   A responding server can belong to a daemon or an ordinary Emacs
   session that enabled server-start.
@@ -530,7 +546,6 @@ case "${os_name}" in
         ;;
 esac
 
-echo "APP: $app"
 # ----------------------------------------------------------------------------
 
 # Return success only if the requested server completes an evaluation.
