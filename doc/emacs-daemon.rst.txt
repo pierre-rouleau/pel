@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-22 16:26:09 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-29 17:01:22 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -28,6 +28,8 @@ Use the following command to get more information about
 the running Emacs daemons:
 
 - lses_ : `list name and sockets of all running Emacs daemons`_.
+
+Use ``ec -l`` to list Emacs clients and opened frames.
 
 The installer normally builds and installs the `C implementation of lses`_.
 If the build fails, it offers the less-powerful `lses shell implementation`_.
@@ -434,6 +436,33 @@ The ec_ command:
           - 2 if the probe fails.
           Errors are printed on stderr.
           Client options and filenames are not accepted in this mode.
+
+    ➨ ec -l|--list [--name=DAEMON-NAME]
+
+          Show frame and connection counts from the queried Emacs server.
+          Then list processes whose command lines contain "emacsclient".
+
+          These counts and the process list measure different things.
+          They do not have a one-to-one relationship:
+
+          - A frame can remain after its emacsclient process exits, for
+            example when the client uses --no-wait.
+          - An emacsclient process can wait for file editing to finish
+            without creating a new frame.
+          - A server connection is not necessarily a terminal frame.
+          - The process list can include clients for other Emacs servers
+            or users, subject to process visibility and permissions.
+          - Command-line matching can include unrelated processes whose
+            arguments contain "emacsclient".
+          - Frames, connections, and processes can change between queries.
+
+          A discrepancy can therefore occur during normal operation.
+          Hung or orphaned clients are also possible, but a discrepancy
+          alone does not establish either condition.
+          Matching counts do not establish that all clients work correctly.
+
+          When PEL is available, the command prints more information about
+          the client processes and frames.
 
     A responding server can belong to a daemon or an ordinary Emacs
     session that enabled server-start.

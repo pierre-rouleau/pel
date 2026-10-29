@@ -52,6 +52,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   - All 3 commands have better help and have more flexible command line parsing logic.
     They can be used to pass arguments to the Emacs and emacsclient programs used,
     including requesting their help.
+  - The *ec -l* command lists running Emacs daemon clients and frames.
   - The 3 commands remember their launching command line inside the
     *PEL_EMACS_LAUNCHER_COMMAND* environment variable allowing the new
     *pel-emacs-version-info* command, bound to ~<f11> ? e V~ to display the typed
