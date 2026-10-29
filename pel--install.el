@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-18 11:46:57 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-28 21:55:54 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -1100,6 +1100,7 @@ optional argument APPEND is non-nil, in which case it is added at the end."
     calc
     cwl
     dart      ; dart-mode and dart-ts-mode ; differ; explicit logic is needed.
+    dbml      ; uses a poor indentation mechanism: non-electric.
     go
     go-dot-mod
     go-mod                              ; for go-mod-ts-mode

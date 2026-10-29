@@ -149,7 +149,8 @@
 (require 'pel--indent)  ; use: `pel-indentation-width-control-variables',
 ;;                      ;      `pel-indentation-other-control-variables',
 ;;                      ;      `pel-tab-width-control-variables'.
-(require 'pel--macros)  ; use: pel-setq, pel-seq-default
+(eval-when-compile
+  (require 'pel--macros))  ; use: `pel-setq', `pel-seq-default'
 (require 'pel--keys-macros) ; use: `pel-config-major-mode'
 ;;                          ;      `pel--set-indent-control-variables'.
 (require 'pel--options) ; use: all `pel-use-...' variables identify what to use.
@@ -2464,6 +2465,7 @@ can't bind negative-argument to C-_ and M-_"
 ;;  C-u     - Raku
 ;;  M-a     - AsciiDoc
 ;;  M-c     - Common Workspace Language (CWL)
+;;  M-d     - DBML
 ;;  M-f     - Factor
 ;;  M-g     - GraphViz Dot
 ;;  M-k     - Kconfig
@@ -6873,6 +6875,49 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
 ;; csv-mode
 (when pel-use-csv
   (pel-ensure-package-elpa csv-mode from: gnu))
+
+(when pel-use-dbml-mode
+  (pel-setup-major-mode dbml :no-ts
+    ;; ----
+    at-init:
+    (pel-ensure-package-elpa dbml-mode from: melpa)
+    (pel-set-auto-mode dbml-mode for: ".dbml")
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension '(".dbml")))
+    (define-pel-global-prefix pel:for-dbml (kbd "<f11> SPC M-d"))
+
+    ;; [:todo 2026-10-28, by Pierre Rouleau: Add iMenu/Speedbar support]
+
+    ;; ----
+    when-buffer-opens:
+    ;; dbml-mode does not define anything for indentation but derives
+    ;; from prog-mode.  It uses a poor indentation mechanism without
+    ;; electric behaviour based on `tab-to-tab-stop' and `tab-width'.
+    ;; [:todo 2026-10-28, by Pierre Rouleau: Add a better indentation
+    ;; mechanism to dbml-mode or a fork of it. That mode is too basic.]
+    (pel-setq-local-unless-filevar tab-width pel-dbml-indent-width)
+
+    ;; ----
+    after-feature-load:
+    ;; dbml-mode does not yet support comments: add comment
+    ;; support inside it until it accepts my modifications.
+    ;; Comments are like C++ style // comments.
+    (add-hook 'dbml-mode-hook
+              (lambda ()
+                ;; Configure comment insertion commands (like M-;)
+                (setq-local comment-start "// ")
+                (setq-local comment-end "")
+
+                ;; Tell the syntax engine how to visually parse the slashes
+                ;; . : syntax class: punctuation
+                ;;   : separator
+                ;; 1 : flag: first character of a two-character comment-start sequence.
+                ;; 2 : flag: second character of a two-character comment-start sequence.
+                ;; 4 : flag: style B comment
+                (modify-syntax-entry ?/ ". 124" (syntax-table))
+                ;; it's a comment that ends at end of line.
+                (modify-syntax-entry ?\n ">" (syntax-table))))))
+
 ;; ---------------------------------------------------------------------------
 ;;* Markup Language Support
 ;;  =======================
@@ -10152,13 +10197,17 @@ See `flyspell-auto-correct-previous-word' for more info."
 (define-pel-global-prefix pel:project (kbd "<f11> p"))
 
 ;; If the user wants to get the latest project.el from Gnu Elpa then install
-;; it; it will override Emacs project.el builtin.  That's a good way to get
-;; the latest project.el when not using the latest version of Emacs.
+;; it.  It will override Emacs project.el builtin.  That's a good way to get
+;; the latest project.el when not using the latest version of Emacs ≥ 29.1.
+;; You must, however, disable the other project.el[cn]
 (when pel-use-project-from-elpa
   (unless (pel-in-fast-startup-p)
-    (defvar package-install-upgrade-built-in)
-    (let ((package-install-upgrade-built-in t))
-      (package-install 'project))))
+    (require 'package)
+    (when (fboundp 'package-installed-p)
+      (unless (package-installed-p 'project)
+        (defvar package-install-upgrade-built-in)
+        (let ((package-install-upgrade-built-in t))
+          (package-install 'project))))))
 
 (pel-eval-after-load project
   (when (boundp 'project-prefix-map)

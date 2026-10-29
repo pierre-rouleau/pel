@@ -2,7 +2,7 @@
 
 ;; Created   : Tuesday, September  1 2020.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-27 14:08:25 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-10-28 15:01:02 EDT, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -842,58 +842,49 @@ stored inside the doc/pdf directory.")
                                                                        minibuffer
                                                                        smex))
 
-    ([f11 27 ?d]            "mode-line"        pel-pkg-for-modeline   (display-time
-                                                                       mode-line
-                                                                       mlscroll))
     (,(kbd "<f11> M-d")     "mode-line"        pel-pkg-for-modeline   (display-time
                                                                        mode-line
                                                                        mlscroll))
+    ([f11 27 ?d]            "mode-line"        pel-pkg-for-modeline   (display-time
+                                                                       mode-line
+                                                                       mlscroll))
+
+
+    (,(kbd "<f11> SPC M-a") "asciidoc"         pel-pkg-for-asciidoc    adoc)
+    ([f11 32 27 ?a]         "asciidoc"         pel-pkg-for-asciidoc    adoc)
+    (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl        ,pel--yaml-groups)
+    ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl        ,pel--yaml-groups)
+    (,(kbd "<f11> SPC M-d") "dbml"             pel-pkg-for-dbml        dbml)
+    ([f11 32 27 ?d]         "dbml"             pel-pkg-for-dbml        dbml)
 
     (,(kbd "<f11> SPC M-g") "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
     ([f11 32 27 ?g]         "graphviz-dot"     pel-pkg-for-graphviz-dot graphviz)
 
-    (,(kbd "<f11> SPC M-a") "asciidoc"         pel-pkg-for-asciidoc    adoc)
-    ([f11 32 27 ?a]         "asciidoc"         pel-pkg-for-asciidoc    adoc)
+    (,(kbd "<f11> SPC M-l") "outline"          pel-pkg-for-outline     outlines)
+    ([f11 32 27 ?l]         "outline"          pel-pkg-for-outline     outlines)
+    (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
+    ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
+    (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    (org appt))
+    ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    (org appt))
+    (,(kbd "<f11> SPC M-p") "pl-pascal"        pel-pkg-for-pascal      pascal)
+    ([f11 32 27 ?p]         "pl-pascal"        pel-pkg-for-pascal      pascal)
+    (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-rst         rst)
+    ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-rst         rst)
+    (,(kbd "<f11> SPC M-u") "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    ([f11 32 27 ?u]         "plantuml"         pel-pkg-for-plantuml    plantuml-mode)
+    (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml       ,pel--yaml-groups)
+    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml       ,pel--yaml-groups)
+    (,(kbd "<f11> SPC M-z") "pl-zig"           pel-pkg-for-zig        ,pel--zig-groups)
+    ([f11 32 27 ?z]         "pl-zig"           pel-pkg-for-zig        ,pel--zig-groups)
 
     ;; (,(kbd "<f11> SPC M-O") "creole"         pel-pkg-for-creole)
     ;; ([f11 32 27 ?O]         "creole"         pel-pkg-for-creole)
-
-    (,(kbd "<f11> SPC M-r") "mode-rst"         pel-pkg-for-rst        rst)
-    ([f11 32 27 ?r]         "mode-rst"         pel-pkg-for-rst        rst)
-    (,(kbd "<f11> SPC M-m") "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
-    ([f11 32 27 ?m]         "mode-markdown"    pel-pkg-for-markdown   ,pel--markdown-groups)
-
-    (,(kbd "<f11> SPC M-l") "outline"          pel-pkg-for-outline     outlines)
-    ([f11 32 27 ?l]         "outline"          pel-pkg-for-outline     outlines)
-
-    (,(kbd "<f11> SPC M-o") "mode-org-mode"    pel-pkg-for-org-mode    (org appt))
-    ([f11 32 27 ?o]         "mode-org-mode"    pel-pkg-for-org-mode    (org appt))
-
-    (,(kbd "<f11> SPC M-p") "pl-pascal" pel-pkg-for-pascal    pascal)
-    ([f11 32 27 ?p]         "pl-pascal" pel-pkg-for-pascal    pascal)
-
-    (,(kbd "<f11> SPC M-u") "plantuml" pel-pkg-for-plantuml    plantuml-mode)
-    ([f11 32 27 ?u]         "plantuml" pel-pkg-for-plantuml    plantuml-mode)
-
-    (,(kbd "<f11> SPC M-z") "pl-zig" pel-pkg-for-zig    ,pel--zig-groups)
-    ([f11 32 27 ?z]         "pl-zig" pel-pkg-for-zig    ,pel--zig-groups)
-
-    (,(kbd "<f11> SPC M-M") "mscgen" pel-pkg-for-mscgen    mscgen)
-    ([f11 32 27 ?M]         "mscgen" pel-pkg-for-mscgen    mscgen)
-
-    (,(kbd "<f11> SPC M-R") "rpm"       pel-pkg-for-rpm    rpm-spec)
-    ([f11 32 27 ?R]         "rpm"       pel-pkg-for-rpm    rpm-spec)
-
-    ;; (,(kbd "<f11> SPC M-S") "rpm"       pel-pkg-for-rpm    rpm-spec)
-    ;; ([f11 32 27 ?S]         "rpm"       pel-pkg-for-rpm    rpm-spec)
-
-    (,(kbd "<f11> SPC M-c") "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
-    ([f11 32 27 ?c]         "cwl"              pel-pkg-for-cwl     ,pel--yaml-groups)
-    (,(kbd "<f11> SPC M-y") "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
-    ([f11 32 27 ?y]         "yaml"             pel-pkg-for-yaml    ,pel--yaml-groups)
-
-    (,(kbd "<f11> SPC M-Y") "yang"      pel-pkg-for-spec-definition)
-    ([f11 32 27 ?Y]         "yang"      pel-pkg-for-spec-definition)))
+    (,(kbd "<f11> SPC M-M") "mscgen"           pel-pkg-for-mscgen     mscgen)
+    ([f11 32 27 ?M]         "mscgen"           pel-pkg-for-mscgen     mscgen)
+    (,(kbd "<f11> SPC M-R") "rpm"              pel-pkg-for-rpm        rpm-spec)
+    ([f11 32 27 ?R]         "rpm"              pel-pkg-for-rpm        rpm-spec)
+    (,(kbd "<f11> SPC M-Y") "yang"             pel-pkg-for-spec-definition)
+    ([f11 32 27 ?Y]         "yang"             pel-pkg-for-spec-definition)))
 
 (defconst pel--prefix-to-topic-alist
   (append pel---prefix-to-topic-alist-1 pel---prefix-to-topic-alist-2))
@@ -924,7 +915,7 @@ stored inside the doc/pdf directory.")
   '(("Custom"              [f11 f2])
     ("ada"                 [f11 32 ?A])
     ("ada-ts"              [f11 32 ?A])
-    ("adoc"                [f11 32 27 ?a])
+    ("adoc"                [f11 32 27 ?a]) ; asciidoc
     ("a68"                 [f11 32 ?8])
     ("apples"              [f11 32 ?a])
     ("arc"                 [f11 32 1])
@@ -949,6 +940,7 @@ stored inside the doc/pdf directory.")
     ("ediff"               [f11 32 32 ?d ?e])
     ("smerge"              [f11 32 32 ?d ?s])
     ;;
+    ("dbml"                [f11 32 27 ?d])
     ("dired"               [dired])
     ("dired-sidebar"       [dired])
     ("eiffel"              [f11 32 5])

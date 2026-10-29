@@ -117,6 +117,9 @@
 ;;         - pel-pkg-for-language-server
 ;;         - pel-pkg-generic-code-style
 ;;           - pel-sh-script-skeleton-control
+;;       - pel-pkg-for-database-description-languages
+;;         - pel-pkg-for-dbml
+;;         - pel-pkg-for-sql
 ;;       - pel-pkg-for-hardware-description-languages
 ;;         - pel-use-verilog
 ;;         - pel-use-vhdl
@@ -6059,6 +6062,128 @@ Extract the list of DEV-PROJECT.SETTING from a project with
 `pel-dev-project.settings', then pass one of its elements as
 DEV-PROJECT.SETTING."
   `(caddr (cdddr ,dev-project.setting)))
+
+;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(defgroup pel-pkg-for-database-description-languages nil
+  "PEL customization for hardware description languages."
+  :group 'pel-pkg-for-programming-languages)
+
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; DBML Support
+;; ------------
+(defgroup pel-pkg-for-dbml nil
+  "DBML - Database Markup Language support."
+  :group 'pel-pkg-for-database-description-languages)
+
+(defcustom pel-use-dbml-mode nil
+  "Whether PEL provides support for DBML.
+
+Requires Emacs 27.1 or later.
+Automatically de-activated on earlier Emacs versions."
+  :group 'pel-pkg-for-dbml
+  :link '(url-link :tag "dbml-mode on GitHub"
+                   "https://github.com/KeyWeeUsr/dbml-mode")
+  :link `(url-link :tag "DBML PDF" ,(pel-pdf-file-url "dbml"))
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-dbml-activates-minor-modes nil
+  "List of *local* minor-modes automatically activated for DBML buffers.
+Enter *local* minor-mode activating function symbols.
+Do not enter lambda expressions."
+  :group 'pel-pkg-for-dbml
+  :type '(repeat function))
+
+(defcustom pel-dbml-indent-width 2
+  "Indentation width for dbml buffers."
+  :group 'pel-pkg-for-dbml
+  :type 'integer
+  :safe 'pel-indent-valid-p)
+
+;; (defcustom pel-dbml-tab-width 2
+;;   "Column width display rendering of hard tab for dbml buffers.
+;;
+;; PEL stores this in `tab-width' when opening dbml buffers.
+;;
+;; This does *NOT* control the indentation in dbml files, it only controls
+;; the column width display rendering of hard tabs in buffers and tab stop
+;; positions for commands such as `tab-to-tab-stop'."
+;;   :group 'pel-pkg-for-dbml
+;;   :type 'integer
+;;   :safe 'pel-indent-valid-p)
+
+;; (defcustom pel-dbml-use-tabs nil
+;;   "Value of `indent-tabs-mode' for editing dbml files.
+;; - If set to nil: only spaces are used for indentation.
+;; - If set to t: hard tabs are used when possible."
+;;   :group 'pel-pkg-for-dbml
+;;   :type 'boolean
+;;   :safe #'booleanp)
+
+;; -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
+;; SQL Language Support
+;; --------------------
+(defgroup  pel-pkg-for-sql nil
+  "PEL SQL Language support."
+  :group 'pel-pkg-for-database-description-languages)
+
+(defgroup pel-pkg-for-sql-emacs-lisp nil
+  "PEL SLQ Emacs Lisp Library and Tool support."
+  :group 'pel-pkg-for-sql
+  :group 'pel-pkg-for-emacs-lisp)
+
+(defcustom pel-use-emacsql nil
+  "Whether PEL supports the emacsql package."
+  :link '(url-link :tag "emacsql @ GitHub"
+                   "https://github.com/magit/emacsql")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-closql nil
+  "Whether PEL supports the closql package."
+  :link '(url-link :tag "closql @ GitHub"
+                   "https://github.com/magit/closql")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-closql (setq pel-use-emacsql t))
+
+(defcustom pel-use-emacs-db nil
+  "Whether PEL supports the emacs-db package."
+  :link '(url-link :tag "emacs-db @ GitHub"
+                   "https://github.com/nicferrier/emacs-db")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(defcustom pel-use-db-pg nil
+  "Whether PEL supports the db-pg package."
+  :link '(url-link :tag "db-pg @ GitHub"
+                   "https://github.com/nicferrier/emacs-db-pg")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-db-pg (setq pel-use-emacs-db t))
+
+(defcustom pel-use-pg nil
+  "Whether PEL supports the pg package.
+Emacs Lisp network-level interface to the PostgreSQL RDBMS."
+  :link '(url-link :tag "pg @ GitHub"
+                   "https://github.com/emarsden/pg-el")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+
+(defcustom pel-use-pgmacs nil
+  "Whether PEL supports the pgmacs package.
+Emacs editing of PostgreSQL database."
+  :link '(url-link :tag "pg @ GitHub"
+                   "https://github.com/emarsden/pgmacs")
+  :group 'pel-pkg-for-sql-emacs-lisp
+  :type 'boolean
+  :safe #'booleanp)
+(when pel-use-pgmacs (setq pel-use-pg t))
+(pel-put pel-use-pgmacs :requires 'pel-use-quelpa)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (defgroup pel-pkg-for-hardware-description-languages nil
@@ -13616,71 +13741,6 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   :safe #'booleanp)
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;; SQL Language Support
-;; --------------------
-(defgroup  pel-pkg-for-sql nil
-  "PEL SQL Language support."
-  :group 'pel-pkg-for-software-programming-languages)
-
-(defgroup pel-pkg-for-sql-emacs-lisp nil
-  "PEL SLQ Emacs Lisp Library and Tool support."
-  :group 'pel-pkg-for-sql
-  :group 'pel-pkg-for-emacs-lisp)
-
-(defcustom pel-use-emacsql nil
-  "Whether PEL supports the emacsql package."
-  :link '(url-link :tag "emacsql @ GitHub"
-                   "https://github.com/magit/emacsql")
-  :group 'pel-pkg-for-sql-emacs-lisp
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-closql nil
-  "Whether PEL supports the closql package."
-  :link '(url-link :tag "closql @ GitHub"
-                   "https://github.com/magit/closql")
-  :group 'pel-pkg-for-sql-emacs-lisp
-  :type 'boolean
-  :safe #'booleanp)
-(when pel-use-closql (setq pel-use-emacsql t))
-
-(defcustom pel-use-emacs-db nil
-  "Whether PEL supports the emacs-db package."
-  :link '(url-link :tag "emacs-db @ GitHub"
-                   "https://github.com/nicferrier/emacs-db")
-  :group 'pel-pkg-for-sql-emacs-lisp
-  :type 'boolean
-  :safe #'booleanp)
-(defcustom pel-use-db-pg nil
-  "Whether PEL supports the db-pg package."
-  :link '(url-link :tag "db-pg @ GitHub"
-                   "https://github.com/nicferrier/emacs-db-pg")
-  :group 'pel-pkg-for-sql-emacs-lisp
-  :type 'boolean
-  :safe #'booleanp)
-(when pel-use-db-pg (setq pel-use-emacs-db t))
-
-(defcustom pel-use-pg nil
-  "Whether PEL supports the pg package.
-Emacs Lisp network-level interface to the PostgreSQL RDBMS."
-  :link '(url-link :tag "pg @ GitHub"
-                   "https://github.com/emarsden/pg-el")
-  :group 'pel-pkg-for-sql-emacs-lisp
-  :type 'boolean
-  :safe #'booleanp)
-
-(defcustom pel-use-pgmacs nil
-  "Whether PEL supports the pgmacs package.
-Emacs editing of PostgreSQL database."
-  :link '(url-link :tag "pg @ GitHub"
-                   "https://github.com/emarsden/pgmacs")
-  :group 'pel-pkg-for-sql-emacs-lisp
-  :type 'boolean
-  :safe #'booleanp)
-(when pel-use-pgmacs (setq pel-use-pg t))
-(pel-put pel-use-pgmacs :requires 'pel-use-quelpa)
-
-;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;; Tcl  Language Support
 ;; ---------------------
 (defgroup pel-pkg-for-tcl nil
@@ -13989,7 +14049,8 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
   "Control whether PEL uses GNU Elpa project.el instead of Emacs built-in.
 
 The version of project.el on Elpa may be more recent than the version built-in
-Emacs, if you want to install the version from Elpa set this to t."
+Emacs, if you want to install the version from Elpa set this to t and disable
+the other project.el file and its compiled versions."
   :group 'pel-pkg-for-project-mng
   :type 'boolean
   :safe #'booleanp)
@@ -16437,7 +16498,8 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
   (setq pel-use-vterm nil))
 (when (version< emacs-version "27.1")
   (setq pel-use-tzc nil)
-  (setq pel-use-csv nil))
+  (setq pel-use-csv nil)
+  (setq pel-use-dbml-mode nil))
 (when (version< emacs-version "28.1")
   (setq pel-use-go-translate nil)
   (setq pel-use-simple-undo nil)
