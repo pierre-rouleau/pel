@@ -317,19 +317,47 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
       (declare-function debbugs-browse-url "debugs-browse")
       (debbugs-browse-url url))))
 
-(defun pel-daemon-client-frame-count ()
-  "Return the number of Emacs daemon client frames."
-  (require 'cl-seq)    ; use `cl-remove-if-not'
-  (length
-   (cl-remove-if-not
-    (lambda (f)
-      (and (not (eq f (selected-frame)))
-           (not (string-prefix-p "terminal"
-                                 (or (frame-parameter f 'display)
-                                     "")))))
-    (frame-list))))
-
 ;; ---------------------------------------------------------------------------
+
+(defun pel-daemon-client-count (gui-p)
+  "Return the number of connected frame-associated clients.
+
+If GUI-P is non-nil, count client processes associated with graphical
+frames.  Otherwise, count client processes associated with text-terminal
+frames.
+
+Inspect the server in this Emacs instance.  Count each live client
+connection once, even when several frames share that connection.
+
+Exclude connections without an associated frame.  Also exclude
+frames whose `client' parameter is `nowait', because that value
+does not identify a client connection."
+  (require 'server)
+  (let (clients)
+    (dolist (frame (frame-list) (length clients))
+      (let ((client (frame-parameter frame 'client)))
+        (when (and (if gui-p
+                       (display-graphic-p frame)
+                     (eq (framep frame) t))
+                   (processp client)
+                   (process-live-p client)
+                   (boundp 'server-clients)
+                   (memq client server-clients)
+                   (not (memq client clients)))
+          (push client clients))))))
+
+(defun pel-daemon-graphical-frame-count ()
+  "Return the number of graphical frames in this Emacs instance.
+Include the selected graphical frame.
+Do not require a live emacsclient connection.
+
+Count all graphical frames, including frames created from Lisp
+and child frames.  This is not a client-process count."
+  (let ((count 0))
+    (dolist (frame (frame-list) count)
+      (when (display-graphic-p frame)
+        (setq count (1+ count))))))
+
 
 (defun pel-emacs-version-info (&optional append)
   "Display information about currently running Emacs."
@@ -398,18 +426,17 @@ Open it in Gnus buffer unless IN-BROWSER set to open in system browser."
                             (pel-yes-no-string (daemonp)))
      ;;
      (when (daemonp)
-       (when (boundp 'server-clients)
-         (pel-insert-value-info "# of active clients process" (if server-clients
-                                                                  (number-to-string
-                                                                   (length server-clients))
-                                                                "None"))
-         (pel-insert-value-info "# of Daemon client frames"
-                                (pel-daemon-client-frame-count))
-         (insert "\n\
-- Notes:
+       (pel-insert-value-info "Active terminal client process count"
+                              (pel-daemon-client-count nil))
+       (pel-insert-value-info "Active graphical client process count"
+                              (pel-daemon-client-count t))
+       (pel-insert-value-info "Active graphical client frame count"
+                              (pel-daemon-graphical-frame-count))
+       (pel-insert-value-info "\
+Notes:
   - A GUI client normally does not create a persisting client process.
     It will, however, create a GUI frame.
-  - The counts refer to the currently used Emacs daemon socket.\n"))
+  - The counts refer to the currently used Emacs daemon socket" server-name)
        (let ((cmdline (getenv "PEL_EMACS_LAST_CLIENT_COMMAND")))
          (when (and (stringp cmdline)
                     (not (string-empty-p cmdline)))
