@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-22 16:26:09 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-29 11:11:06 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -28,6 +28,8 @@ Use the following command to get more information about
 the running Emacs daemons:
 
 - lses_ : `list name and sockets of all running Emacs daemons`_.
+
+Use ``ec -l`` to list Emacs clients and opened frames.
 
 The installer normally builds and installs the `C implementation of lses`_.
 If the build fails, it offers the less-powerful `lses shell implementation`_.
@@ -434,6 +436,14 @@ The ec_ command:
           - 2 if the probe fails.
           Errors are printed on stderr.
           Client options and filenames are not accepted in this mode.
+
+    ➨ ec -l|--list [--name=DAEMON-NAME]
+
+          Show a count of the emacsclients currently active and then
+          a list of all existing emacsclient processes.
+          If there is a discrepancy between the count and the list,
+          then some of the emacsclients are not active, either hung
+          or orphaned.
 
     A responding server can belong to a daemon or an ordinary Emacs
     session that enabled server-start.

@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-22 15:51:49 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-29 11:11:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -80,6 +80,14 @@ print_usage()
         Errors are printed on stderr.
         Client options and filenames are not accepted in this mode.
 
+  ➨ %s -l|--list [--name=DAEMON-NAME]
+
+        Show a count of the emacsclients currently active and then
+        a list of all existing emacsclient processes.
+        If there is a discrepancy between the count and the list,
+        then some of the emacsclients are not active, either hung
+        or orphaned.
+
   A responding server can belong to a daemon or an ordinary Emacs
   session that enabled server-start.
   A failed probe does not prove that no daemon process exists.
@@ -141,7 +149,7 @@ print_usage()
 
 " "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
   "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
-  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
+  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
 
     case "${os_name}" in
         Darwin)
@@ -254,7 +262,7 @@ while [ "$ec_args_left" -gt 0 ]; do
             shift
             ;;
 
-        -g|--gui|-d|--start-daemon|-t|--check-daemon)
+        -g|--gui|-d|--start-daemon|-t|--check-daemon|-l|--list)
             # 1. First, check if a op was already set in a previous loop iteration
             if [ -n "$op" ]; then
                 error_printf "Multiple modes specified.\n"
@@ -266,6 +274,7 @@ while [ "$ec_args_left" -gt 0 ]; do
                 -g|--gui)          op="gui" ;;
                 -d|--start-daemon) op="start-daemon" ;;
                 -t|--check-daemon) op="check-daemon" ;;
+                -l|--list)         op="list-clients" ;;
             esac
             shift
             ;;
@@ -297,6 +306,31 @@ while [ "$ec_args_left" -gt 0 ]; do
             ;;
     esac
 done
+
+# ----------------------------------------------------------------------------
+# Process the --list command and exit
+# -----------------------------------
+
+if [ "$op" = "list-clients" ]; then
+    # First print the number of active clients
+    if emacsclient --eval '(- (length server-clients) 1)' >/dev/null 2>&1; then
+        client_count="$(emacsclient --eval '(length (cl-remove-if-not (lambda (f) (and (not (eq f (selected-frame))) (not (string-prefix-p "terminal" (or (frame-parameter f '\''display) ""))))) (frame-list)))')"
+        terminal_client_count="$(emacsclient --eval '(- (length server-clients) 1)')"
+        printf -- "Total number of active Emacs client frames(s): %s\n" "${client_count}"
+        printf -- "Number of terminal clients frame(s)          : %s\n" "${terminal_client_count}"
+        printf -- "Note: The GUI clients processes are transient;\n"
+        printf -- "      They close right after sending a request to open a new frame.\n"
+
+        if ps aux | grep '[e]macsclient' >/dev/null 2>&1; then
+            printf -- "List of emacsclient processes:\n"
+            ps aux | grep '[e]macsclient'
+        fi
+        exit 0
+    else
+        printf -- "No Emacs Daemon appear be running.\n"
+        exit 1
+    fi
+fi
 
 # ----------------------------------------------------------------------------
 # Validate before daemon startup.
@@ -496,6 +530,7 @@ case "${os_name}" in
         ;;
 esac
 
+echo "APP: $app"
 # ----------------------------------------------------------------------------
 
 # Return success only if the requested server completes an evaluation.
