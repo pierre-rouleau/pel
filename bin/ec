@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 12:44:01 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 14:58:50 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -163,8 +163,12 @@ print_usage()
      Short-option bundles and abbreviated long options are not accepted.
      See the emacsclient manual for option meanings.
 
- NOTE: Daemon names accepted by this script must not start with a dash
+ NOTES:
+     - Daemon names accepted by this script must not start with a dash
        character.
+     - %s can start a graphics-capable server even when it cannot start
+       a graphics capable client.  That can occur when executing the command
+       from a SSH connected shell for instance.
 
 " "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
   "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
@@ -187,7 +191,8 @@ print_usage()
        otherwise the default is used.  The default is the macOS Emacs
        application /Applications/Emacs.app.
 
-"
+
+" "${pgm_name}"
         ;;
     Linux)
         printf -- "\
@@ -197,7 +202,7 @@ print_usage()
      option is specified and the emacs-lucid executable file is found
      on the current PATH.  Otherwise, %s defaults to emacs.
 
-" "${pgm_name}"
+"
         ;;
     esac
 }
@@ -767,9 +772,14 @@ else
         # 2. Platform-Specific GUI Validation
         if [ "$(uname)" = "Linux" ]; then
             # Linux-specific check: Can we actively establish a connection to the X11 display?
-            if  [ -z "$DISPLAY" ] || ! xset q > /dev/null 2>&1; then
+            if  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
                 error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs client!\n"
                 exit 1
+            elif command -v xset > /dev/nul 2>&1; then
+                if ! xset q > /dev/null 2>&1; then
+                    error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
+                    exit 1
+		            fi
             fi
         fi
     fi

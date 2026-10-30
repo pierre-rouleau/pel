@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 12:30:28 rouleaup>
+# Time-stamp: <2026-10-30 14:58:53 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -147,6 +147,10 @@ print_usage()
       pre-condition check and execution and Emacs pel-session code both use
       this information to validate and successfully restore an easysession
       session.
+    • %s will exit in error if the environment does not support launching
+      a graphical Emacs, even if the command line does not attempt to open
+      a frame or visit files (like to print Emacs help or evaluate elisp code).
+
 
  DIAGNOSTICS
   %s prints error information on failures. It prints extra details when the
@@ -179,17 +183,17 @@ print_usage()
 
 " "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
   "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" "$pgm_name" \
-  "$pgm_name" "$pgm_name"
+  "$pgm_name" "$pgm_name" "$pgm_name"
 
     if [ "$(uname)" = "Darwin" ]; then
         printf -- "\
 OS NOTES
     • On macOS the graphics version of Emacs is taken from a location
       identified by the following logic:
-      • If PEL_GE_DIR is nonempty and \$PEL_GE_DIR/emacs is executable, use
-        that executable. PEL_GE_DIR identifies its containing directory.
-        Otherwise, use the executable inside /Applications/Emacs.app
-        appropriate for the CPU architecture.
+    • If PEL_GE_DIR is nonempty and \$PEL_GE_DIR/emacs is executable, use
+      that executable. PEL_GE_DIR identifies its containing directory.
+      Otherwise, use the executable inside /Applications/Emacs.app
+      appropriate for the CPU architecture.
 "
     fi
 }
@@ -218,9 +222,10 @@ error_printf() {
     #       arguments use backslash escapes.
     format_str="$1"
     shift
-    printf -- "ERROR: "            >&2
+    printf -- "*** %s: ERROR ***\n" "${pgm_name}" >&2
     # shellcheck disable=SC2059 # The format string *is* the first argument.
     printf -- "$format_str" "$@"   >&2
+    printf -- "*******************\n"           >&2
 }
 
 
@@ -498,7 +503,12 @@ fi
 # ---------------------------------------
 # 1. Catch SSH sessions lacking graphical forwarding early
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ]; then
-    if [ -z "$DISPLAY" ]; then
+    if [ "$(uname)" = "Darwin" ]; then
+        if [ -z "$DISPLAY" ]; then
+            error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs!\n"
+            exit 1
+	      fi
+		elif  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
         error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs!\n"
         exit 1
 	  fi
@@ -506,12 +516,16 @@ fi
 # 2. Platform-Specific GUI Validation
 if [ "$(uname)" = "Linux" ]; then
 		# Linux-specific check: Can we actively establish a connection to the X11 display?
-		if  [ -z "$DISPLAY" ] || ! xset q > /dev/null 2>&1; then
+		if  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
         error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
         exit 1
-		fi
+    elif command -v xset > /dev/nul 2>&1; then
+        if ! xset q > /dev/null 2>&1; then
+            error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
+            exit 1
+		    fi
+    fi
 fi
-
 
 # ----------------------------------------------------------------------------
 # Invoke the Graphical Emacs using the process appropriate to the OS
