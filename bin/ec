@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-29 17:03:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 12:44:01 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -205,6 +205,8 @@ print_usage()
 # ----------------------------------------------------------------------------
 # Error printf
 # ------------
+#
+# error_printf : prints an error message.
 
 error_printf() {
     # Forward the format string and all arguments safely
@@ -751,6 +753,27 @@ else
             fi
             ;;
     esac
+    # ----------------------------------------------------------------------------
+    # Check ability to launch graphical Emacs client if requested
+    # -----------------------------------------------------------
+    if [ "${use_gui}" = "true" ]; then
+        # 1. Catch SSH sessions lacking graphical forwarding early
+        if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ]; then
+            if [ -z "$DISPLAY" ]; then
+                error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs client!\n"
+                exit 1
+            fi
+        fi
+        # 2. Platform-Specific GUI Validation
+        if [ "$(uname)" = "Linux" ]; then
+            # Linux-specific check: Can we actively establish a connection to the X11 display?
+            if  [ -z "$DISPLAY" ] || ! xset q > /dev/null 2>&1; then
+                error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs client!\n"
+                exit 1
+            fi
+        fi
+    fi
+
     # ----------------------------------------------------------------------------
     # Start the client if requested
     #

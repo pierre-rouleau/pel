@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-21 08:55:53 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 12:30:28 rouleaup>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -203,6 +203,13 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 # ----------------------------------------------------------------------------
+# Error, diagnostics and debug printing
+# -------------------------------------
+#
+# error_printf : prints an error message.
+# diag_printf  : prints a normal message only when PEL_DIAG envvar is set but also set any_diag variable to yes.
+# diag_printf  : prints a normal message only when PEL_DIAG envvar is set.  Use it for debugging.
+
 # any_error=no
 error_printf() {
     # any_error=yes
@@ -216,6 +223,36 @@ error_printf() {
     printf -- "$format_str" "$@"   >&2
 }
 
+
+any_diag=no
+diag_printf() {
+    any_diag=yes
+    case "$PEL_DIAG" in
+        1)
+            # Forward the format string and all arguments safely
+            # Note: use %b in format string instead of %s if the
+            #       arguments use backslash escapes.
+            format_str="$1"
+            shift
+            # shellcheck disable=SC2059 # The format string *is* the first argument.
+            printf "$format_str" "$@"
+            ;;
+    esac
+}
+
+debug_printf() {
+    case "$PEL_DIAG" in
+        1)
+            # Forward the format string and all arguments safely
+            # Note: use %b in format string instead of %s if the
+            #       arguments use backslash escapes.
+            format_str="$1"
+            shift
+            # shellcheck disable=SC2059 # The format string *is* the first argument.
+            printf "$format_str" "$@"
+            ;;
+    esac
+}
 
 # ----------------------------------------------------------------------------
 # Identify and check Emacs process availability.
@@ -270,30 +307,12 @@ case $(uname) in
         ;;
 esac
 
+debug_printf "Using command: %s\n" "$ge_process"
+
 if [ -z "$ge_process" ]; then
     printf -- "ERROR: no appropriate Emacs executable found!\n" >&2
     exit 1
 fi
-
-# ----------------------------------------------------------------------------
-# Diagnostic printf
-# -----------------
-
-any_diag=no
-diag_printf() {
-    any_diag=yes
-    case "$PEL_DIAG" in
-        1)
-            # Forward the format string and all arguments safely
-            # Note: use %b in format string instead of %s if the
-            #       arguments use backslash escapes.
-            format_str="$1"
-            shift
-            # shellcheck disable=SC2059 # The format string *is* the first argument.
-            printf "$format_str" "$@"
-            ;;
-    esac
-}
 
 # ----------------------------------------------------------------------------
 # Detect if an auto EasySession launch is requested
@@ -352,10 +371,9 @@ while [ $# -gt 0 ]; do
 done
 
 # If diagnostics is active print info (but don't count them as errors)
-if [ "$PEL_DIAG" = "1" ]; then
-    printf "Using: session name: '%s'\n" "$session_name"
-    printf "       other arg   : %s\n"   "$@"
-fi
+debug_printf "Using: session name: '%s'\n" "$session_name"
+debug_printf "       other arg   : %s\n"   "$@"
+debug_printf "       with_s_flag : %s\n"   "$with_s_flag"
 
 if [ "$with_s_flag" -eq 1 ]; then
     # User wants to auto-load an easysession session.
@@ -399,6 +417,7 @@ if [ "$with_s_flag" -eq 1 ]; then
             ;;
 
         emacs)
+            debug_printf "before launching emacs -Q\n"
             if EMACS_DIR=$(emacs -Q --batch --eval="(princ (expand-file-name (directory-file-name user-emacs-directory)))") 2>/dev/null; then
                 EASYSESSION_SESSION_DIR="$EMACS_DIR/easysession"
             else
@@ -468,10 +487,31 @@ if [ "$with_s_flag" -eq 1 ]; then
 else
     # When ge is invoked without the -s or --session option, ensure that
     # PEL_SESSION is empty to prevent Emacs from auto-loading an easysession.
+    debug_printf "ge is invoked without the -s or --session option.\n"
     if [ -n "$PEL_SESSION" ]; then
         unset -v PEL_SESSION
     fi
 fi
+
+# ----------------------------------------------------------------------------
+# Check ability to launch graphical Emacs
+# ---------------------------------------
+# 1. Catch SSH sessions lacking graphical forwarding early
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ]; then
+    if [ -z "$DISPLAY" ]; then
+        error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs!\n"
+        exit 1
+	  fi
+fi
+# 2. Platform-Specific GUI Validation
+if [ "$(uname)" = "Linux" ]; then
+		# Linux-specific check: Can we actively establish a connection to the X11 display?
+		if  [ -z "$DISPLAY" ] || ! xset q > /dev/null 2>&1; then
+        error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
+        exit 1
+		fi
+fi
+
 
 # ----------------------------------------------------------------------------
 # Invoke the Graphical Emacs using the process appropriate to the OS
@@ -496,6 +536,7 @@ fi
 # See: https://emacs.stackexchange.com/questions/66268/how-to-set-package-user-dir-with-emacs-27-with-package-quickstart-and-distinguis
 #
 
+debug_printf "Before the swith: ge_process: %s\n" "$ge_process"
 case "$ge_process" in
     PEL_GE_DIR/emacs)
         export PEL_EMACS_IN_GRAPHICS=1
@@ -564,6 +605,7 @@ case "$ge_process" in
         ;;
 
     emacs)
+        debug_printf "Before starting emacs. DISPLAY is [%s]\n" "$DISPLAY"
         # Under Linux, invoke emacs passing the current working directory
         # setting the PEL_EMACS_IN_GRAPHICS environment variable to inform
         # PEL about the graphics mode.
