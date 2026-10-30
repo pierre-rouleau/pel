@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-29 17:01:22 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-30 09:48:35 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -37,6 +37,14 @@ If the build fails, it offers the less-powerful `lses shell implementation`_.
 PEL also provides an Emacs launcher installer script that installs these
 commands in your environment.  See the `quick installation script`_ page for
 more information.
+
+**Caution: When Using Multiple Emacs Programs**
+
+When using different version of Emacs for the text/TTY and graphics mode both
+instances of Emacs must use the **same major version**, otherwise the byte
+compiled files will only be compatible with the version used to
+byte-compile the Emacs Lisp files.  Using Emacs programs that have different
+minor versions is normally OK.
 
 **Test Environment:**
 
