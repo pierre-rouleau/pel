@@ -15,7 +15,7 @@ PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
   to save.  You can save all, some or none and then proceed with the
   compilation.  Using this new macro it becomes possible to compile a C file
   without being prompted to save documentation files for example.
-  - The compilation-mode and comint-mode buffers provide the following ~<f12>`~ key sequences:
+  - The compilation-mode and comint-mode buffers provide the following ~<f12>~ key sequences:
     - ~<f12> <f1>~: open the [[https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/compilation-mode.pdf][PEL ⅀ Compilation Mode PDF]].
     - ~<f12> <f2>~: open a help-mode buffer describing how to use the specialized ibuffer mode
       to select which modified buffer to save before executing the compilation or analysis command
