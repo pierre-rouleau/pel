@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-29 17:03:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 15:09:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -163,12 +163,16 @@ print_usage()
      Short-option bundles and abbreviated long options are not accepted.
      See the emacsclient manual for option meanings.
 
- NOTE: Daemon names accepted by this script must not start with a dash
+ NOTES:
+     - Daemon names accepted by this script must not start with a dash
        character.
+     - %s can start a graphics-capable server even when it cannot start
+       a graphics capable client.  That can occur when executing the command
+       from a SSH connected shell for instance.
 
 " "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
   "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
-  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
+  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
 
     case "${os_name}" in
         Darwin)
@@ -187,6 +191,7 @@ print_usage()
        otherwise the default is used.  The default is the macOS Emacs
        application /Applications/Emacs.app.
 
+
 "
         ;;
     Linux)
@@ -197,7 +202,7 @@ print_usage()
      option is specified and the emacs-lucid executable file is found
      on the current PATH.  Otherwise, %s defaults to emacs.
 
-" "${pgm_name}"
+"  "${pgm_name}"
         ;;
     esac
 }
@@ -205,6 +210,8 @@ print_usage()
 # ----------------------------------------------------------------------------
 # Error printf
 # ------------
+#
+# error_printf : prints an error message.
 
 error_printf() {
     # Forward the format string and all arguments safely
@@ -619,6 +626,7 @@ The Emacs server on the socket [%s] did not respond successfully.\n" "${daemon_n
 
     # grep with an expression that will not match the grep command line such
     # that the grep process won't show up in the output.
+    #shellcheck disable=SC2009 # pgrep does not display enough info; use ps.
     if ps aux | grep '[e]macsclient' >/dev/null 2>&1; then
         printf -- "Matching emacsclient processes (not filtered by socket):\n"
         ps aux | grep '[e]macsclient'
@@ -751,6 +759,32 @@ else
             fi
             ;;
     esac
+    # ----------------------------------------------------------------------------
+    # Check ability to launch graphical Emacs client if requested
+    # -----------------------------------------------------------
+    if [ "${use_gui}" = "true" ]; then
+        # 1. Catch SSH sessions lacking graphical forwarding early
+        if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ]; then
+            if [ -z "$DISPLAY" ]; then
+                error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs client!\n"
+                exit 1
+            fi
+        fi
+        # 2. Platform-Specific GUI Validation
+        if [ "$(uname)" = "Linux" ]; then
+            # Linux-specific check: Can we actively establish a connection to the X11 display?
+            if  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
+                error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs client!\n"
+                exit 1
+            elif command -v xset > /dev/null 2>&1; then
+                if ! xset q > /dev/null 2>&1; then
+                    error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
+                    exit 1
+		            fi
+            fi
+        fi
+    fi
+
     # ----------------------------------------------------------------------------
     # Start the client if requested
     #
