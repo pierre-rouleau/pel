@@ -4,7 +4,7 @@
 # Purpose   : Launch an independent GUI Emacs process.  Supports macOS and Linux.
 # Created   : Tuesday, August  3 2021.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 15:09:29 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 15:24:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -505,11 +505,11 @@ fi
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ]; then
     if [ "$(uname)" = "Darwin" ]; then
         if [ -z "$DISPLAY" ]; then
-            error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs!\n"
+            error_printf "Connected via SSH without X11 forwarding.\n Cannot launch graphical Emacs!\n"
             exit 1
 	      fi
 		elif  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-        error_printf "Connected via SSH without X11 forwarding. Cannot launch graphical Emacs!\n"
+        error_printf "Connected via SSH without X11/Wayland forwarding.\n Cannot launch graphical Emacs!\n"
         exit 1
 	  fi
 fi
@@ -517,11 +517,11 @@ fi
 if [ "$(uname)" = "Linux" ]; then
 		# Linux-specific check: Can we actively establish a connection to the X11 display?
 		if  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-        error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
+        error_printf "Linux shell does not support X11/Wayland forwarding.\n Cannot launch graphical Emacs!\n"
         exit 1
     elif command -v xset > /dev/null 2>&1; then
         if ! xset q > /dev/null 2>&1; then
-            error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
+            error_printf "Linux shell does not support X11/Wayland forwarding.\n Cannot launch graphical Emacs!\n"
             exit 1
 		    fi
     fi
