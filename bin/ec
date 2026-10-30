@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 14:58:50 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-30 15:09:12 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -172,7 +172,7 @@ print_usage()
 
 " "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
   "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
-  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
+  "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}"
 
     case "${os_name}" in
         Darwin)
@@ -192,7 +192,7 @@ print_usage()
        application /Applications/Emacs.app.
 
 
-" "${pgm_name}"
+"
         ;;
     Linux)
         printf -- "\
@@ -202,7 +202,7 @@ print_usage()
      option is specified and the emacs-lucid executable file is found
      on the current PATH.  Otherwise, %s defaults to emacs.
 
-"
+"  "${pgm_name}"
         ;;
     esac
 }
@@ -626,6 +626,7 @@ The Emacs server on the socket [%s] did not respond successfully.\n" "${daemon_n
 
     # grep with an expression that will not match the grep command line such
     # that the grep process won't show up in the output.
+    #shellcheck disable=SC2009 # pgrep does not display enough info; use ps.
     if ps aux | grep '[e]macsclient' >/dev/null 2>&1; then
         printf -- "Matching emacsclient processes (not filtered by socket):\n"
         ps aux | grep '[e]macsclient'
@@ -775,7 +776,7 @@ else
             if  [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
                 error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs client!\n"
                 exit 1
-            elif command -v xset > /dev/nul 2>&1; then
+            elif command -v xset > /dev/null 2>&1; then
                 if ! xset q > /dev/null 2>&1; then
                     error_printf "Linux shell does not support X11 forwarding. Cannot launch graphical Emacs!\n"
                     exit 1
