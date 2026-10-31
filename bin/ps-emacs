@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 13:07:38 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 15:55:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -26,6 +26,7 @@
 #     - lsof
 # wc
 # xargs
+# column (optional: used to align CWD info when present).
 
 # ----------------------------------------------------------------------------
 # Code
@@ -37,8 +38,29 @@ pgm_name="${0##*/}"
 # Prevent cd from printing the directory name to stdout if CDPATH is set
 unset CDPATH
 
-# Resolve the absolute directory path of the script
-PEL_BIN_DIR=$(cd -- "$(dirname -- "$0")" && pwd)
+# Resolve the script target, including chains of file symlinks.
+PEL_BIN_DIR=$(
+    script=$0
+    case "$script" in
+        (*/*) ;;
+        (*) script=$(command -v "$script") || exit 1 ;;
+    esac
+
+    while :; do
+        cd -P -- "$(dirname -- "$script")" || exit 1
+        script="./${script##*/}"
+
+        # The current directory now contains this file or symlink.
+        [ -L "$script" ] || break
+        script=$(readlink "$script") || exit 1
+    done
+
+    pwd -P
+) || {
+    printf '%s\n' "*** Error $pgm_name: cannot resolve script directory" >&2
+    exit 1
+}
+
 
 print_usage()
 {
@@ -125,27 +147,27 @@ esac
 ps_list_emacs()
 {
     if [ "${case_sensitive}" = "yes" ]; then
-        ps-list emacs
+        ${PEL_BIN_DIR}/ps-list emacs
     else
-        ps-list -i emacs
+        ${PEL_BIN_DIR}/ps-list -i emacs
     fi
 }
-
 
 print_emacs_processes()
 {
     # List terminal processes first, then non-terminal processes.
     #
-    # The terminal pipeline selects lines containing " tty" (as used in macOS)
+    # The terminal pipeline tests field 6 (TTY) for "tty" (as used in macOS)
     # or "pts/" (as used in Linux).
-    # - Its command-field filter accepts emacs, emacsclient and emcas-lucid
+    # - Its command-field filter accepts emacs, emacsclient and emacs-lucid
     #   with an optional directory path and an initial lowercase or uppercase E.
     #   It excludes other command names, such as ps-emacs and hexl.
     #
     # When GNU AWK is available, the formatter applies an additional command
     # filter, calls pidcwd, and appends the "▶︎▶︎▶︎" marker and CWD result.
-    # Then column uses the marker as a separator to align the CWD information.
-    # The non-terminal pipeline currently bypasses the formatter and column.
+    # If column is available, use the marker to align the CWD information.
+    # Otherwise, replace the marker with two spaces without column alignment.
+    # Both terminal and non-terminal records pass through the formatter.
     #
     # Without GNU AWK, ps-emacs.awk repeats the terminal command-field filter.
     # Neither pipeline appends CWD information.
@@ -154,41 +176,42 @@ print_emacs_processes()
         {
             # First extract terminal based Emacs
             ps_list_emacs \
-                | grep " tty\|pts/" \
-                | gawk '$8 ~ /(^|\/)[eE]macs(client|-lucid)?$/'
+                | gawk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(client|-lucid)?$/'
             # List non-terminal processes after terminal processes.
             ps_list_emacs \
-                | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
-        } | gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" | column -s "▶︎▶︎▶︎" -t
+                | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+        } | gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" \
+          | {
+                if command -v column >/dev/null 2>&1; then
+                    column -s "▶︎▶︎▶︎" -t
+                else
+                    gawk '{ sub(/▶︎▶︎▶︎/, "  "); print }'
+                fi
+            }
     else
         ps_list_emacs \
-            | grep " tty\|pts/" \
-            | awk '$8 ~ /(^|\/)[eE]macs(client|-lucid)?$/' \
+            |  awk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(client|-lucid)?$/' \
             | awk -f "$PEL_BIN_DIR/../awk/ps-emacs.awk"
         # List all other Emacs processes not running in terminal windows (if any).
-        ps_list_emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
+        ps_list_emacs |  awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
     fi
 }
 
 # --
 # proceed
 
-#shellcheck disable=SC2126 # the grepping is done inside ps-list.
-# use xargs to strip spaces from the wc -l output.
-emacs_running_process_count=$(print_emacs_processes | wc -l | xargs)
+# Capture the listing once so the status and output use the same records.
+emacs_processes=$(print_emacs_processes)
 
-# Ensure there is an Emacs process running
-if [ "$emacs_running_process_count" = "0" ]; then
-    # There are no Emacs process running.
-    # ensure that the exit code is 1, because
-    # it's not guaranteed with the code below.
+# An empty listing means no Emacs process was found.
+if [ -z "$emacs_processes" ]; then
     exit 1
+fi
+
+if [ -z "$1" ]; then
+    printf '%s\n' "$emacs_processes"
 else
-    if [ -z "$1" ]; then
-        print_emacs_processes
-    else
-        print_emacs_processes | grep -e "$1"
-    fi
+    printf '%s\n' "$emacs_processes" | grep -e "$1"
 fi
 
 # ----------------------------------------------------------------------------

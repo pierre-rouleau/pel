@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 12:55:48 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 16:12:25 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -15,7 +15,7 @@
 # Dependencies
 # ------------
 #
-# grep, ps, printf,
+# grep, ps, printf, awk
 
 # ----------------------------------------------------------------------------
 # Code
@@ -107,21 +107,32 @@ fi
 # --
 # Proceed
 
-# -f Print command arguments
-# shellcheck disable=SC2009
-{
-    if [ "${case_insensitive}" = "yes" ]; then
+# Perform a ps | grep search and capture results.
+#
+# - ps -f : Print command arguments
+#
+# If grep finds matches, awk filters and prints those records.
+# If grep finds no matches, the script returns 1.
+# If grep rejects a pattern such as [, the script returns the error status from grep.
+#
+# If awk removes all matched records, the script still returns 0.
+
+search_results=$(
+    if [ "$case_insensitive" = "yes" ]; then
         ps -ef $ps_options | grep -i -e "$1"
     else
         ps -ef $ps_options | grep    -e "$1"
     fi
-} | awk -v name="$pgm_name" -v col="${ps_options:+9}" '
-    {
-        executable = $(col ? col : 8)
-        sub(/^.*\//, "", executable)
-        if (executable != name && executable != "grep")
-            print
-    }
-'
+) || exit "$?"
+
+printf '%s\n' "$search_results" |
+    awk -v name="$pgm_name" -v col="${ps_options:+9}" '
+        {
+            executable = $(col ? col : 8)
+            sub(/^.*\//, "", executable)
+            if (executable != name && executable != "grep")
+                print
+        }
+    '
 
 # ----------------------------------------------------------------------------
