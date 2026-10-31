@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 11:18:52 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 13:07:38 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -74,8 +74,9 @@ print_usage()
       The CWD information is only printed when the GNU AWK is available.
 
     - If PATTERN is specified, filter the result with an extra grep filter
-      using that pattern.  That can be used to search for an Emacs process
-      launched under a specific command, or using a specific working directory.
+      using that pattern. That can search for an Emacs process launched under
+      a specific command. A working-directory pattern requires GNU AWK because
+      CWD is not included in the output otherwise.
     - Under macOS it is best to use gawk (GNU awk) which supports a script that
       deals with terminal number reformatting and allows printing the terminal
       (TTY) numbers nicely on the output.
@@ -137,7 +138,7 @@ print_emacs_processes()
     #
     # The terminal pipeline selects lines containing " tty" (as used in macOS)
     # or "pts/" (as used in Linux).
-    # - Its command-field filter accepts emacs and emacsclient names,
+    # - Its command-field filter accepts emacs, emacsclient and emcas-lucid
     #   with an optional directory path and an initial lowercase or uppercase E.
     #   It excludes other command names, such as ps-emacs and hexl.
     #
@@ -146,15 +147,15 @@ print_emacs_processes()
     # Then column uses the marker as a separator to align the CWD information.
     # The non-terminal pipeline currently bypasses the formatter and column.
     #
-    # Without GNU AWK, ps-emacs.awk applies an additional exact "emacs"
-    # command-field filter. Neither pipeline appends CWD information.
+    # Without GNU AWK, ps-emacs.awk repeats the terminal command-field filter.
+    # Neither pipeline appends CWD information.
     #
     if [ "$use_gawk" = "yes" ]; then
         {
             # First extract terminal based Emacs
             ps_list_emacs \
                 | grep " tty\|pts/" \
-                | gawk '$8 ~ /(^|\/)[eE]macs(client)?$/'
+                | gawk '$8 ~ /(^|\/)[eE]macs(client|-lucid)?$/'
             # List non-terminal processes after terminal processes.
             ps_list_emacs \
                 | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
@@ -162,7 +163,7 @@ print_emacs_processes()
     else
         ps_list_emacs \
             | grep " tty\|pts/" \
-            | awk '$8 ~ /(^|\/)[eE]macs(client)?$/' \
+            | awk '$8 ~ /(^|\/)[eE]macs(client|-lucid)?$/' \
             | awk -f "$PEL_BIN_DIR/../awk/ps-emacs.awk"
         # List all other Emacs processes not running in terminal windows (if any).
         ps_list_emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'

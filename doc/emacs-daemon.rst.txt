@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-31 11:18:41 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-31 13:05:23 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -24,13 +24,12 @@ following simple commands POSIX compliant shell commands on Linux and macOS:
 - `ge`_   : `start Emacs in graphics mode`_,
 - `ec`_   : `start Emacs daemons and their clients`_.
 
-Use the following command to get more information about
-the running Emacs daemons:
+Use the following commands to get more information about
+running Emacs processes and daemons:
 
 - `ps-emacs`_ : `list currently executing Emacs processes`_.
 - `lses`_ : `list name and sockets of all running Emacs daemons`_.
-
-Use ``ec -l`` to list Emacs clients and opened frames.
+- ``ec -l``: list Emacs clients and opened frames.
 
 The installer normally builds and installs the `C implementation of lses`_.
 If the build fails, it offers the less-powerful `lses shell implementation`_.
@@ -537,7 +536,7 @@ The ec_ command:
          character.
        - ec can start a graphics-capable server even when it cannot start
          a graphics capable client.  That can occur when executing the command
-         from a SSH connected shell for instance.
+         from a SSH-connected shell, for example.
 
    OS NOTE:
     On macOS:
@@ -595,8 +594,9 @@ processes in lines like the following::
         The CWD information is only printed when the GNU AWK is available.
 
       - If PATTERN is specified, filter the result with an extra grep filter
-        using that pattern.  That can be used to search for an Emacs process
-        launched under a specific command, or using a specific working directory.
+        using that pattern. That can search for an Emacs process launched under
+        a specific command. A working-directory pattern requires GNU AWK because
+        CWD is not included in the output otherwise.
       - Under macOS it is best to use gawk (GNU awk) which supports a script that
         deals with terminal number reformatting and allows printing the terminal
         (TTY) numbers nicely on the output.

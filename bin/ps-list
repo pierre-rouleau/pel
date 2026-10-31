@@ -4,20 +4,18 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:07:35 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 12:55:48 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
 #
 # List processes provided by arguments
 
-
 # ----------------------------------------------------------------------------
 # Dependencies
 # ------------
 #
 # grep, ps, printf,
-
 
 # ----------------------------------------------------------------------------
 # Code
@@ -41,8 +39,9 @@ print_usage()
  Usage: %s h|--help
  • Print this help information.
 
- Usage: %s [-i] [-Z] PROCESS
+ Usage: %s [-i] [-Z] [PROCESS]
  • Print information related to running PROCESS specified by name.
+   If PROCESS is not specified print information for all processes.
 
  Options:
         -i : case insensitive search.
@@ -100,17 +99,29 @@ if [ "$1" = "-Z" ]; then
         ps_options='-Z'
         shift
     else
-        printf -- "*** Error: SELinux is not available!\n"
+        printf -- "*** Error %s: SELinux is not available!\n" "$pgm_name"
         exit 1
     fi
 fi
 
+# --
+# Proceed
+
 # -f Print command arguments
 # shellcheck disable=SC2009
-if [ "${case_insensitive}" = "yes" ]; then
-    ps -ef $ps_options | grep -i "$1" | grep -v "$pgm_name" | grep -v grep
-else
-    ps -ef $ps_options | grep    "$1" | grep -v "$pgm_name" | grep -v grep
-fi
+{
+    if [ "${case_insensitive}" = "yes" ]; then
+        ps -ef $ps_options | grep -i -e "$1"
+    else
+        ps -ef $ps_options | grep    -e "$1"
+    fi
+} | awk -v name="$pgm_name" -v col="${ps_options:+9}" '
+    {
+        executable = $(col ? col : 8)
+        sub(/^.*\//, "", executable)
+        if (executable != name && executable != "grep")
+            print
+    }
+'
 
 # ----------------------------------------------------------------------------
