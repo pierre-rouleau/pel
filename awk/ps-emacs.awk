@@ -3,7 +3,7 @@
 # Purpose   : List Emacs processes.
 # Created   : Monday, September 29 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 12:09:42 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 16:26:58 EDT, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -44,9 +44,10 @@
 # Code
 # ----
 #
-# Accept emacs, emacsclient, and emacs-lucid, with an optional directory path
-# and an initial lowercase or uppercase E.
+# Accept emacs, emacs.app, emacsclient, emacs-lucid, and architecture-suffixed
+# arm64 or x86_64 Emacs names with numeric version components separated by
+# underscores or dots.
 #
-$8 ~ /(^|\/)[eE]macs(client|-lucid)?$/  { print $0 }
+$8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/  { print $0 }
 
 # ------------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 15:55:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 16:29:18 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -147,9 +147,9 @@ esac
 ps_list_emacs()
 {
     if [ "${case_sensitive}" = "yes" ]; then
-        ${PEL_BIN_DIR}/ps-list emacs
+        "${PEL_BIN_DIR}/ps-list" emacs
     else
-        ${PEL_BIN_DIR}/ps-list -i emacs
+        "${PEL_BIN_DIR}/ps-list" -i emacs
     fi
 }
 
@@ -159,8 +159,8 @@ print_emacs_processes()
     #
     # The terminal pipeline tests field 6 (TTY) for "tty" (as used in macOS)
     # or "pts/" (as used in Linux).
-    # - Its command-field filter accepts emacs, emacsclient and emacs-lucid
-    #   with an optional directory path and an initial lowercase or uppercase E.
+    # - Its command-field filter accepts emacs, emacs.app, emacsclient,
+    #   emacs-lucid, and architecture-suffixed arm64 or x86_64 Emacs names,
     #   It excludes other command names, such as ps-emacs and hexl.
     #
     # When GNU AWK is available, the formatter applies an additional command
@@ -176,7 +176,7 @@ print_emacs_processes()
         {
             # First extract terminal based Emacs
             ps_list_emacs \
-                | gawk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(client|-lucid)?$/'
+                | gawk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
             # List non-terminal processes after terminal processes.
             ps_list_emacs \
                 | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
@@ -190,7 +190,7 @@ print_emacs_processes()
             }
     else
         ps_list_emacs \
-            |  awk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(client|-lucid)?$/' \
+            | awk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/' \
             | awk -f "$PEL_BIN_DIR/../awk/ps-emacs.awk"
         # List all other Emacs processes not running in terminal windows (if any).
         ps_list_emacs |  awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
