@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-30 09:48:35 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-30 14:53:39 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -344,6 +344,9 @@ holding that Emacs executable file.
         pre-condition check and execution and Emacs pel-session code both use
         this information to validate and successfully restore an easysession
         session.
+      • ge will exit in error if the environment does not support launching
+        a graphical Emacs, even if the command line does not attempt to open
+        a frame or visit files (like to print Emacs help or evaluate elisp code).
 
    DIAGNOSTICS
     ge prints error information on failures. It prints extra details when the
@@ -377,10 +380,10 @@ holding that Emacs executable file.
   OS NOTES
       • On macOS the graphics version of Emacs is taken from a location
         identified by the following logic:
-        • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
-          that executable. PEL_GE_DIR identifies its containing directory.
-          Otherwise, use the executable inside /Applications/Emacs.app
-          appropriate for the CPU architecture.
+      • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
+        that executable. PEL_GE_DIR identifies its containing directory.
+        Otherwise, use the executable inside /Applications/Emacs.app
+        appropriate for the CPU architecture.
 
 Start Emacs daemons and their clients with: ec
 ----------------------------------------------
@@ -528,8 +531,12 @@ The ec_ command:
        Short-option bundles and abbreviated long options are not accepted.
        See the emacsclient manual for option meanings.
 
-   NOTE: Daemon names accepted by this script must not start with a dash
+   NOTES:
+       - Daemon names accepted by this script must not start with a dash
          character.
+       - ec can start a graphics-capable server even when it cannot start
+         a graphics capable client.  That can occur when executing the command
+         from a SSH connected shell for instance.
 
    OS NOTE:
     On macOS:
