@@ -3,7 +3,7 @@
 # Purpose   : List Emacs processes.
 # Created   : Monday, September 29 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:00:03 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 11:17:39 EDT, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -21,21 +21,19 @@
 # where the columns are:
 # 1   UID  : user ID
 # 2   PID  : process ID
-# 3   PPID : Parent process ID
+# 3   PPID : parent process ID
 # 4   C    : CPU utilization of process or thread
-# 5   STIME: system CPU time
+# 5   STIME: process start time.
 # 6   TTY  : controlling terminal
 # 7   TIME : total CPU time (user + system) since it started
 # 8   CMD  : command
 #
-# The script identify emacs processes from the 8th column and print these lines.
+# Print each original record whose command field (field 8) is exactly "emacs".
+# This comparison is case-sensitive and does not accept executable paths.
 #
-# To extract the current working directory of a process ID, we use
-# lsof and AWK again:
+# This script only filters records. It does not look up a CWD or change
+# the record's formatting.
 #
-#   lsof -a -d cwd -p $PPID -n -Fn | awk '/^n/ {print substr($0,2)}'
-#
-
 # ------------------------------------------------------------------------------
 # Dependencies
 # ------------
@@ -46,7 +44,8 @@
 # Code
 # ----
 #
+# Accept:  'emacs', 'Emacs', 'emacsclient' and  'Emacsclient' .
 #
-$8 == "emacs"  { print $0 }
+$8 ~ /(^|\/)[eE]macs(client)?$/  { print $0 }
 
 # ------------------------------------------------------------------------------

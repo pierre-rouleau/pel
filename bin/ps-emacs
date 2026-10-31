@@ -4,18 +4,16 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 23:09:02 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 11:18:52 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
 # ------------------
 #
-# Print information about all Emacs processes running.
-# For those inside a terminal window, identify the terminal as nicely as
-# possible.  List the Emacs processes not running inside a terminal window
-# after the list of Emacs running inside a terminal window.
-
-
+# Print information about all Emacs processes running.  Identify the terminal
+# and the process' current working directory as nicely as possible.  List the
+# Emacs processes not running inside a terminal window after the list of Emacs
+# running inside a terminal window.
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -65,9 +63,9 @@ print_usage()
 
          UID  : user ID
          PID  : process ID
-         PPID : Parent process ID
+         PPID : parent process ID
          C    : CPU utilization of process or thread
-         STIME: system CPU time
+         STIME: process start time
          TTY  : controlling terminal
          TIME : total CPU time (user + system) since it started
          CMD  : emacs command
@@ -81,8 +79,9 @@ print_usage()
     - Under macOS it is best to use gawk (GNU awk) which supports a script that
       deals with terminal number reformatting and allows printing the terminal
       (TTY) numbers nicely on the output.
-
-    The exit code is 0 if at least one Emacs process was found, 1 otherwise.
+    - Exit code:
+      - 0: one or more Emacs process found (matching PATTERN if one specified).
+      - 1: no Emacs process found (and matching PATTERN if one specified).
 " "$pgm_name" "$pgm_name" "$pgm_name"
 }
 
@@ -134,24 +133,32 @@ ps_list_emacs()
 
 print_emacs_processes()
 {
-    # List all Emacs processes running inside terminal windows first.
-    #  - filter out itself (ps-emacs)
-    #  - filter on tty to only list processes attached to a TTY
-    #    - under macOS it's tty, under linux it's pts/
-    #  - filter out processes that use the hexl sub-process
-    #  - Use GNU AWK to extract the current working directory of each process
-    #    and append it to the output.
-    #    The AWK script also prints "  ▶︎▶︎▶︎ CWD: " before the current directory
-    #    and filters on the process being Emacs.
-    # Note this also lists emacsclient processes.
+    # List terminal processes first, then non-terminal processes.
+    #
+    # The terminal pipeline selects lines containing " tty" (as used in macOS)
+    # or "pts/" (as used in Linux).
+    # - Its command-field filter accepts emacs and emacsclient names,
+    #   with an optional directory path and an initial lowercase or uppercase E.
+    #   It excludes other command names, such as ps-emacs and hexl.
+    #
+    # When GNU AWK is available, the formatter applies an additional command
+    # filter, calls pidcwd, and appends the "▶︎▶︎▶︎" marker and CWD result.
+    # Then column uses the marker as a separator to align the CWD information.
+    # The non-terminal pipeline currently bypasses the formatter and column.
+    #
+    # Without GNU AWK, ps-emacs.awk applies an additional exact "emacs"
+    # command-field filter. Neither pipeline appends CWD information.
+    #
     if [ "$use_gawk" = "yes" ]; then
-        ps_list_emacs \
-            | grep " tty\|pts/" \
-            | gawk '$8 ~ /(^|\/)[eE]macs(client)?$/' \
-            | gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" \
-            | column -s "▶︎▶︎▶︎" -t
-        # List all other Emacs processes not running in terminal windows (if any).
-        ps_list_emacs | gawk '$6 !~ /(tty|pts\/)/' | gawk '$8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
+        {
+            # First extract terminal based Emacs
+            ps_list_emacs \
+                | grep " tty\|pts/" \
+                | gawk '$8 ~ /(^|\/)[eE]macs(client)?$/'
+            # List non-terminal processes after terminal processes.
+            ps_list_emacs \
+                | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
+        } | gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" | column -s "▶︎▶︎▶︎" -t
     else
         ps_list_emacs \
             | grep " tty\|pts/" \
@@ -160,7 +167,6 @@ print_emacs_processes()
         # List all other Emacs processes not running in terminal windows (if any).
         ps_list_emacs | awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs((\.app)|(client))?/'
     fi
-
 }
 
 # --
@@ -180,7 +186,7 @@ else
     if [ -z "$1" ]; then
         print_emacs_processes
     else
-        print_emacs_processes | grep "$1"
+        print_emacs_processes | grep -e "$1"
     fi
 fi
 

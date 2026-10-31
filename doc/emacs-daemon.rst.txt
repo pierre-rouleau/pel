@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-30 23:20:23 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-31 11:18:41 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -584,9 +584,9 @@ processes in lines like the following::
 
            UID  : user ID
            PID  : process ID
-           PPID : Parent process ID
+           PPID : parent process ID
            C    : CPU utilization of process or thread
-           STIME: system CPU time
+           STIME: process start time.
            TTY  : controlling terminal
            TIME : total CPU time (user + system) since it started
            CMD  : emacs command
@@ -600,8 +600,9 @@ processes in lines like the following::
       - Under macOS it is best to use gawk (GNU awk) which supports a script that
         deals with terminal number reformatting and allows printing the terminal
         (TTY) numbers nicely on the output.
-
-      The exit code is 0 if at least one Emacs process was found, 1 otherwise.
+      - Exit code:
+        - 0: one or more Emacs process found (matching PATTERN if one specified).
+        - 1: no Emacs process found (and matching PATTERN if one specified).
 
 
 List name and sockets of all running Emacs daemon with: lses
