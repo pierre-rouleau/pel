@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 16:29:18 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 18:31:36 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -180,7 +180,7 @@ print_emacs_processes()
             # List non-terminal processes after terminal processes.
             ps_list_emacs \
                 | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
-        } | gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" \
+        } | PATH="$PEL_BIN_DIR:$PATH" gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" \
           | {
                 if command -v column >/dev/null 2>&1; then
                     column -s "▶︎▶︎▶︎" -t
