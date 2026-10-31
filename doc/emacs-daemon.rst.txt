@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-30 14:53:39 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-30 23:20:23 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -20,14 +20,15 @@ Short Commands to start Emacs from the terminal shell
 Start single Emacs processes or Emacs daemon and its clients with the
 following simple commands POSIX compliant shell commands on Linux and macOS:
 
-- e_    : `start Emacs in terminal mode`_,
-- ge_   : `start Emacs in graphics mode`_,
-- ec_   : `start Emacs daemons and their clients`_.
+- `e`_    : `start Emacs in terminal mode`_,
+- `ge`_   : `start Emacs in graphics mode`_,
+- `ec`_   : `start Emacs daemons and their clients`_.
 
 Use the following command to get more information about
 the running Emacs daemons:
 
-- lses_ : `list name and sockets of all running Emacs daemons`_.
+- `ps-emacs`_ : `list currently executing Emacs processes`_.
+- `lses`_ : `list name and sockets of all running Emacs daemons`_.
 
 Use ``ec -l`` to list Emacs clients and opened frames.
 
@@ -552,6 +553,57 @@ The ec_ command:
          otherwise the default is used.  The default is the macOS Emacs
          application /Applications/Emacs.app.
 
+List currently executing Emacs processes with: ps-emacs
+-------------------------------------------------------
+
+The ps-emacs script displays information about the currently running Emacs
+processes in lines like the following::
+
+  501 77926 79969   0 Thu08am ttys000    5:14.22 emacs -nw pel--options.el      CWD:  /Users/borg/my/dvp/elisp/pel
+  501 70092 54752   0 Thu07am ttys018    0:18.25 emacs -nw .                    CWD:  /Users/borg/my/dvp/testing-dbml
+
+**Usage**::
+
+   ps-emacs -- Print information about all Emacs processes.
+              List Emacs processes running in terminal windows first,
+              identify the terminal as nicely as possible for those.
+              Then list other Emacs processes (such as GUI Emacs).
+
+   Usage: ps-emacs -h | --help
+
+    • Print this help information.
+
+   Usage: ps-emacs [PATTERN]
+
+    • Print information about all running Emacs processes.
+
+        Print a line for each Emacs process.
+        Each line contains the following columns.
+        All columns are lined up except the last one since
+        the command may be short or long.
+
+           UID  : user ID
+           PID  : process ID
+           PPID : Parent process ID
+           C    : CPU utilization of process or thread
+           STIME: system CPU time
+           TTY  : controlling terminal
+           TIME : total CPU time (user + system) since it started
+           CMD  : emacs command
+           CWD:  Current working directory of the Emacs process
+
+        The CWD information is only printed when the GNU AWK is available.
+
+      - If PATTERN is specified, filter the result with an extra grep filter
+        using that pattern.  That can be used to search for an Emacs process
+        launched under a specific command, or using a specific working directory.
+      - Under macOS it is best to use gawk (GNU awk) which supports a script that
+        deals with terminal number reformatting and allows printing the terminal
+        (TTY) numbers nicely on the output.
+
+      The exit code is 0 if at least one Emacs process was found, 1 otherwise.
+
+
 List name and sockets of all running Emacs daemon with: lses
 ------------------------------------------------------------
 
@@ -856,6 +908,7 @@ install emacs`` command::
 .. _ec: ../bin/ec
 .. _lses:
 .. _C implementation of lses:  ../c/lses/lses.c
+.. _ps-emacs: ../bin/ps-emacs
 .. _lses shell implementation: ../bin/lses
 .. _Closing Suspending PEL PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/closing-suspending.pdf
 .. _quick installation script: ./install_e_ge_ec.rst.txt
@@ -866,6 +919,7 @@ install emacs`` command::
 .. _start Emacs in graphics mode: `Start a stand-alone graphics-mode Emacs with: ge`_
 .. _start Emacs daemons and their clients: `Start Emacs daemons and their clients with: ec`_
 .. _list name and sockets of all running Emacs daemons: `List name and sockets of all running Emacs daemon with: lses`_
+.. _list currently executing Emacs processes: `List currently executing Emacs processes with: ps-emacs`_
 
 
 .. ---------------------------------------------------------------------------
