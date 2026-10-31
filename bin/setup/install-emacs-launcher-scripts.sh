@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-21 22:29:19 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 13:43:10 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -59,7 +59,7 @@ print_usage()
     printf -- "
 %s -- Install the Emacs launchers and tools.
 
- Commands: e, ge, ec, lses, is-emacs-daemon-running,
+ Commands: e, ge, ec, ps-emacs, lses, is-emacs-daemon-running,
            is-pel-in-fast-startup and org-agenda-lock.
 
  Usage: %s -h | --help
@@ -205,6 +205,7 @@ install_file()
 install_file "e"
 install_file "ge"
 install_file "ec"
+install_file "ps-emacs"
 install_file "is-emacs-daemon-running"
 install_file "is-pel-in-fast-startup"
 
