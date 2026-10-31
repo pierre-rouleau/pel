@@ -4,7 +4,7 @@
 # Purpose   : Launch an Emacs client to an Emacs Daemon - start the daemon if necessary.
 # Created   : Wednesday, May 22 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-30 15:25:47 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 13:02:34 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Description
 # -----------
@@ -168,7 +168,7 @@ print_usage()
        character.
      - %s can start a graphics-capable server even when it cannot start
        a graphics capable client.  That can occur when executing the command
-       from a SSH connected shell for instance.
+       from a SSH-connected shell, for example.
 
 " "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \
   "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" "${pgm_name}" \

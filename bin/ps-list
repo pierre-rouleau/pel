@@ -1,0 +1,150 @@
+#!/bin/sh
+# SH FILE: ps-list
+#
+# Purpose   : List running Processes.
+# Created   : Saturday, March  1 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-31 17:05:32 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# List processes provided by arguments
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# grep, ps, printf, awk
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="${0##*/}"
+
+selinux_is_available=false
+selinux_msg="NOT "
+if command -v getenforce > /dev/null; then
+    selinux_is_available=true
+    selinux_msg=""
+fi
+
+print_usage()
+{
+    printf -- "\
+%s: List information of specified running process.
+
+ Usage: %s h|--help
+ • Print this help information.
+
+ Usage: %s [-i] [-Z] [PROCESS]
+ • Print information related to running PROCESS specified by name.
+   If PROCESS is not specified print information for all processes.
+
+ Options:
+        -i : case insensitive search.
+        -Z : include SELinux security context labels.
+             Only available on Linux where SELinux is available.
+             On this system, SELinux is %savailable.
+
+
+ OUTPUT FORMAT:
+
+      Each line contains the following columns.
+      All columns are lined up.
+
+        UID  : user ID
+        PID  : process ID
+        PPID : Parent process ID
+        C    : CPU utilization of process or thread
+        STIME: system CPU time
+        TTY  : controlling terminal
+        TIME : total CPU time (user + system) since it started
+        CMD  : command
+
+ BUGS: This uses a simple grep extraction.
+       A better implementation would extract necessary information
+       and format it in better ways.
+
+" "$pgm_name" "$pgm_name" "$pgm_name" "$selinux_msg"
+}
+
+# --
+# Check for help
+if [ -n "$1" ]; then
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+        print_usage
+        if [ "$#" = "1" ]; then
+            exit 0
+        else
+            exit  1
+        fi
+    fi
+fi
+
+# --
+# proceed
+
+case_insensitive=no
+if [ "$1" = "-i" ]; then
+    case_insensitive=yes
+    shift
+fi
+
+ps_options=
+if [ "$1" = "-Z" ]; then
+    if [ "$selinux_is_available" = "true" ]; then
+        ps_options='-Z'
+        shift
+    else
+        printf -- "*** Error %s: SELinux is not available!\n" "$pgm_name"
+        exit 1
+    fi
+fi
+
+# --
+# Proceed
+
+# Perform a ps | grep search and capture results.
+#
+# - ps -f : Print command arguments
+#
+# If grep finds matches, awk filters and prints those records.
+# If grep finds no matches, the script returns 1.
+# If grep rejects a pattern such as [, the script returns the error status from grep.
+#
+# If awk removes all matched records, the script returns 1.
+
+search_results=$(
+    if [ "$case_insensitive" = "yes" ]; then
+        ps -ef $ps_options | grep -i -e "$1"
+    else
+        ps -ef $ps_options | grep    -e "$1"
+    fi
+) || exit "$?"
+
+printf '%s\n' "$search_results" |
+    awk -v name="$pgm_name" -v self="$$" -v col="${ps_options:+9}" '
+        BEGIN {
+            command_col = (col ? col : 8)
+            pid_col = command_col - 6
+            ppid_col = pid_col + 1
+        }
+        {
+            # Exclude this script and its direct child processes.
+            if ($(pid_col) == self || $(ppid_col) == self)
+                next
+
+            executable = $(command_col)
+            sub(/^.*\//, "", executable)
+            if (executable != name && executable != "grep") {
+                print
+                printed++
+            }
+        }
+        END { exit (printed ? 0 : 1) }
+    '
+
+# ----------------------------------------------------------------------------

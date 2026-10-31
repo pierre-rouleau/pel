@@ -7,7 +7,7 @@ Using the Emacs stand-alone processes, daemon and clients
 :Ref: `PEL How-to Tips`_
 :Created:  Thursday, May 23 2024.
 :Author:  Pierre Rouleau <prouleau001@gmail.com>
-:Modified: 2026-10-30 09:48:35 EDT, updated by Pierre Rouleau.
+:Modified: 2026-10-31 13:05:23 EDT, updated by Pierre Rouleau.
 :Copyright: © 2024, 2025, 2026, Pierre Rouleau
 
 
@@ -20,16 +20,16 @@ Short Commands to start Emacs from the terminal shell
 Start single Emacs processes or Emacs daemon and its clients with the
 following simple commands POSIX compliant shell commands on Linux and macOS:
 
-- e_    : `start Emacs in terminal mode`_,
-- ge_   : `start Emacs in graphics mode`_,
-- ec_   : `start Emacs daemons and their clients`_.
+- `e`_    : `start Emacs in terminal mode`_,
+- `ge`_   : `start Emacs in graphics mode`_,
+- `ec`_   : `start Emacs daemons and their clients`_.
 
-Use the following command to get more information about
-the running Emacs daemons:
+Use the following commands to get more information about
+running Emacs processes and daemons:
 
-- lses_ : `list name and sockets of all running Emacs daemons`_.
-
-Use ``ec -l`` to list Emacs clients and opened frames.
+- `ps-emacs`_ : `list currently executing Emacs processes`_.
+- `lses`_ : `list name and sockets of all running Emacs daemons`_.
+- ``ec -l``: list Emacs clients and opened frames.
 
 The installer normally builds and installs the `C implementation of lses`_.
 If the build fails, it offers the less-powerful `lses shell implementation`_.
@@ -344,6 +344,9 @@ holding that Emacs executable file.
         pre-condition check and execution and Emacs pel-session code both use
         this information to validate and successfully restore an easysession
         session.
+      • ge will exit in error if the environment does not support launching
+        a graphical Emacs, even if the command line does not attempt to open
+        a frame or visit files (like to print Emacs help or evaluate elisp code).
 
    DIAGNOSTICS
     ge prints error information on failures. It prints extra details when the
@@ -377,10 +380,10 @@ holding that Emacs executable file.
   OS NOTES
       • On macOS the graphics version of Emacs is taken from a location
         identified by the following logic:
-        • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
-          that executable. PEL_GE_DIR identifies its containing directory.
-          Otherwise, use the executable inside /Applications/Emacs.app
-          appropriate for the CPU architecture.
+      • If PEL_GE_DIR is nonempty and $PEL_GE_DIR/emacs is executable, use
+        that executable. PEL_GE_DIR identifies its containing directory.
+        Otherwise, use the executable inside /Applications/Emacs.app
+        appropriate for the CPU architecture.
 
 Start Emacs daemons and their clients with: ec
 ----------------------------------------------
@@ -528,8 +531,12 @@ The ec_ command:
        Short-option bundles and abbreviated long options are not accepted.
        See the emacsclient manual for option meanings.
 
-   NOTE: Daemon names accepted by this script must not start with a dash
+   NOTES:
+       - Daemon names accepted by this script must not start with a dash
          character.
+       - ec can start a graphics-capable server even when it cannot start
+         a graphics capable client.  That can occur when executing the command
+         from a SSH-connected shell, for example.
 
    OS NOTE:
     On macOS:
@@ -544,6 +551,59 @@ The ec_ command:
          The directory must hold the 2 executable programs (or links to them),
          otherwise the default is used.  The default is the macOS Emacs
          application /Applications/Emacs.app.
+
+List currently executing Emacs processes with: ps-emacs
+-------------------------------------------------------
+
+The ps-emacs script displays information about the currently running Emacs
+processes in lines like the following::
+
+  501 77926 79969   0 Thu08am ttys000    5:14.22 emacs -nw pel--options.el      CWD:  /Users/borg/my/dvp/elisp/pel
+  501 70092 54752   0 Thu07am ttys018    0:18.25 emacs -nw .                    CWD:  /Users/borg/my/dvp/testing-dbml
+
+**Usage**::
+
+   ps-emacs -- Print information about all Emacs processes.
+              List Emacs processes running in terminal windows first,
+              identify the terminal as nicely as possible for those.
+              Then list other Emacs processes (such as GUI Emacs).
+
+   Usage: ps-emacs -h | --help
+
+    • Print this help information.
+
+   Usage: ps-emacs [PATTERN]
+
+    • Print information about all running Emacs processes.
+
+        Print a line for each Emacs process.
+        Each line contains the following columns.
+        All columns are lined up except the last one since
+        the command may be short or long.
+
+           UID  : user ID
+           PID  : process ID
+           PPID : parent process ID
+           C    : CPU utilization of process or thread
+           STIME: process start time.
+           TTY  : controlling terminal
+           TIME : total CPU time (user + system) since it started
+           CMD  : emacs command
+           CWD:  Current working directory of the Emacs process
+
+        The CWD information is only printed when the GNU AWK is available.
+
+      - If PATTERN is specified, filter the result with an extra grep filter
+        using that pattern. That can search for an Emacs process launched under
+        a specific command. A working-directory pattern requires GNU AWK because
+        CWD is not included in the output otherwise.
+      - Under macOS it is best to use gawk (GNU awk) which supports a script that
+        deals with terminal number reformatting and allows printing the terminal
+        (TTY) numbers nicely on the output.
+      - Exit code:
+        - 0: one or more Emacs process found (matching PATTERN if one specified).
+        - 1: no Emacs process found (and matching PATTERN if one specified).
+
 
 List name and sockets of all running Emacs daemon with: lses
 ------------------------------------------------------------
@@ -849,6 +909,7 @@ install emacs`` command::
 .. _ec: ../bin/ec
 .. _lses:
 .. _C implementation of lses:  ../c/lses/lses.c
+.. _ps-emacs: ../bin/ps-emacs
 .. _lses shell implementation: ../bin/lses
 .. _Closing Suspending PEL PDF: https://pierre-rouleau.github.io/pel/pel-table-based-documentation1/closing-suspending.pdf
 .. _quick installation script: ./install_e_ge_ec.rst.txt
@@ -859,6 +920,7 @@ install emacs`` command::
 .. _start Emacs in graphics mode: `Start a stand-alone graphics-mode Emacs with: ge`_
 .. _start Emacs daemons and their clients: `Start Emacs daemons and their clients with: ec`_
 .. _list name and sockets of all running Emacs daemons: `List name and sockets of all running Emacs daemon with: lses`_
+.. _list currently executing Emacs processes: `List currently executing Emacs processes with: ps-emacs`_
 
 
 .. ---------------------------------------------------------------------------

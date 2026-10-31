@@ -1,0 +1,217 @@
+#!/bin/sh
+# SH FILE: ps-emacs
+#
+# Purpose   : List all running Emacs processes.
+# Created   : Sunday, September 21 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-31 18:31:36 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+
+# Module Description
+# ------------------
+#
+# Print information about all Emacs processes running.  Identify the terminal
+# and the process' current working directory as nicely as possible.  List the
+# Emacs processes not running inside a terminal window after the list of Emacs
+# running inside a terminal window.
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - ps-list
+# - grep
+# - gawk (GNU AWK) or awk
+#   - pidcwd
+#     - lsof
+# wc
+# xargs
+# column (optional: used to align CWD info when present).
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="${0##*/}"
+
+# Prevent cd from printing the directory name to stdout if CDPATH is set
+unset CDPATH
+
+# Resolve the script target, including chains of file symlinks.
+PEL_BIN_DIR=$(
+    script=$0
+    case "$script" in
+        (*/*) ;;
+        (*) script=$(command -v "$script") || exit 1 ;;
+    esac
+
+    while :; do
+        cd -P -- "$(dirname -- "$script")" || exit 1
+        script="./${script##*/}"
+
+        # The current directory now contains this file or symlink.
+        [ -L "$script" ] || break
+        script=$(readlink "$script") || exit 1
+    done
+
+    pwd -P
+) || {
+    printf '%s\n' "*** Error $pgm_name: cannot resolve script directory" >&2
+    exit 1
+}
+
+
+print_usage()
+{
+    printf -- "
+%s -- Print information about all Emacs processes.
+            List Emacs processes running in terminal windows first,
+            identify the terminal as nicely as possible for those.
+            Then list other Emacs processes (such as GUI Emacs).
+
+ Usage: %s -h | --help
+
+  • Print this help information.
+
+ Usage: %s [PATTERN]
+
+  • Print information about all running Emacs processes.
+
+      Print a line for each Emacs process.
+      Each line contains the following columns.
+      All columns are lined up except the last one since
+      the command may be short or long.
+
+         UID  : user ID
+         PID  : process ID
+         PPID : parent process ID
+         C    : CPU utilization of process or thread
+         STIME: process start time
+         TTY  : controlling terminal
+         TIME : total CPU time (user + system) since it started
+         CMD  : emacs command
+         CWD:  Current working directory of the Emacs process
+
+      The CWD information is only printed when the GNU AWK is available.
+
+    - If PATTERN is specified, filter the result with an extra grep filter
+      using that pattern. That can search for an Emacs process launched under
+      a specific command. A working-directory pattern requires GNU AWK because
+      CWD is not included in the output otherwise.
+    - Under macOS it is best to use gawk (GNU awk) which supports a script that
+      deals with terminal number reformatting and allows printing the terminal
+      (TTY) numbers nicely on the output.
+    - Exit code:
+      - 0: one or more Emacs process found (matching PATTERN if one specified).
+      - 1: no Emacs process found (and matching PATTERN if one specified).
+" "$pgm_name" "$pgm_name" "$pgm_name"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+# --
+# define utility
+
+case_sensitive=yes
+use_gawk=no
+
+case "$(uname)" in
+    Darwin)
+        if command -v gawk > /dev/null; then
+            use_gawk=yes
+        fi
+        case_sensitive=no
+        ;;
+
+    CYGWIN*|MSYS*|MINGW*|WindowsNT*)
+        # attempt to support this environment, but no guarantee...
+        case_sensitive=no
+        ;;
+
+    Linux)
+        if command -v gawk > /dev/null; then
+            use_gawk=yes
+        fi
+        case_sensitive=yes
+        ;;
+esac
+
+ps_list_emacs()
+{
+    if [ "${case_sensitive}" = "yes" ]; then
+        "${PEL_BIN_DIR}/ps-list" emacs
+    else
+        "${PEL_BIN_DIR}/ps-list" -i emacs
+    fi
+}
+
+print_emacs_processes()
+{
+    # List terminal processes first, then non-terminal processes.
+    #
+    # The terminal pipeline tests field 6 (TTY) for "tty" (as used in macOS)
+    # or "pts/" (as used in Linux).
+    # - Its command-field filter accepts emacs, emacs.app, emacsclient,
+    #   emacs-lucid, and architecture-suffixed arm64 or x86_64 Emacs names,
+    #   It excludes other command names, such as ps-emacs and hexl.
+    #
+    # When GNU AWK is available, the formatter applies an additional command
+    # filter, calls pidcwd, and appends the "▶︎▶︎▶︎" marker and CWD result.
+    # If column is available, use the marker to align the CWD information.
+    # Otherwise, replace the marker with two spaces without column alignment.
+    # Both terminal and non-terminal records pass through the formatter.
+    #
+    # Without GNU AWK, ps-emacs.awk repeats the terminal command-field filter.
+    # Neither pipeline appends CWD information.
+    #
+    if [ "$use_gawk" = "yes" ]; then
+        {
+            # First extract terminal based Emacs
+            ps_list_emacs \
+                | gawk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+            # List non-terminal processes after terminal processes.
+            ps_list_emacs \
+                | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+        } | PATH="$PEL_BIN_DIR:$PATH" gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" \
+          | {
+                if command -v column >/dev/null 2>&1; then
+                    column -s "▶︎▶︎▶︎" -t
+                else
+                    gawk '{ sub(/▶︎▶︎▶︎/, "  "); print }'
+                fi
+            }
+    else
+        ps_list_emacs \
+            | awk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/' \
+            | awk -f "$PEL_BIN_DIR/../awk/ps-emacs.awk"
+        # List all other Emacs processes not running in terminal windows (if any).
+        ps_list_emacs |  awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+    fi
+}
+
+# --
+# proceed
+
+# Capture the listing once so the status and output use the same records.
+emacs_processes=$(print_emacs_processes)
+
+# An empty listing means no Emacs process was found.
+if [ -z "$emacs_processes" ]; then
+    exit 1
+fi
+
+if [ -z "$1" ]; then
+    printf '%s\n' "$emacs_processes"
+else
+    printf '%s\n' "$emacs_processes" | grep -e "$1"
+fi
+
+# ----------------------------------------------------------------------------

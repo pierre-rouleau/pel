@@ -1,0 +1,88 @@
+#!/bin/sh
+# SH FILE: pidcwd
+#
+# Purpose   : Print the current working directory of specified process ID.
+# Created   : Sunday, September 21 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-31 11:57:07 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+
+# This script provides the same functionality of the pwdx that is available on
+# linux but not available on macOS: it prints the current working directory of
+# the specified process ID. The implementation uses pwdx if it is available,
+# otherwise it uses lsof and AWK.
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# - printf, lsof, awk
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+print_usage()
+{
+    printf -- "
+pidcwd -- Print current working directory of specified process ID.
+
+ Usage: pidcwd -h | --help
+
+  • Print this help information.
+
+ Usage:  pidcwd PID
+
+  • Print the current working directory of specified process ID.
+    - If the specified PID does not exists, it prints an error
+      and terminates with an exit code of 1.
+    - If the PID exists, it prints the current working directory
+      of the corresponding process and terminates with an exit
+      code of 0.
+"
+}
+
+# --
+# validate arguments
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    print_usage
+    # help requested explicitly: no error.
+    exit 0
+fi
+
+if [ -z "$1" ]; then
+    print_usage
+    exit  1
+fi
+
+# --
+# proceed
+
+# NOTE:
+#  When Linux lsof cannot read /proc/PID/cwd, it can place
+#   "(readlink: Permission denied)" in the CWD NAME field.
+#  This script strips the n marker and prints that diagnostic
+#  as the CWD. Therefore it reject NAME values containing the readlink
+#  diagnostic before printing them, and return an error instead.
+
+if cwd_info=$(lsof -a -d cwd -p "$1" -n -Fn 2>/dev/null); then
+    case "$cwd_info" in
+        *"Permission denied"*|*" (readlink:"*)
+            printf -- "*** Error pidcwd: cannot read CWD for PID %s\n" "$1" >&2
+            exit 1
+            ;;
+        *)
+            printf '%s\n' "$cwd_info" | awk '/^n/ {print substr($0,2)}'
+            ;;
+    esac
+else
+    printf -- "*** Error pidcwd: cannot read CWD for PID %s\n" "$1" >&2
+    exit 1
+fi
+
+# ----------------------------------------------------------------------------
