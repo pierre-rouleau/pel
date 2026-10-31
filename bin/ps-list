@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 16:12:25 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 17:05:32 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -115,7 +115,7 @@ fi
 # If grep finds no matches, the script returns 1.
 # If grep rejects a pattern such as [, the script returns the error status from grep.
 #
-# If awk removes all matched records, the script still returns 0.
+# If awk removes all matched records, the script returns 1.
 
 search_results=$(
     if [ "$case_insensitive" = "yes" ]; then
@@ -126,13 +126,25 @@ search_results=$(
 ) || exit "$?"
 
 printf '%s\n' "$search_results" |
-    awk -v name="$pgm_name" -v col="${ps_options:+9}" '
-        {
-            executable = $(col ? col : 8)
-            sub(/^.*\//, "", executable)
-            if (executable != name && executable != "grep")
-                print
+    awk -v name="$pgm_name" -v self="$$" -v col="${ps_options:+9}" '
+        BEGIN {
+            command_col = (col ? col : 8)
+            pid_col = command_col - 6
+            ppid_col = pid_col + 1
         }
+        {
+            # Exclude this script and its direct child processes.
+            if ($(pid_col) == self || $(ppid_col) == self)
+                next
+
+            executable = $(command_col)
+            sub(/^.*\//, "", executable)
+            if (executable != name && executable != "grep") {
+                print
+                printed++
+            }
+        }
+        END { exit (printed ? 0 : 1) }
     '
 
 # ----------------------------------------------------------------------------
