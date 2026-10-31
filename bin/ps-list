@@ -1,0 +1,116 @@
+#!/bin/sh
+# SH FILE: ps-list
+#
+# Purpose   : List running Processes.
+# Created   : Saturday, March  1 2025.
+# Author    : Pierre Rouleau <prouleau001@gmail.com>
+# Time-stamp: <2026-10-30 23:07:35 EDT, updated by Pierre Rouleau>
+# ----------------------------------------------------------------------------
+# Module Description
+# ------------------
+#
+# List processes provided by arguments
+
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ------------
+#
+# grep, ps, printf,
+
+
+# ----------------------------------------------------------------------------
+# Code
+# ----
+#
+#
+pgm_name="${0##*/}"
+
+selinux_is_available=false
+selinux_msg="NOT "
+if command -v getenforce > /dev/null; then
+    selinux_is_available=true
+    selinux_msg=""
+fi
+
+print_usage()
+{
+    printf -- "\
+%s: List information of specified running process.
+
+ Usage: %s h|--help
+ • Print this help information.
+
+ Usage: %s [-i] [-Z] PROCESS
+ • Print information related to running PROCESS specified by name.
+
+ Options:
+        -i : case insensitive search.
+        -Z : include SELinux security context labels.
+             Only available on Linux where SELinux is available.
+             On this system, SELinux is %savailable.
+
+
+ OUTPUT FORMAT:
+
+      Each line contains the following columns.
+      All columns are lined up.
+
+        UID  : user ID
+        PID  : process ID
+        PPID : Parent process ID
+        C    : CPU utilization of process or thread
+        STIME: system CPU time
+        TTY  : controlling terminal
+        TIME : total CPU time (user + system) since it started
+        CMD  : command
+
+ BUGS: This uses a simple grep extraction.
+       A better implementation would extract necessary information
+       and format it in better ways.
+
+" "$pgm_name" "$pgm_name" "$pgm_name" "$selinux_msg"
+}
+
+# --
+# Check for help
+if [ -n "$1" ]; then
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+        print_usage
+        if [ "$#" = "1" ]; then
+            exit 0
+        else
+            exit  1
+        fi
+    fi
+fi
+
+# --
+# proceed
+
+case_insensitive=no
+if [ "$1" = "-i" ]; then
+    case_insensitive=yes
+    shift
+fi
+
+ps_options=
+if [ "$1" = "-Z" ]; then
+    if [ "$selinux_is_available" = "true" ]; then
+        ps_options='-Z'
+        shift
+    else
+        printf -- "*** Error: SELinux is not available!\n"
+        exit 1
+    fi
+fi
+
+# -f Print command arguments
+# shellcheck disable=SC2009
+if [ "${case_insensitive}" = "yes" ]; then
+    ps -ef $ps_options | grep -i "$1" | grep -v "$pgm_name" | grep -v grep
+else
+    ps -ef $ps_options | grep    "$1" | grep -v "$pgm_name" | grep -v grep
+fi
+
+# ----------------------------------------------------------------------------
