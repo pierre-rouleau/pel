@@ -4,7 +4,7 @@
 # Purpose   : Install important control scripts via symlinks in ~/bin.
 # Created   : Tuesday, May 28 2024.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 13:43:10 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-10-31 22:45:07 EDT, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -289,6 +289,7 @@ printf -- 'Current files and symlinks:\n\n'
 ls -l "$HOME/bin/e"
 ls -l "$HOME/bin/ge"
 ls -l "$HOME/bin/ec"
+ls -l "$HOME/bin/ps-emacs"
 ls -l "$HOME/bin/lses"
 ls -l "$HOME/bin/is-emacs-daemon-running"
 ls -l "$HOME/bin/is-pel-in-fast-startup"
@@ -304,10 +305,11 @@ fi
 
 printf -- "\nFor help on these commands use their -h or --help command line option.\n"
 printf -- "\
-   e   :  opens an independent emacs process in terminal mode.
-   ge  :  opens an independent emacs process in GUI mode.
-   ec  :  open/check Emacs server and client in terminal or GUI mode.
-   lses:  list Emacs daemon sockets.
+   e       :  opens an independent emacs process in terminal mode.
+   ge      :  opens an independent emacs process in GUI mode.
+   ec      :  open/check Emacs server and client in terminal or GUI mode.
+   ps-emacs:  list currently running Emacs processes and daemons.
+   lses    :  list Emacs daemon sockets.
 
 Other scripts are also available:
 
