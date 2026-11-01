@@ -3,7 +3,7 @@
 # Purpose   : List Emacs processes.
 # Created   : Monday, September 29 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-11-01 08:58:01 EST, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-01 10:20:29 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -49,6 +49,6 @@
 # and other 2x and 3x number, and architecture-suffixed arm64 or x86_64 Emacs
 # names with numeric version components separated by underscores or dots.
 #
-$8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-p?gtk|-nox|-x11|-athena|-nextstep|-snapshot|-[23][0-9]|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/  { print $0 }
+$8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-p?gtk|-nox|-x11|-athena|-nextstep|-snapshot|-[23][0-9](\.[0-9]+)?|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/  { print $0 }
 
 # ------------------------------------------------------------------------------
