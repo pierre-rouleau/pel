@@ -3,7 +3,7 @@
 # Purpose   : Format Emacs process list to add the CWD to the line.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 11:40:13 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-01 11:20:11 EST, updated by Pierre Rouleau>
 # ------------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -62,7 +62,7 @@
 #  -1               A read error occurred.
 #
 #
-$8 ~ "[eE]macs"  {
+$8 ~ /([eE]macs|[Aa]quamacs)/ {
       # Do not reuse another process's CWD if this lookup fails.
       path_result = ""
       command = "pidcwd " $2
