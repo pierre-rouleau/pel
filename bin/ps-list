@@ -4,7 +4,7 @@
 # Purpose   : List running Processes.
 # Created   : Saturday, March  1 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 17:05:32 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-01 08:52:13 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 # Module Description
 # ------------------
@@ -107,26 +107,24 @@ fi
 # --
 # Proceed
 
-# Perform a ps | grep search and capture results.
-#
-# - ps -f : Print command arguments
-#
-# If grep finds matches, awk filters and prints those records.
-# If grep finds no matches, the script returns 1.
-# If grep rejects a pattern such as [, the script returns the error status from grep.
-#
-# If awk removes all matched records, the script returns 1.
+# Capture the process list before starting the search grep.
+# This prevents the search grep from appearing in the snapshot.
+process_list=$(ps -ef $ps_options) || exit "$?"
 
+# Preserve grep status: 1 for no matches, or its error status.
 search_results=$(
     if [ "$case_insensitive" = "yes" ]; then
-        ps -ef $ps_options | grep -i -e "$1"
+        printf '%s\n' "$process_list" | grep -i -e "$1"
     else
-        ps -ef $ps_options | grep    -e "$1"
+        printf '%s\n' "$process_list" | grep -e "$1"
     fi
 ) || exit "$?"
 
+# Exclude this invocation and its direct children by PID.
+# Keep unrelated processes, regardless of their executable names.
+# Return 1 if no records remain.
 printf '%s\n' "$search_results" |
-    awk -v name="$pgm_name" -v self="$$" -v col="${ps_options:+9}" '
+    awk -v self="$$" -v col="${ps_options:+9}" '
         BEGIN {
             command_col = (col ? col : 8)
             pid_col = command_col - 6
@@ -137,14 +135,9 @@ printf '%s\n' "$search_results" |
             if ($(pid_col) == self || $(ppid_col) == self)
                 next
 
-            executable = $(command_col)
-            sub(/^.*\//, "", executable)
-            if (executable != name && executable != "grep") {
-                print
-                printed++
-            }
+            print
+            printed++
         }
         END { exit (printed ? 0 : 1) }
     '
-
 # ----------------------------------------------------------------------------

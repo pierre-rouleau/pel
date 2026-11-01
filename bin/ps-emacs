@@ -4,7 +4,7 @@
 # Purpose   : List all running Emacs processes.
 # Created   : Sunday, September 21 2025.
 # Author    : Pierre Rouleau <prouleau001@gmail.com>
-# Time-stamp: <2026-10-31 18:31:36 EDT, updated by Pierre Rouleau>
+# Time-stamp: <2026-11-01 08:55:49 EST, updated by Pierre Rouleau>
 # ----------------------------------------------------------------------------
 
 # Module Description
@@ -176,10 +176,10 @@ print_emacs_processes()
         {
             # First extract terminal based Emacs
             ps_list_emacs \
-                | gawk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+                | gawk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-p?gtk|-nox|-x11|-athena|-nextstep|-snapshot|-[23][0-9]/(\.[0-9]/)?|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
             # List non-terminal processes after terminal processes.
             ps_list_emacs \
-                | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+                | gawk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-p?gtk|-nox|-x11|-athena|-nextstep|-snapshot|-[23][0-9]/(\.[0-9]/)?|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
         } | PATH="$PEL_BIN_DIR:$PATH" gawk -f "$PEL_BIN_DIR/../awk/ps-emacs-format.awk" \
           | {
                 if command -v column >/dev/null 2>&1; then
@@ -190,10 +190,10 @@ print_emacs_processes()
             }
     else
         ps_list_emacs \
-            | awk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/' \
+            | awk '$6 ~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-p?gtk|-nox|-x11|-athena|-nextstep|-snapshot|-[23][0-9]/(\.[0-9]/)?|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/' \
             | awk -f "$PEL_BIN_DIR/../awk/ps-emacs.awk"
         # List all other Emacs processes not running in terminal windows (if any).
-        ps_list_emacs |  awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
+        ps_list_emacs |  awk '$6 !~ /(tty|pts\/)/ && $8 ~ /(^|\/)[eE]macs(\.app|client|-lucid|-p?gtk|-nox|-x11|-athena|-nextstep|-snapshot|-[23][0-9]/(\.[0-9]/)?|-(arm64|x86_64)-[0-9]+([_.][0-9]+)*)?$/'
     fi
 }
 
