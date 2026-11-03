@@ -3865,7 +3865,7 @@ MODE must be a symbol."
     (pel-set-auto-mode d-mode for: pel--d-file-patterns)
     ;; Overcome omission bug in d-mode: add support for Speedbar
     (when pel-use-speedbar
-      (pel-add-speedbar-extension pel--d-file-patterns))
+      (pel-add-speedbar-for pel--d-file-patterns))
 
     (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
     (define-pel-global-prefix pel:d-skel    (kbd "<f11> SPC D <f12>"))

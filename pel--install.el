@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-11-03 11:49:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-11-03 12:26:15 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -882,11 +882,12 @@ but not for direct concatenation with a repetition operator."
           (setq regexp body))))
     regexp))
 
-(defun pel--patterns-to-regexp (file-patterns)
+(defun pel--patterns-to-regexp (file-patterns &optional basename-only)
   "Return a regexp for literal FILE-PATTERNS.
 
-FILE-PATTERNS can be a list of strings or a list with single symbol that
-holds the list of string.
+FILE-PATTERNS is a list of strings or a one-element list containing
+a symbol whose value is a list of strings.  The symbol must be bound
+when this function runs.
 
 In both cases, each string in the list must be:
 
@@ -894,7 +895,12 @@ In both cases, each string in the list must be:
 - A pattern that starts with \"/.\" is interpreted as a file name that
   starts with a period.
 - Other patterns match exact basenames.
-- Each match ends at the end of the filename."
+- Each match ends at the end of the filename.
+
+When BASENAME-ONLY is non-nil, anchor exact filenames at the start
+of the string, for matching basenames in Speedbar.
+Otherwise, prefix exact filenames with a slash, for matching full
+paths in `auto-mode-alist'.  Suffix matching is unchanged."
   ;; A list of single symbol names a variable containing literal file patterns.
   (when (and (consp file-patterns)
              (null (cdr file-patterns))
@@ -912,9 +918,9 @@ In both cases, each string in the list must be:
           (push pattern filenames))))
 
     (when filenames
-      (push (concat "/"
+      (push (concat (if basename-only "\\`\\(?:" "/")
                     (pel--literal-alternatives-regexp filenames)
-                    "\\'")
+                    (if basename-only "\\)\\'" "\\'"))
             parts))
 
     (when extensions
@@ -1121,7 +1127,7 @@ speedbar file."
   "Add Speedbar support for specified FILE-PATTERNS."
   (declare (indent 0))
   (let ((optimized-file-pattern-regex
-         (pel--patterns-to-regexp file-patterns)))
+         (pel--patterns-to-regexp file-patterns 'basename-only)))
     `(pel-add-speedbar-extension ,optimized-file-pattern-regex)))
 
 ;; ---------------------------------------------------------------------------
