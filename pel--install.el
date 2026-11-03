@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-10-28 21:55:54 EDT, updated by Pierre Rouleau>
+;; Time-stamp: <2026-11-03 09:08:30 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -947,6 +947,28 @@ file and file extension placed in the list and still use efficient code."
      ((eq marker 'for-end:)
       `(add-to-list 'auto-mode-alist '(,optimized-regex . ,mode) t))
      (t (error "Invalid macro marker %S" marker)))))
+
+
+(defmacro pel-extension-regexp-for (&rest file-patterns)
+  "Return optimized file extension regexp for FILE-PATTERNS.
+
+- FILE-PATTERNS is one or several file names or dot-prefixed suffixes
+  (file extensions).
+  Prepend a forward slash to identify a file name that starts with a period.
+  For example, use \"/.erlang\" to identify the \".erlang\" file instead of
+  the extension.
+
+Do NOT use regular expressions in the FILE-PATTERNS; the macro generates
+optimized regular expression based on the list of file and file extensions
+passed directly.  Also do NOT put the end-of-string delimiter for file
+extensions; the macro does it.
+
+By using this macro you can place comments that describe the purpose of each
+file and file extension placed in the list and still use efficient code."
+  (declare (indent 0))
+  (let ((optimized-file-pattern-regex
+         (pel--patterns-to-regexp file-patterns)))
+    optimized-file-pattern-regex))
 
 ;; ---------------------------------------------------------------------------
 
