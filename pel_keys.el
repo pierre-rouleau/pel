@@ -3205,15 +3205,17 @@ MODE must be a symbol."
       (pel-ensure-package-elpa ada-ts-mode from: melpa))
 
     ;; 2- Associate files with Ada mode dispatcher.  Uses a mode fixer.
-    (pel-set-auto-mode pel-ada-mode for:
-                       ".ads"           ; Ada Description/Specification
-                       ".adb"           ; Ada Body
-                       ".ada"           ; general Ada source file
-                       ".gpr"           ; GNAT project file - Ada like syntax
-                       )
     ;; 3- Speedbar support for Ada
+    (eval-when-compile
+      (defconst pel--ada-file-patterns
+        '(".ads"           ; Ada Description/Specification
+          ".adb"           ; Ada Body
+          ".ada"           ; general Ada source file
+          ".gpr"           ; GNAT project file - Ada like syntax
+          )))
+    (pel-set-auto-mode pel-ada-mode for: pel--ada-file-patterns)
     (when pel-use-speedbar
-      (pel-add-speedbar-extension ".ad[abs]"))
+      (pel-add-speedbar-for pel--ada-file-patterns))
 
     ;; 4- Define Buffer keymap for Ada
     (define-pel-global-prefix pel:for-ada (kbd "<f11> SPC A"))
@@ -3531,14 +3533,14 @@ MODE must be a symbol."
 
     (when pel-use-speedbar
       ;; Add extensions not already covered by default Emacs code
-      (pel-add-speedbar-extension '(".cc"
-                                    ".C"
-                                    ".CC"
-                                    ".hh"
-                                    ".HH"
-                                    ".ii"
-                                    ".inl"
-                                    ".icc")))
+      (pel-add-speedbar-for ".cc"
+                            ".C"
+                            ".CC"
+                            ".hh"
+                            ".HH"
+                            ".ii"
+                            ".inl"
+                            ".icc"))
     ;; Add auto support for extensions not supported by default
     (pel-set-auto-mode c++-mode for:
                        ".inl"
@@ -3633,14 +3635,16 @@ MODE must be a symbol."
         (add-to-list 'lsp-language-id-configuration '(c3-ts-mode . "c3"))))
 
     ;; 2- Associate files with C3 mode dispatcher
-    (pel-set-auto-mode c3-ts-mode for:
-                       ".c3"    ; C3 source
-                       ".c3i"   ; C3 interface file
-                       ".c3t"   ; C3 template/test file
-                       )
-
     ;; 3- Speedbar support for C3
-    (when pel-use-speedbar (pel-add-speedbar-extension ".c3[it]?"))
+    (eval-when-compile
+      (defconst pel--c3-file-patterns
+        '(".c3"            ; C3 source
+          ".c3i"           ; C3 interface file
+          ".c3t"           ; C3 template/test file
+          )))
+    (pel-set-auto-mode c3-ts-mode for: pel--c3-file-patterns)
+    (when pel-use-speedbar
+      (pel-add-speedbar-for pel--c3-file-patterns))
 
     ;; 4- Buffer keymap for C3
     (define-pel-global-prefix pel:for-c3   (kbd "<f11> SPC M-C"))
@@ -3853,13 +3857,15 @@ MODE must be a symbol."
       (pel-autoload-file company-dcd for: company-dcd-mode))
 
     ;; When opening a D source code file, load the d-mode feature.
-    (pel-set-auto-mode d-mode for:
-                       ".d"             ; D source
-                       ".di"            ; D interface
-                       )
+    (eval-when-compile
+      (defconst pel--d-file-patterns
+        '(".d"             ; D source
+          ".di"            ; D interface
+          )))
+    (pel-set-auto-mode d-mode for: pel--d-file-patterns)
     ;; Overcome omission bug in d-mode: add support for Speedbar
     (when pel-use-speedbar
-      (pel-add-speedbar-extension ".d"))
+      (pel-add-speedbar-extension pel--d-file-patterns))
 
     (define-pel-global-prefix pel:for-d     (kbd "<f11> SPC D"))
     (define-pel-global-prefix pel:d-skel    (kbd "<f11> SPC D <f12>"))
@@ -4036,17 +4042,16 @@ d-mode not added to ac-modes!"
     (pel-autoload-file elixir-mode for: elixir-mode)
 
     ;; 2- Associate files with Elixir mode dispatcher
-    (pel-set-auto-mode pel-elixir-mode for:
-                       ".ex"
-                       ".exs"
-                       ".elixir"
-                       "mix.lock")
     ;; 3- Speedbar support for Elixir (not done by elixir-mode.el)
+    (eval-when-compile
+      (defconst pel--elixir-file-patterns
+        '(".ex"
+          ".exs"
+          ".elixir"
+          "mix.lock")))
+    (pel-set-auto-mode pel-elixir-mode for: pel--elixir-file-patterns)
     (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".ex"
-                                    ".exs"
-                                    ".elixir"
-                                    "mix.lock")))
+      (pel-add-speedbar-for pel--elixir-file-patterns))
 
     ;; 4- Buffer keymap for Elixir
     (define-pel-global-prefix pel:for-elixir (kbd "<f11> SPC x"))
@@ -4418,28 +4423,30 @@ d-mode not added to ac-modes!"
   ;;   - .app            Application Resource Specification file in Erlang
   ;;   - .app.src        Source blueprint for an Erlang application resource
   ;;                     file.
-  (pel-set-auto-mode pel-erlang-mode for:
-                     ;; files:
-                     "Emakefile"
-                     "rebar.config"
-                     ;; "rebar.config.script"
-                     "relx.config"
-                     "sys.config"
-                     ;; "sys.config.src"
-                     "/.erlang"
-                     ;; extensions:
-                     ".hrl"
-                     ".erl"
-                     ".eix"
-                     ".escript"
-                     ".config.src"
-                     ".config.script"
-                     ".app"
-                     ".app.src")
+  (eval-when-compile
+      (defconst pel--erlang-file-patterns
+        '(;; files:
+          "Emakefile"
+          "rebar.config"
+          ;; "rebar.config.script"
+          "relx.config"
+          "sys.config"
+          ;; "sys.config.src"
+          "/.erlang"
+          ;; extensions:
+          ".hrl"
+          ".erl"
+          ".eix"
+          ".escript"
+          ".config.src"
+          ".config.script"
+          ".app"
+          ".app.src")))
+  (pel-set-auto-mode pel-erlang-mode for: pel--erlang-file-patterns)
 
   ;; 3- Speedbar support for Erlang (not done by erlang.el)
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".erl" ".hrl" ".escript")))
+    (pel-add-speedbar-for pel--erlang-file-patterns))
 
   ;; 4- Buffer keymap for Erlang
   ;;    Bind keys that can be used *before* the erlang.el file is loaded
@@ -4886,7 +4893,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran
     (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".f" ".F" ".for")))
+      (pel-add-speedbar-for ".f" ".F" ".for"))
     ;; 4- Define Buffer keymap for Fortran
     (define-pel-global-prefix pel:for-fortran (kbd "<f11> SPC M-F"))))
 
@@ -4902,7 +4909,7 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     ;;    Already done in Emacs.
     ;; 3- Speedbar support for Fortran-90
     (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".f90" ".f95" ".f03" ".f08")))
+      (pel-add-speedbar-for ".f90" ".f95" ".f03" ".f08"))
     ;; 4- Define Buffer keymap for Fortran-90
     (define-pel-global-prefix pel:for-f90 (kbd "<f11> SPC F")))
 
@@ -4914,7 +4921,8 @@ See lsp-keymap-prefix and pel-activate-f9-for-greek user-options."))
     features: pel-fypp
     at-init:
     (pel-set-auto-mode fypp-mode for: ".fypp")
-    (when pel-use-speedbar (pel-add-speedbar-extension '(".fypp")))))
+    (when pel-use-speedbar
+      (pel-add-speedbar-extension ".fypp"))))
 
 ;; ---------------------------------------------------------------------------
 ;;** Gleam Programming Language Support - BEAM Language Family
@@ -6466,8 +6474,7 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       (pel-set-auto-mode racket-mode for: pel--racket-file-patterns)
       ;; Activate Speedbar support
       (when pel-use-speedbar
-        (pel-add-speedbar-extension
-         (pel-extension-regexp-for pel--racket-file-patterns)))))
+        (pel-add-speedbar-for pel--racket-file-patterns))))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-h`` : Scsh
@@ -6758,14 +6765,14 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
       (pel-ensure-package-elpa zig-ts-mode from: melpa))
 
     ;; 2- Associate files with Zig mode dispatcher
-    (pel-set-auto-mode pel-zig-mode for:
-                       ".zig"
-                       ".zon")
-
     ;; 3- Speedbar support for Zig
+    (eval-when-compile
+      (defconst pel--zig-file-patterns
+        '(".zig"
+          ".zon")))
+    (pel-set-auto-mode pel-zig-mode for: pel--zig-file-patterns)
     (when pel-use-speedbar
-      (pel-add-speedbar-extension '(".zig"
-                                    ".zon")))
+      (pel-add-speedbar-for pel--zig-file-patterns))
 
     ;; 4- Buffer keymap for Zig
     (define-pel-global-prefix pel:for-zig  (kbd "<f11> SPC M-z"))
@@ -6938,11 +6945,14 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
 
   ;; AsciiDoc files are either .adoc or .txt. For the .txt files, use .adoc.txt
   ;; which is unambiguous and allows .txt behaviour.
+  (eval-when-compile
+    (defconst pel--adoc-file-patterns
+      '(".adoc"
+        ".adoc.txt")))
+  (pel-set-auto-mode adoc-mode for: pel--adoc-file-patterns)
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '("adoc" ".adoc.txt")))
-  (pel-set-auto-mode adoc-mode for:
-                     ".adoc"
-                     ".adoc.txt")
+    (pel-add-speedbar-for pel--adoc-file-patterns))
+
   (pel-eval-after-load adoc-mode
     (pel-config-major-mode adoc pel:for-asciidoc :no-ts
       ;; Preliminary bindings - there's way too many - and not structured
@@ -7437,12 +7447,12 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
   (define-key pel:for-markdown-preview "l" 'markdown-live-preview-mode)
 
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".md"
-                                  ".markdown"
-                                  ".mkd"
-                                  ".mdown"
-                                  ".mkdn"
-                                  ".mdwn")))
+    (pel-add-speedbar-for ".md"
+                          ".markdown"
+                          ".mkd"
+                          ".mdown"
+                          ".mkdn"
+                          ".mdwn"))
 
   (pel-eval-after-load markdown-mode
       (pel-config-major-mode markdown pel:for-markdown :no-ts
@@ -7471,7 +7481,7 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
   ;; Nothing to install, rst-mode is built in Emacs
 
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".rst" ".stxt" ".rst.txt")))
+    (pel-add-speedbar-for ".rst" ".stxt" ".rst.txt"))
 
   (define-pel-global-prefix pel:for-reST (kbd "<f11> SPC M-r"))
   (define-pel-global-prefix pel:rst-skel (kbd "<f11> SPC M-r <f12>"))
@@ -7604,14 +7614,16 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
   (pel-autoload-file mscgen-mode for:
                      mscgen-mode)
   ;; set the file extensions
-  (pel-set-auto-mode mscgen-mode for:
-                     ".msc"
-                     ".msc.txt"
-                     ".mscgen"
-                     ".mscin")
+  (eval-when-compile
+      (defconst pel--mscgen-file-patterns
+        '(".msc"
+          ".msc.txt"
+          ".mscgen"
+          ".mscin")))
+  (pel-set-auto-mode mscgen-mode for: pel--mscgen-file-patterns)
   ;; Add speedbar support
   (when pel-use-speedbar
-    (pel-add-speedbar-extension '(".msc" ".msc.txt")))
+    (pel-add-speedbar-for pel--mscgen-file-patterns))
 
   ;; Add Key bindings
   (define-pel-global-prefix pel:for-mscgen (kbd "<f11> SPC M-M"))

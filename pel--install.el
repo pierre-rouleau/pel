@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-11-03 10:36:14 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-11-03 11:49:30 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -969,6 +969,10 @@ file and file extension placed in the list and still use efficient code."
   For example, use \"/.erlang\" to identify the \".erlang\" file instead of
   the extension.
 
+FILE-PATTERNS can also be one unquoted variable name whose value
+is a list of literal file patterns.  The variable must be bound
+when the macro expands.
+
 Do NOT use regular expressions in the FILE-PATTERNS; the macro generates
 optimized regular expression based on the list of file and file extensions
 passed directly.  Also do NOT put the end-of-string delimiter for file
@@ -982,8 +986,6 @@ file and file extension placed in the list and still use efficient code."
     optimized-file-pattern-regex))
 
 ;; ---------------------------------------------------------------------------
-
-;; --
 
 (defmacro pel-autoload-file (fname for: &rest commands)
   "Schedule the autoloading of FNAME for specified COMMANDS.
@@ -1114,6 +1116,13 @@ speedbar file."
   (require 'speedbar)
   (declare-function speedbar-add-supported-extension "speedbar")
   (speedbar-add-supported-extension extension))
+
+(defmacro pel-add-speedbar-for (&rest file-patterns)
+  "Add Speedbar support for specified FILE-PATTERNS."
+  (declare (indent 0))
+  (let ((optimized-file-pattern-regex
+         (pel--patterns-to-regexp file-patterns)))
+    `(pel-add-speedbar-extension ,optimized-file-pattern-regex)))
 
 ;; ---------------------------------------------------------------------------
 ;;* Major Mode Configuration
