@@ -2,7 +2,7 @@
 
 ;; Created   : Thursday, March 12 2026.
 ;; Author    : Pierre Rouleau <prouleau001@gmail.com>
-;; Time-stamp: <2026-11-03 09:08:30 EST, updated by Pierre Rouleau>
+;; Time-stamp: <2026-11-03 10:36:14 EST, updated by Pierre Rouleau>
 
 ;; This file is part of the PEL package.
 ;; This file is not part of GNU Emacs.
@@ -884,11 +884,23 @@ but not for direct concatenation with a repetition operator."
 
 (defun pel--patterns-to-regexp (file-patterns)
   "Return a regexp for literal FILE-PATTERNS.
-Dot-prefixed patterns match suffixes.
-A pattern that starts with \"/.\" is interpreted as a file name that
-starts with a period.
-Other patterns match exact basenames.
-Each match ends at the end of the filename."
+
+FILE-PATTERNS can be a list of strings or a list with single symbol that
+holds the list of string.
+
+In both cases, each string in the list must be:
+
+- Dot-prefixed patterns match suffixes.
+- A pattern that starts with \"/.\" is interpreted as a file name that
+  starts with a period.
+- Other patterns match exact basenames.
+- Each match ends at the end of the filename."
+  ;; A list of single symbol names a variable containing literal file patterns.
+  (when (and (consp file-patterns)
+             (null (cdr file-patterns))
+             (symbolp (car file-patterns)))
+    (setq file-patterns (symbol-value (car file-patterns))))
+  ;;
   (unless file-patterns
     (error "At least one file pattern is required"))
   (let (filenames extensions parts)
@@ -947,7 +959,6 @@ file and file extension placed in the list and still use efficient code."
      ((eq marker 'for-end:)
       `(add-to-list 'auto-mode-alist '(,optimized-regex . ,mode) t))
      (t (error "Invalid macro marker %S" marker)))))
-
 
 (defmacro pel-extension-regexp-for (&rest file-patterns)
   "Return optimized file extension regexp for FILE-PATTERNS.

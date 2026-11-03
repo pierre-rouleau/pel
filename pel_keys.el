@@ -6456,20 +6456,18 @@ Can't load ac-geiser: geiser-repl-mode: %S"
       ;; The racket-mode is already supported via scheme-mode and the associations
       ;; are present in auto-mode-alist.  Remove them first to ensure proper support.
       (pel-delete-from-auto-mode-alist 'racket-mode)
-      (pel-set-auto-mode racket-mode for:
-                         ".rkt"         ; Standard Racket source file.
-                         ".rktd"        ; Racket Data file.
-                         ".rktl"        ; Racket Library/Load file
-                         ".zuo"         ; Zuo Racket script files
-                         ".zuo.in")
+      (eval-when-compile
+        (defconst pel--racket-file-patterns
+          '(".rkt"      ; Standard Racket source file
+            ".rktd"     ; Racket Data file
+            ".rktl"     ; Racket Library/Load file
+            ".zuo"      ; Zuo Racket script files
+            ".zuo.in")))
+      (pel-set-auto-mode racket-mode for: pel--racket-file-patterns)
       ;; Activate Speedbar support
       (when pel-use-speedbar
         (pel-add-speedbar-extension
-         (pel-extension-regexp-for ".rkt"  ; Standard Racket source file.
-                                   ".rktd" ; Racket Data file.
-                                   ".rktl" ; Racket Library/Load file
-                                   ".zuo"  ; Zuo Racket script files
-                                   ".zuo.in")))))
+         (pel-extension-regexp-for pel--racket-file-patterns)))))
 
   ;; --------------------------------------------------------------------------
   ;; - Function Keys - <f11> - Prefix ``<f11> SPC C-s C-h`` : Scsh
