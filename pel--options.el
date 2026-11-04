@@ -15571,6 +15571,7 @@ turned off."
   :group 'pel-pkg-for-undo
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-undo-tree :also-required-when 'pel-use-indent-tools)
 
 (defcustom pel-use-undo-propose nil
   "Control whether PEL uses the `undo-propose' package.
@@ -16404,9 +16405,11 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
   (setq pel-use-quelpa t))
 
 (when pel-use-indent-tools
-  (setq pel-use-hydra t)
-  (setq pel-use-s t)
-  (setq pel-use-yafolding t))
+  (setq pel-use-helm      t
+        pel-use-hydra     t
+        pel-use-s         t
+        pel-use-undo-tree t
+        pel-use-yafolding t))
 
 (cl-case pel-erlang-xref-engine
   (ivy-erlang-complete (setq pel-use-ivy-erlang-complete t))
