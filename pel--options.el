@@ -772,6 +772,14 @@ The following are automatically activated based on specific conditions:
   :group 'pel-base-emacs
   :type '(repeat function))
 
+(defcustom pel-use-s nil
+  "Whether PEL explicitly activates the s.el package."
+  :group 'pel-base-emacs
+  :link '(url-group :tab "s @ github" "https://github.com/magnars/s.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-s :also-required-when 'pel-use-indent-tools)
+
 ;; ---------------------------------------------------------------------------
 (defgroup pel-pkg-for-parser nil
   "PEL customization for parser generator support packages.
@@ -16396,6 +16404,8 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
   (setq pel-use-quelpa t))
 
 (when pel-use-indent-tools
+  (setq pel-use-hydra t)
+  (setq pel-use-s t)
   (setq pel-use-yafolding t))
 
 (cl-case pel-erlang-xref-engine

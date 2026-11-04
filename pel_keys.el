@@ -576,6 +576,8 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
   (pel-ensure-package-elpa flycheck-package from: melpa))
 (when pel-use-elx
   (pel-ensure-package-elpa elx from: melpa))
+(when pel-use-s
+  (pel-ensure-package-elpa s from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter Support
