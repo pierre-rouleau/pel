@@ -40,6 +40,7 @@
 ;;   - pel-fast-startup
 ;;   - pel-package-use
 ;;     - pel-pkg-package-mng
+;;     - pel-pkg-for-ai
 ;;     - pel-pkg-for-align
 ;;     - pel-pkg-for-bookmark
 ;;     - pel-pkg-for-buffer
@@ -1054,7 +1055,7 @@ change the value of `no-byte-compile' file variable in your init.el
 file."
   :group 'pel-fast-startup
   :type '(choice
-          (const :tag "do not compile it" nil)
+          (const :tag "Do not compile it" nil)
           (const :tag "byte-compile it" t)
           (const :tag "byte-compile and native-compile it"
                  byte-and-native-compile-it)))
@@ -1082,7 +1083,7 @@ change the value of `no-byte-compile' file variable in your
 early-init.el file."
   :group 'pel-fast-startup
   :type '(choice
-          (const :tag "do not compile it" nil)
+          (const :tag "Do not compile it" nil)
           (const :tag "byte-compile it" t)
           (const :tag "byte-compile and native-compile it"
                  byte-and-native-compile-it)))
@@ -1226,6 +1227,25 @@ directory for whatever reason."
                                                       'use-enzuru-lispy)))
 
 ;; ---------------------------------------------------------------------------
+;; Artificial Intelligence Support
+;; -------------------------------
+(defgroup pel-pkg-for-ai nil
+  "Customization of PEL AI support."
+  :group 'pel-package-use
+  :link `(url-link :tag "AI PDF" ,(pel-pdf-file-url "ai")))
+
+;; (defcustom pel-use-gptel nil
+;;   "Control whether PEL provides gptel support."
+;;   :group 'pel-pkg-for-ai
+;;   :type '(choice
+;;           (const :tag "Do not use" nil)
+;;           (const :tag "Use with url" t)
+;;           (const :tag "Use with request" with-request)))
+;; (pel-put pel-use-gptel :requires-pakage '(when (eq pel-use-gptel (quote
+;;                                                                   with-request))
+;;                                            (elpa . request)))
+
+;; ---------------------------------------------------------------------------
 ;; Alignment Support
 ;; -----------------
 (defgroup pel-pkg-for-align nil
@@ -1315,7 +1335,7 @@ variable to `project-uniquify-dirname-transform'."
   :type `,(if pel-emacs-30-or-later-p
               ;; Emacs 30.1 or later
               '(choice
-                (const :tag "DO not use" nil)
+                (const :tag "Do not use" nil)
                 (const :tag "Use as identity" t)
                 (const :tag "Use with project-awareness" project-aware))
             ;; Before Emacs 30.1
@@ -3161,6 +3181,19 @@ and is also supported by LSP servers."
                                                     (elpa . s))))
 (pel-put pel-use-origami :also-required-when 'pel-use-lsp-origami)
 
+;; --
+(defcustom pel-use-yafolding nil
+  "Control whether PEL uses the yafolding package."
+  :group 'pel-pkg-for-hide-show
+  :link '(url-link :tag "Original yafolding @ GitHub"
+                   "https://github.com/zenozeng/yafolding.el")
+  :link '(url-link :tag "My fork @ GitHub"
+                   "https://github.com/pierre-rouleau/yafolding.el")
+  :type 'boolean
+  :safe #'booleanp)
+(pel-put pel-use-yafolding :package-is :in-utils)
+(pel-put pel-use-yafolding :also-required-when 'pel-use-indent-tools)
+
 ;; ---------------------------------------------------------------------------
 ;; Highlight Support
 ;; -----------------
@@ -3434,10 +3467,13 @@ Note that when this is activated, PEL automatically turns
 (defcustom pel-use-indent-tools nil
   "Whether PEL activates the indent-tools external package."
   :group 'pel-pkg-for-indentation
-  :link '(url-link :tag "indent-tools @ GitLab"
+  :link '(url-link :tag "Original indent-tools @ GitLab"
                    "https://gitlab.com/emacs-stuff/indent-tools/")
+  :link '(url-link :tag "My fork, used by PEL, @ GitHub"
+                   "https://github.com/pierre-rouleau/indent-tools")
   :type 'boolean
   :safe #'booleanp)
+(pel-put pel-use-indent-tools :package-is :in-utils)
 
 (defcustom pel-indent-tools-key-bound nil
   "If set `C-c >` is bound to `indent-tools-hydra/body' globally or for Python."
@@ -13706,6 +13742,9 @@ in buffers and tab stop positions for commands such as `tab-to-tab-stop'."
 (defcustom pel-use-swift nil
   "Control whether PEL supports the Swift Programming Language Development."
   :group 'pel-pkg-for-swift
+  :link '(url-link :tag "swift-mode @ GitHub"
+                   "https://github.com/swift-emacs/swift-mode")
+  :link '(url-link :tag "My fork" "https://github.com/pierre-rouleau/swift-mode")
   :type 'boolean
   :safe #'booleanp)
 (pel-put pel-use-swift :package-is '(if pel-use-tree-sitter
@@ -16355,6 +16394,9 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
           pel-use-pr-whisper
           pel-use-el-easydraw)
   (setq pel-use-quelpa t))
+
+(when pel-use-indent-tools
+  (setq pel-use-yafolding t))
 
 (cl-case pel-erlang-xref-engine
   (ivy-erlang-complete (setq pel-use-ivy-erlang-complete t))
