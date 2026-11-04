@@ -16582,7 +16582,8 @@ all buffers for C and C++ in both classic and Tree-Sitter major modes."
 ;; pel-use-vundo because undo-tree is not robust and may corrupt a buffer and
 ;; also because these other settings provide a better solution and share key
 ;; bindings.
-(when (or pel-use-simple-undo pel-use-vundo)
+(when (and (or pel-use-simple-undo pel-use-vundo)
+           (not pel-use-indent-tools))
   (setq pel-use-undo-tree nil))
 
 (when pel-use-eiffel
