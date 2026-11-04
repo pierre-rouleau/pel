@@ -576,6 +576,8 @@ Open GitHub file if OPEN-GITHUB-PAGE-P IS non-nil."
   (pel-ensure-package-elpa flycheck-package from: melpa))
 (when pel-use-elx
   (pel-ensure-package-elpa elx from: melpa))
+(when pel-use-s
+  (pel-ensure-package-elpa s from: melpa))
 
 ;; ---------------------------------------------------------------------------
 ;;* Tree-Sitter Support
@@ -8111,6 +8113,20 @@ Compatible Tree-Sitter grammar for systemverilog is not available.%s"
 
   (add-hook 'origami-mode-hook #'pel--activate-origami))
 
+(when pel-use-yafolding
+  (pel-install-github-file "pierre-rouleau/yafolding.el/master"
+                           "yafolding.el")
+  (pel-autoload-file yafolding for:
+                     yafolding-get-indent-level
+                     yafolding-show-all
+                     yafolding-hide-all
+                     yafolding-toggle-all
+                     yafolding-hide-element
+                     yafolding-show-element
+                     yafolding-toggle-element
+                     yafolding-go-parent-element
+                     yafolding-hide-parent-element))
+
 ;; ---------------------------------------------------------------------------
 ;;* Help /apropos/info commands - <f11> ?
 ;; - Function Keys - <f11> - Prefix ``<f11> ?`` :
@@ -8597,7 +8613,9 @@ See `flyspell-auto-correct-previous-word' for more info."
 (when pel-use-indent-tools
   ;; Note: `indent-tools-hydra/body' is bound to <f7> TAB inside
   ;;       the pel__hydra.el: only when pel-use-hydra is active.
-  (pel-ensure-package-elpa indent-tools from: melpa)
+  ;; Use my fork: it fixes warnings.
+
+  (pel-install-github-file "pierre-rouleau/indent-tools/master" "indent-tools.el")
   (pel-autoload-file indent-tools for: indent-tools-hydra/body))
 
 ;; -- smart-tabs
