@@ -1,6 +1,7 @@
 PEL -- Pragmatic Emacs Leverage --  NEWS         -*- org -*-
 
 * New in Version 0.4.2 (under development):
+- Added imenu support for AWK files.
 - Improved compilation control.  PEL now includes the pel-compile.el file that provides the
   *pel-with-controlled-save* macro that PEL uses to wrap the calls to Emacs *compile* function.
   This provides the ability to select various policies when compiling a file.
