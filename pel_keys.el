@@ -3331,6 +3331,7 @@ MODE must be a symbol."
 ;;   -------------------------------
 ;; - Function Keys - <f11> - Prefix ``<f11> SPC W`` : Awk
 (when pel-use-awk
+
   ;; Awk support is built-in Emacs, provided by cc-mode
   (pel-setup-major-mode awk :no-ts
     features: cc-mode
@@ -3377,7 +3378,7 @@ MODE must be a symbol."
     ;; Add imenu support for AWK: functions and blocks.
     (setq-local imenu-generic-expression
                 '(("Functions" "^[ \t]*function[ \t]+\\([a-zA-Z0-9_]+\\)" 1)
-                  ("Blocks" "^[ \t]*\\(BEGIN\\|END\\)\\b" 1)))))
+                  ("Blocks" "^[ \t]*\\(BEGIN\\|END\\)\\_>" 1)))))
 
 ;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;** C Programming Language Support
